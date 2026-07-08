@@ -1,11 +1,18 @@
 import { createH5Api } from '../shared/api.js';
 import { buildTapRegions, normalizeAudioItems } from '../shared/coordinate.js';
+import { getNextPageNumber, getSwipePageDelta, selectReaderPage } from '../shared/navigation.js';
 import './styles.css';
 
 const PREVIEW_BOOK = { id: 103, book_name: '预览教材', start_page: 1 };
 const api = createH5Api();
 const audio = new Audio();
 const app = document.querySelector('#app');
+const swipe = {
+  startX: 0,
+  startY: 0,
+  started: false,
+  lastTouchAt: 0,
+};
 
 const state = {
   view: 'home',
@@ -147,12 +154,13 @@ async function loadReader(book = state.currentBook || PREVIEW_BOOK, page = state
       bg_img: normalizeUrl(item.bg_img),
       word_mp3: normalizeAudioItems(item.word_mp3),
     }));
-    const nextPage = Number(normalizedPages[0]?.c_page || page) || 1;
+    const selectedPage = selectReaderPage(normalizedPages, page);
+    const nextPage = Number(selectedPage?.c_page || page) || 1;
     setState({
       view: 'reader',
       currentBook: normalizeBook(book),
       currentPage: nextPage,
-      readerPages: normalizedPages,
+      readerPages: selectedPage ? [selectedPage] : [],
       tapRegions: [],
     });
   });
@@ -179,6 +187,23 @@ function playRegion(index) {
   renderTapLayer();
 }
 
+function getReaderMaxPage() {
+  const max = Number(state.currentBook?.end_page);
+  return Number.isFinite(max) && max > 0 ? max : Infinity;
+}
+
+function changeReaderPage(delta) {
+  const nextPage = getNextPageNumber(state.currentPage, delta, { min: 1, max: getReaderMaxPage() });
+  if (nextPage === state.currentPage) return;
+  savePage(nextPage);
+  loadReader(state.currentBook, nextPage);
+}
+
+function getEventPoint(event, key = 'touches') {
+  const point = event[key]?.[0] || event;
+  return { x: point.clientX, y: point.clientY };
+}
+
 window.diandu = {
   loadHome,
   loadBooks,
@@ -197,14 +222,26 @@ window.diandu = {
   },
   loadReader,
   nextPage() {
-    const next = state.currentPage + 1;
-    savePage(next);
-    loadReader(state.currentBook, next);
+    changeReaderPage(1);
   },
   prevPage() {
-    const prev = Math.max(1, state.currentPage - 1);
-    savePage(prev);
-    loadReader(state.currentBook, prev);
+    changeReaderPage(-1);
+  },
+  swipeStart(event) {
+    if (event.type === 'mousedown' && Date.now() - swipe.lastTouchAt < 700) return;
+    if (event.type === 'mousedown' && event.button !== 0) return;
+    const point = getEventPoint(event);
+    swipe.startX = point.x;
+    swipe.startY = point.y;
+    swipe.started = true;
+  },
+  swipeEnd(event) {
+    if (!swipe.started) return;
+    if (event.type === 'touchend') swipe.lastTouchAt = Date.now();
+    const point = getEventPoint(event, 'changedTouches');
+    const delta = getSwipePageDelta({ x: swipe.startX, y: swipe.startY }, point);
+    swipe.started = false;
+    if (delta) changeReaderPage(delta);
   },
   replay() {
     if (audio.src) audio.play().catch(() => setState({ error: '音频播放失败，请再点一次' }));
@@ -334,7 +371,13 @@ function renderReader() {
     </div>
     <section class="reader">
       ${page?.bg_img ? `
-        <div class="page-wrap">
+        <div
+          class="page-wrap"
+          ontouchstart="diandu.swipeStart(event)"
+          ontouchend="diandu.swipeEnd(event)"
+          onmousedown="diandu.swipeStart(event)"
+          onmouseup="diandu.swipeEnd(event)"
+        >
           <img id="pageImage" src="${normalizeUrl(page.bg_img)}" alt="课本页面" />
           <div id="tapLayer" class="tap-layer"></div>
         </div>

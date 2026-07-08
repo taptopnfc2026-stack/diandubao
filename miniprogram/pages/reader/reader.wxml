@@ -13,7 +13,12 @@
   <button bindtap="openChapters">目录 ›</button>
 </view>
 <view class="reader">
-  <view wx:if="{{page && page.bg_img}}" class="page-wrap">
+  <view
+    wx:if="{{page && page.bg_img}}"
+    class="page-wrap"
+    bindtouchstart="onTouchStart"
+    bindtouchend="onTouchEnd"
+  >
     <image class="page-image" src="{{page.bg_img}}" mode="widthFix" bindload="onImageLoad" />
     <view class="tap-layer">
       <button

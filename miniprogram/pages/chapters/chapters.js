@@ -4,12 +4,14 @@ Page({
   data: {
     bookId: '',
     bookName: '',
+    endPage: '',
     chapters: [],
   },
   onLoad(options) {
     this.setData({
       bookId: options.book_id || '',
       bookName: decodeURIComponent(options.book_name || ''),
+      endPage: Number(options.end_page || 0) || '',
     });
     this.loadChapters();
   },
@@ -27,8 +29,8 @@ Page({
     const index = Number(event.currentTarget.dataset.index);
     const chapter = this.data.chapters[index];
     const page = Number(chapter && chapter.start_page ? chapter.start_page : 1) || 1;
-    wx.navigateTo({
-      url: `/pages/reader/reader?book_id=${this.data.bookId}&page=${page}&book_name=${encodeURIComponent(this.data.bookName || '')}`,
+    wx.redirectTo({
+      url: `/pages/reader/reader?book_id=${this.data.bookId}&page=${page}&end_page=${this.data.endPage || ''}&book_name=${encodeURIComponent(this.data.bookName || '')}`,
     });
   },
   goBack() {

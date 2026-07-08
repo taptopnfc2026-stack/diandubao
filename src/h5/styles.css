@@ -397,6 +397,8 @@ button {
   position: relative;
   width: 100%;
   background: #fff;
+  touch-action: pan-y;
+  user-select: none;
 }
 
 .page-wrap img {

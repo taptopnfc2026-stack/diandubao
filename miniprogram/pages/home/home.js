@@ -36,7 +36,7 @@ Page({
       return;
     }
     wx.navigateTo({
-      url: `/pages/reader/reader?book_id=${bookId}&page=${this.data.page || 1}&book_name=${encodeURIComponent(book.book_name || '')}`,
+      url: `/pages/reader/reader?book_id=${bookId}&page=${this.data.page || 1}&end_page=${book.end_page || ''}&book_name=${encodeURIComponent(book.book_name || '')}`,
     });
   },
 });
