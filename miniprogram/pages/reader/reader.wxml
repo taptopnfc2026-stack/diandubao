@@ -1,0 +1,26 @@
+<view class="nav">
+  <button bindtap="goBack">‹</button>
+  <text>点读学习</text>
+  <button bindtap="openChapters">目录</button>
+</view>
+<view class="reader">
+  <view wx:if="{{page && page.bg_img}}" class="page-wrap">
+    <image class="page-image" src="{{page.bg_img}}" mode="widthFix" bindload="onImageLoad" />
+    <view class="tap-layer">
+      <button
+        wx:for="{{regions}}"
+        wx:key="id"
+        class="tap-region"
+        data-index="{{index}}"
+        bindtap="playRegion"
+        style="left:{{item.rect.left}}px;top:{{item.rect.top}}px;width:{{item.rect.width}}px;height:{{item.rect.height}}px"
+      ></button>
+    </view>
+  </view>
+  <view wx:else class="missing-page">暂无页面图片</view>
+</view>
+<view class="reader-controls">
+  <button data-delta="-1" bindtap="changePage">上一页</button>
+  <button bindtap="replay">复读</button>
+  <button data-delta="1" bindtap="changePage">下一页</button>
+</view>

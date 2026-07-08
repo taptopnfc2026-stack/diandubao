@@ -1,0 +1,47 @@
+.nav {
+  height: 116rpx;
+  padding: 44rpx 28rpx 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  font-weight: 800;
+}
+
+.nav button,
+.nav-spacer {
+  width: 72rpx;
+  height: 72rpx;
+}
+
+.chapter-list {
+  display: grid;
+  gap: 2rpx;
+  background: #edf0f5;
+}
+
+.chapter-list button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 30rpx 32rpx;
+  background: #fff;
+  text-align: left;
+}
+
+.chapter-list text {
+  display: block;
+  font-weight: 800;
+}
+
+.chapter-list .sub {
+  margin-top: 8rpx;
+  color: #7c8797;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.arrow {
+  color: #9aa4b2;
+  font-size: 42rpx;
+}

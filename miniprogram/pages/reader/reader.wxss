@@ -1,0 +1,68 @@
+.nav {
+  height: 116rpx;
+  padding: 44rpx 28rpx 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  font-weight: 800;
+}
+
+.nav button {
+  min-width: 72rpx;
+  height: 72rpx;
+}
+
+.reader {
+  min-height: calc(100vh - 252rpx);
+  background: #fff;
+}
+
+.page-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.page-image {
+  display: block;
+  width: 100%;
+}
+
+.tap-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.tap-region {
+  position: absolute;
+  border: 1rpx solid rgba(38, 168, 245, 0.5);
+  background: rgba(38, 168, 245, 0.04);
+}
+
+.missing-page {
+  height: 840rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7c8797;
+}
+
+.reader-controls {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+  padding: 20rpx 32rpx calc(20rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  box-shadow: 0 -12rpx 28rpx rgba(30, 40, 55, 0.08);
+}
+
+.reader-controls button {
+  padding: 20rpx;
+  border-radius: 12rpx;
+  background: #f2f5f8;
+  font-weight: 700;
+}

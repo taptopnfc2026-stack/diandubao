@@ -1,0 +1,276 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #e9eef5;
+  color: #172033;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button {
+  border: 0;
+  font: inherit;
+}
+
+.phone {
+  width: min(100vw, 414px);
+  min-height: 100vh;
+  margin: 0 auto;
+  background: #f7f8fa;
+}
+
+.toast {
+  position: fixed;
+  z-index: 20;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: rgba(23, 32, 51, 0.88);
+  color: #fff;
+}
+
+.toast.error {
+  background: #e44b4b;
+}
+
+.hero {
+  min-height: 580px;
+  padding: 28px 14px;
+  background: linear-gradient(180deg, #d7f8ff 0%, #eef9ff 66%, #f7f8fa 100%);
+}
+
+.topbar,
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.topbar button,
+.nav button {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.86);
+  color: #172033;
+}
+
+.nav {
+  height: 58px;
+  padding: 0 14px;
+  background: #fff;
+}
+
+.nav > * {
+  min-width: 48px;
+}
+
+.nav strong {
+  text-align: center;
+}
+
+.book-card {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  margin: 18px auto 24px;
+}
+
+.book-card img,
+.book-option img {
+  width: 150px;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 10px 18px rgba(42, 65, 93, 0.16);
+}
+
+.book-card strong {
+  font-size: 17px;
+}
+
+.book-card span {
+  color: #ff6a21;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.cover-empty {
+  display: grid;
+  place-items: center;
+  width: 150px;
+  aspect-ratio: 3 / 4;
+  border-radius: 8px;
+  background: #fff;
+  color: #7c8797;
+}
+
+.cover-empty.small {
+  width: 150px;
+}
+
+.primary,
+.secondary {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  border-radius: 8px;
+  font-weight: 800;
+}
+
+.primary {
+  background: #26a8f5;
+  color: #fff;
+}
+
+.secondary {
+  margin-top: 10px;
+  background: #fff;
+  color: #168ed2;
+}
+
+.panel {
+  margin: -130px 14px 18px;
+  padding: 16px 12px;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.panel h2 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  color: #7a8494;
+}
+
+.quick-grid,
+.book-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.quick-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.quick-grid button {
+  min-height: 88px;
+  border-radius: 8px;
+  background: #f8edf9;
+  font-weight: 800;
+}
+
+.quick-grid button:nth-child(2) {
+  background: #fff0ef;
+}
+
+.quick-grid button:nth-child(3) {
+  background: #fff6e6;
+}
+
+.book-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding: 16px;
+  background: #fff;
+}
+
+.book-option {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 0 0 14px;
+  background: transparent;
+  color: #252b36;
+}
+
+.book-option span {
+  font-weight: 700;
+}
+
+.chapter-list {
+  display: grid;
+  gap: 1px;
+  background: #edf0f5;
+}
+
+.chapter-list button {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  background: #fff;
+  color: #172033;
+  text-align: left;
+}
+
+.chapter-list small {
+  color: #7c8797;
+}
+
+.reader {
+  min-height: calc(100vh - 126px);
+  background: #fff;
+}
+
+.page-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.page-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.tap-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.tap-region {
+  position: absolute;
+  border: 1px solid rgba(38, 168, 245, 0.45);
+  background: rgba(38, 168, 245, 0.04);
+}
+
+.tap-region.active {
+  border-color: rgba(255, 106, 33, 0.8);
+  background: rgba(255, 106, 33, 0.12);
+}
+
+.reader-controls {
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 10px 16px max(10px, env(safe-area-inset-bottom));
+  background: #fff;
+  box-shadow: 0 -6px 14px rgba(30, 40, 55, 0.08);
+}
+
+.reader-controls button {
+  padding: 10px;
+  border-radius: 6px;
+  background: #f2f5f8;
+  color: #172033;
+  font-weight: 700;
+}
+
+.missing-page {
+  display: grid;
+  place-items: center;
+  height: 420px;
+  color: #7c8797;
+}

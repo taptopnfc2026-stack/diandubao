@@ -1,0 +1,94 @@
+.hero {
+  min-height: 560rpx;
+  padding: 56rpx 28rpx;
+  background: linear-gradient(180deg, #d7f8ff 0%, #eef9ff 100%);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: 800;
+}
+
+.topbar button {
+  padding: 16rpx 20rpx;
+  border-radius: 12rpx;
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.book-card {
+  display: grid;
+  justify-items: center;
+  gap: 18rpx;
+  margin: 36rpx auto 48rpx;
+  font-weight: 800;
+}
+
+.book-card image,
+.cover-empty {
+  width: 300rpx;
+  height: 400rpx;
+  border-radius: 16rpx;
+  background: #fff;
+  box-shadow: 0 20rpx 36rpx rgba(42, 65, 93, 0.16);
+}
+
+.cover-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7c8797;
+}
+
+.progress {
+  color: #ff6a21;
+  font-size: 24rpx;
+}
+
+.primary {
+  width: 100%;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  background: #26a8f5;
+  color: #fff;
+  font-weight: 800;
+}
+
+.panel {
+  margin: -20rpx 28rpx 36rpx;
+  padding: 32rpx 24rpx;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.panel-title {
+  color: #7a8494;
+  font-weight: 700;
+}
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20rpx;
+  margin-top: 24rpx;
+}
+
+.quick-grid button {
+  min-height: 160rpx;
+  border-radius: 16rpx;
+  background: #f8edf9;
+  font-weight: 800;
+}
+
+.quick-grid button:nth-child(2) {
+  background: #fff0ef;
+}
+
+.quick-grid button:nth-child(3) {
+  background: #fff6e6;
+}

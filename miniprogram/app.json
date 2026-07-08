@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "pages/home/home",
+    "pages/books/books",
+    "pages/chapters/chapters",
+    "pages/reader/reader"
+  ],
+  "window": {
+    "navigationStyle": "custom",
+    "backgroundColor": "#f7f8fa",
+    "backgroundTextStyle": "dark"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

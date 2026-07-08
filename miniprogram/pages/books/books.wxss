@@ -1,0 +1,52 @@
+.nav {
+  height: 116rpx;
+  padding: 44rpx 28rpx 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  font-weight: 800;
+}
+
+.nav button,
+.nav-spacer {
+  width: 72rpx;
+  height: 72rpx;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28rpx 18rpx;
+  padding: 32rpx;
+  background: #fff;
+}
+
+.book-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+  color: #252b36;
+}
+
+.book-option image,
+.cover-empty {
+  width: 232rpx;
+  height: 310rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 12rpx 24rpx rgba(42, 65, 93, 0.14);
+}
+
+.cover-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f6f9;
+  color: #7c8797;
+}
+
+.book-option text {
+  font-size: 28rpx;
+  font-weight: 700;
+}

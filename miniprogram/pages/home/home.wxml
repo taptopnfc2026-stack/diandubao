@@ -1,0 +1,21 @@
+<view class="hero">
+  <view class="topbar">
+    <text class="title">英语点读助手</text>
+    <button bindtap="openBooks">切换教材</button>
+  </view>
+  <view class="book-card">
+    <image wx:if="{{book && book.book_img}}" src="{{book.book_img}}" mode="aspectFill" />
+    <view wx:else class="cover-empty">请选择教材</view>
+    <text>{{book ? book.book_name : '暂无教材'}}</text>
+    <text class="progress">已学 {{page}} 页</text>
+  </view>
+  <button class="primary" bindtap="startReader">开始点读</button>
+</view>
+<view class="panel">
+  <text class="panel-title">音标学习</text>
+  <view class="quick-grid">
+    <button>音标点读</button>
+    <button>字母点读</button>
+    <button>自然拼读</button>
+  </view>
+</view>

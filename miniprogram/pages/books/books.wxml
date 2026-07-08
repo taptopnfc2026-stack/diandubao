@@ -1,0 +1,18 @@
+<view class="nav">
+  <button bindtap="goBack">‹</button>
+  <text>选择教材</text>
+  <view class="nav-spacer"></view>
+</view>
+<view class="book-grid">
+  <button
+    wx:for="{{books}}"
+    wx:key="id"
+    class="book-option"
+    data-index="{{index}}"
+    bindtap="selectBook"
+  >
+    <image wx:if="{{item.book_img}}" src="{{item.book_img}}" mode="aspectFill" />
+    <view wx:else class="cover-empty">暂无封面</view>
+    <text>{{item.book_name}}</text>
+  </button>
+</view>
