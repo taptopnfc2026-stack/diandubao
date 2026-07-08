@@ -65,6 +65,7 @@ The MVP supports:
 - Textbook selection
 - Chapter directory
 - Reader page with textbook images, tap regions, and audio playback
+- Synchronized textbook vocabulary study
 - Phonetic practice
 - Alphabet pronunciation
 - Natural phonics
@@ -98,3 +99,13 @@ server/
 - `server/sql/admin_mvp.sql`: tables for admin accounts, memberships, plans, orders, and study events.
 - `server/thinkphp/application/api/controller/AdminDashboard.php`: ThinkPHP dashboard API draft.
 - `server/API.md`: deployment notes and response contract.
+
+## Vocabulary MVP
+
+Vocabulary study is attached to the selected textbook and Unit. The current flow is `learn -> choose -> spell`, with future steps reserved in `StudyStep`: `learn`, `read`, `choose`, `split`, `blend`, `spell`.
+
+- H5 entry: home textbook card, `同步背单词`
+- Mini Program entry: `pages/home/home`
+- Shared state helpers: `src/shared/vocabulary.js`
+- H5 repository: `src/h5/vocabularyRepository.js`
+- Supabase/Postgres SQL draft: `server/sql/vocabulary_mvp.sql`

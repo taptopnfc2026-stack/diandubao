@@ -1,5 +1,6 @@
 import { createH5Api } from '../shared/api.js';
 import { buildTapRegions } from '../shared/coordinate.js';
+import { VocabularyRepository } from './vocabularyRepository.js';
 import {
   flattenPhonicsGroups,
   getFirstAudioUrl,
@@ -9,10 +10,19 @@ import {
   normalizePhonicsDetail,
 } from '../shared/learning.js';
 import { getNextPageNumber, getSwipePageDelta, selectReaderPage } from '../shared/navigation.js';
+import {
+  StudyStep,
+  buildChooseOptions,
+  createStudySession,
+  evaluateChoice,
+  evaluateSpelling,
+  getStudyResult,
+} from '../shared/vocabulary.js';
 import './styles.css';
 
 const PREVIEW_BOOK = { id: 103, book_name: '预览教材', start_page: 1 };
 const api = createH5Api();
+const vocabularyRepository = new VocabularyRepository(api);
 const audio = new Audio();
 const app = document.querySelector('#app');
 const swipe = {
@@ -45,6 +55,12 @@ const state = {
   phonicsDetail: null,
   phonicsPeerItems: [],
   activePhonicsTab: 'mouth',
+  vocabularyUnits: [],
+  vocabularyWords: [],
+  activeVocabularyUnitId: null,
+  wordStudySession: null,
+  spellingHint: '',
+  choiceFeedback: null,
 };
 
 function setState(patch) {
@@ -265,6 +281,126 @@ async function openPhonicsDetail(id, typeKey = '') {
   });
 }
 
+async function loadVocabulary(unitId = null) {
+  const bookId = getBookId(state.currentBook || PREVIEW_BOOK);
+  await run(async () => {
+    const units = await vocabularyRepository.getUnits(bookId);
+    const activeUnitId = unitId || units[0]?.id || 1;
+    const words = await vocabularyRepository.getWords(activeUnitId);
+    setState({
+      view: 'vocabulary',
+      vocabularyUnits: units,
+      activeVocabularyUnitId: activeUnitId,
+      vocabularyWords: words,
+      wordStudySession: null,
+      spellingHint: '',
+      choiceFeedback: null,
+    });
+  });
+}
+
+async function selectVocabularyUnit(unitId) {
+  await loadVocabulary(Number(unitId));
+}
+
+function currentStudyWord() {
+  const index = state.wordStudySession?.currentIndex || 0;
+  return state.vocabularyWords[index] || null;
+}
+
+function updateCurrentWordResult(patch) {
+  const session = state.wordStudySession;
+  const word = currentStudyWord();
+  if (!session || !word) return session;
+  const wordResults = session.wordResults.map((item) => (
+    item.wordId === word.id ? { ...item, ...patch } : item
+  ));
+  return { ...session, wordResults };
+}
+
+function moveStudyStep(step) {
+  setState({ wordStudySession: { ...state.wordStudySession, step }, choiceFeedback: null, spellingHint: '' });
+}
+
+function startWordStudy() {
+  if (!state.vocabularyWords.length) return;
+  setState({
+    view: 'wordStudy',
+    wordStudySession: createStudySession(state.vocabularyWords),
+    spellingHint: '',
+    choiceFeedback: null,
+  });
+}
+
+function nextStudyStep() {
+  const step = state.wordStudySession?.step;
+  if (step === StudyStep.learn) moveStudyStep(StudyStep.choose);
+  else if (step === StudyStep.choose) moveStudyStep(StudyStep.spell);
+}
+
+function chooseMeaning(index) {
+  const word = currentStudyWord();
+  if (!word) return;
+  const options = buildChooseOptions(word, state.vocabularyWords);
+  const selected = options[Number(index)];
+  const passed = evaluateChoice(word, selected?.text);
+  const session = updateCurrentWordResult({
+    choosePassed: passed,
+    wrongCount: passed ? 0 : 1,
+  });
+  setState({ wordStudySession: session, choiceFeedback: { index: Number(index), passed } });
+  setTimeout(() => moveStudyStep(StudyStep.spell), 650);
+}
+
+function finishCurrentWord(session) {
+  const word = currentStudyWord();
+  if (word) {
+    const result = session.wordResults.find((item) => item.wordId === word.id);
+    vocabularyRepository.saveProgress({
+      word_id: word.id,
+      learned: true,
+      choose_passed: Boolean(result?.choosePassed),
+      spell_passed: Boolean(result?.spellPassed),
+      mastery: result?.choosePassed && result?.spellPassed ? 100 : 60,
+      wrong_count: result?.wrongCount || 0,
+    });
+  }
+
+  const nextIndex = session.currentIndex + 1;
+  if (nextIndex >= state.vocabularyWords.length) {
+    setState({
+      view: 'wordStudyResult',
+      wordStudySession: { ...session, finishedAt: Date.now() },
+      spellingHint: '',
+      choiceFeedback: null,
+    });
+    return;
+  }
+
+  setState({
+    wordStudySession: { ...session, currentIndex: nextIndex, step: StudyStep.learn },
+    spellingHint: '',
+    choiceFeedback: null,
+  });
+}
+
+function submitSpelling(value) {
+  const word = currentStudyWord();
+  const session = state.wordStudySession;
+  if (!word || !session) return;
+  const currentResult = session.wordResults.find((item) => item.wordId === word.id) || {};
+  const checked = evaluateSpelling(word, value, currentResult.wrongCount || 0);
+  if (!checked.correct) {
+    setState({
+      wordStudySession: updateCurrentWordResult({ wrongCount: checked.hintLevel }),
+      spellingHint: checked.hint,
+    });
+    return;
+  }
+  const nextSession = updateCurrentWordResult({ spellPassed: true });
+  finishCurrentWord(nextSession);
+}
+
 function getReaderMaxPage() {
   const max = Number(state.currentBook?.end_page);
   return Number.isFinite(max) && max > 0 ? max : Infinity;
@@ -348,6 +484,14 @@ window.diandu = {
   playPhonicsDetail(url = '') {
     playAudioUrl(url || state.phonicsDetail?.audioUrl);
   },
+  loadVocabulary,
+  selectVocabularyUnit,
+  startWordStudy,
+  nextStudyStep,
+  chooseMeaning,
+  submitSpellingFromInput() {
+    submitSpelling(document.querySelector('#spellInput')?.value || '');
+  },
 };
 
 function playRegionQueue(index) {
@@ -386,6 +530,7 @@ function renderHome() {
         <span>已学 ${escapeHtml(state.currentPage || 1)} 页</span>
       </div>
       <button class="primary" onclick="diandu.loadReader()">开始点读</button>
+      <button class="secondary" onclick="diandu.loadVocabulary()">同步背单词</button>
     </section>
     <section class="panel">
       <h2>音标学习</h2>
@@ -577,6 +722,130 @@ function renderPhonicsDetail() {
   `);
 }
 
+function renderVocabulary() {
+  renderShell(`
+    <header class="reader-nav compact-nav">
+      <button class="back-button" onclick="diandu.loadHome()" aria-label="返回">‹</button>
+      <strong>同步背单词</strong>
+      <div class="mini-capsule" aria-label="小程序菜单"><span>•••</span><i></i><b></b><em></em></div>
+    </header>
+    <section class="vocabulary-page">
+      <div class="unit-tabs">
+        ${state.vocabularyUnits.map((unit) => `
+          <button
+            class="${String(unit.id) === String(state.activeVocabularyUnitId) ? 'active' : ''}"
+            onclick="diandu.selectVocabularyUnit(${unit.id})"
+          >${escapeHtml(unit.title)}</button>
+        `).join('')}
+      </div>
+      <div class="word-list">
+        ${state.vocabularyWords.map((word) => `
+          <article class="word-row">
+            <div>
+              <strong>${escapeHtml(word.word)}</strong>
+              <span>${escapeHtml(word.phonetic)}</span>
+              <p>${escapeHtml(word.meaning)}</p>
+            </div>
+            <b>›</b>
+          </article>
+        `).join('')}
+      </div>
+      <button class="primary sticky-action" onclick="diandu.startWordStudy()">开始学习</button>
+    </section>
+  `);
+}
+
+function renderStudyLearn(word) {
+  return `
+    <section class="study-card">
+      <strong class="study-word">${escapeHtml(word.word)}</strong>
+      <span>${escapeHtml(word.phonetic)}</span>
+      <p>${escapeHtml(word.meaning)}</p>
+      <button class="audio-actions-inline" onclick="diandu.playPhonicsDetail('${escapeHtml(word.audioUrl)}')">播放</button>
+      ${word.exampleEn ? `<blockquote>${escapeHtml(word.exampleEn)}</blockquote>` : ''}
+      <button class="primary" onclick="diandu.nextStudyStep()">下一步</button>
+    </section>
+  `;
+}
+
+function renderStudyChoose(word) {
+  const options = buildChooseOptions(word, state.vocabularyWords);
+  return `
+    <section class="study-card">
+      <strong class="study-word">${escapeHtml(word.word)}</strong>
+      <span>${escapeHtml(word.phonetic)}</span>
+      <button class="audio-actions-inline" onclick="diandu.playPhonicsDetail('${escapeHtml(word.audioUrl)}')">播放</button>
+      <div class="choice-list">
+        ${options.map((option, index) => {
+          const feedback = state.choiceFeedback?.index === index;
+          const cls = feedback ? (state.choiceFeedback.passed ? ' correct' : ' wrong') : '';
+          return `<button class="${cls}" onclick="diandu.chooseMeaning(${index})">○ ${escapeHtml(option.text)}</button>`;
+        }).join('')}
+      </div>
+    </section>
+  `;
+}
+
+function renderStudySpell(word) {
+  return `
+    <section class="study-card">
+      <span class="label">中文：</span>
+      <p>${escapeHtml(word.meaning)}</p>
+      <input id="spellInput" class="spell-input" placeholder="请输入英文单词" autocomplete="off" />
+      ${state.spellingHint ? `<div class="spelling-hint">${escapeHtml(state.spellingHint)}</div>` : ''}
+      <button class="primary" onclick="diandu.submitSpellingFromInput()">提交</button>
+    </section>
+  `;
+}
+
+function renderWordStudy() {
+  const session = state.wordStudySession || {};
+  const word = currentStudyWord();
+  if (!word) {
+    renderVocabulary();
+    return;
+  }
+  const stepText = {
+    [StudyStep.learn]: '学',
+    [StudyStep.choose]: '选',
+    [StudyStep.spell]: '拼写',
+  }[session.step] || '学';
+  renderShell(`
+    <header class="reader-nav compact-nav">
+      <button class="back-button" onclick="diandu.loadVocabulary()" aria-label="返回">‹</button>
+      <strong>${escapeHtml(stepText)}</strong>
+      <div class="mini-capsule" aria-label="小程序菜单"><span>•••</span><i></i><b></b><em></em></div>
+    </header>
+    <section class="study-page">
+      <div class="study-progress">${escapeHtml((session.currentIndex || 0) + 1)} / ${escapeHtml(state.vocabularyWords.length)}</div>
+      ${session.step === StudyStep.choose ? renderStudyChoose(word) : ''}
+      ${session.step === StudyStep.spell ? renderStudySpell(word) : ''}
+      ${session.step === StudyStep.learn ? renderStudyLearn(word) : ''}
+    </section>
+  `);
+}
+
+function renderWordStudyResult() {
+  const result = getStudyResult(state.wordStudySession || {});
+  renderShell(`
+    <header class="reader-nav compact-nav">
+      <button class="back-button" onclick="diandu.loadVocabulary()" aria-label="返回">‹</button>
+      <strong>学习完成</strong>
+      <div class="mini-capsule" aria-label="小程序菜单"><span>•••</span><i></i><b></b><em></em></div>
+    </header>
+    <section class="result-page">
+      <div class="celebration">🎉</div>
+      <h2>学习完成</h2>
+      <div class="result-card">
+        <span>学习</span><strong>${escapeHtml(result.total)} 个单词</strong>
+        <span>正确率</span><strong>${escapeHtml(result.correctRate)}%</strong>
+        <span>耗时</span><strong>${escapeHtml(result.durationMinutes)} 分钟</strong>
+      </div>
+      <button class="primary" onclick="diandu.loadReader()">继续教材学习</button>
+    </section>
+  `);
+}
+
 function renderBooks() {
   const activeCatId = Number(state.activeCatId || state.categories[0]?.id || 7);
   const selectedBookId = String(getBookId(state.currentBook));
@@ -709,6 +978,9 @@ function render() {
   else if (state.view === 'alphabet') renderAlphabet();
   else if (state.view === 'phonics') renderPhonics();
   else if (state.view === 'phonicsDetail') renderPhonicsDetail();
+  else if (state.view === 'vocabulary') renderVocabulary();
+  else if (state.view === 'wordStudy') renderWordStudy();
+  else if (state.view === 'wordStudyResult') renderWordStudyResult();
   else renderHome();
 }
 

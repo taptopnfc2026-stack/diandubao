@@ -1,0 +1,146 @@
+@import "../reader/reader.wxss";
+
+.compact-nav {
+  height: 116rpx;
+  padding-top: 0;
+}
+
+.study-page,
+.result-page {
+  min-height: calc(100vh - 116rpx);
+  padding: 28rpx;
+  background: #f7f8fa;
+}
+
+.study-progress {
+  margin-bottom: 24rpx;
+  color: #7c8797;
+  text-align: center;
+  font-weight: 700;
+}
+
+.study-card {
+  display: grid;
+  gap: 32rpx;
+  padding: 44rpx 36rpx;
+  border-radius: 20rpx;
+  background: #fff;
+}
+
+.study-word {
+  font-size: 68rpx;
+  font-weight: 900;
+  text-align: center;
+}
+
+.phonetic {
+  color: #20a8ff;
+  text-align: center;
+  font-weight: 700;
+}
+
+.meaning {
+  color: #172033;
+  font-size: 36rpx;
+  text-align: center;
+}
+
+.audio-button {
+  width: 184rpx;
+  height: 68rpx;
+  margin: 0 auto;
+  border-radius: 34rpx;
+  background: #eef8ff;
+  color: #168ed2;
+  font-weight: 700;
+}
+
+.example {
+  padding: 24rpx;
+  border-radius: 16rpx;
+  background: #eef8ff;
+  text-align: center;
+}
+
+.primary {
+  width: 100%;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  background: #26a8f5;
+  color: #fff;
+  font-weight: 800;
+}
+
+.choice-list {
+  display: grid;
+  gap: 20rpx;
+}
+
+.choice-list button {
+  padding: 28rpx 32rpx;
+  border: 1rpx solid #e6eaf0;
+  border-radius: 16rpx;
+  background: #fff;
+  text-align: left;
+  font-weight: 700;
+}
+
+.choice-list button.correct {
+  border-color: #20c77a;
+  background: #eafff4;
+  color: #088a50;
+}
+
+.choice-list button.wrong {
+  border-color: #ff6b6b;
+  background: #fff0f0;
+  color: #d92d20;
+}
+
+.label {
+  color: #7c8797;
+}
+
+.spell-input {
+  height: 96rpx;
+  border: 1rpx solid #d8dde6;
+  border-radius: 16rpx;
+  background: #fff;
+  text-align: center;
+}
+
+.spelling-hint {
+  padding: 20rpx 24rpx;
+  border-radius: 16rpx;
+  background: #fff7e8;
+  color: #d46b08;
+  text-align: center;
+  font-weight: 800;
+}
+
+.result-page {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  gap: 36rpx;
+  padding-top: 104rpx;
+}
+
+.celebration {
+  font-size: 116rpx;
+}
+
+.result-title {
+  font-size: 48rpx;
+  font-weight: 900;
+}
+
+.result-card {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24rpx;
+  padding: 36rpx;
+  border-radius: 20rpx;
+  background: #fff;
+}

@@ -75,6 +75,21 @@ const previewPhonicsDetail = {
   },
 };
 
+const previewVocabularyUnits = [
+  { id: 1, unit_id: 1, unit_name: 'Unit 1' },
+  { id: 2, unit_id: 2, unit_name: 'Unit 2' },
+  { id: 3, unit_id: 3, unit_name: 'Unit 3' },
+];
+
+const previewVocabularyWords = [
+  { id: 1001, book_id: 10168, unit_id: 1, word: 'name', phonetic: '[neɪm]', meaning: '名字；名称', audio_url: '', example_en: 'What is your name?', example_cn: '你叫什么名字？', image_url: '', sort: 1 },
+  { id: 1002, book_id: 10168, unit_id: 1, word: 'nice', phonetic: '[naɪs]', meaning: '友好的', audio_url: '', example_en: 'Nice to meet you.', example_cn: '很高兴见到你。', image_url: '', sort: 2 },
+  { id: 1003, book_id: 10168, unit_id: 1, word: 'family', phonetic: '[ˈfæməli]', meaning: '家庭', audio_url: '', example_en: 'I love my family.', example_cn: '我爱我的家人。', image_url: '', sort: 3 },
+  { id: 1004, book_id: 10168, unit_id: 1, word: 'friend', phonetic: '[frend]', meaning: '朋友', audio_url: '', example_en: 'She is my friend.', example_cn: '她是我的朋友。', image_url: '', sort: 4 },
+  { id: 1005, book_id: 10168, unit_id: 2, word: 'share', phonetic: '[ʃeə]', meaning: '分享', audio_url: '', example_en: 'We share books.', example_cn: '我们分享书。', image_url: '', sort: 1 },
+  { id: 1006, book_id: 10168, unit_id: 2, word: 'apple', phonetic: '[ˈæpl]', meaning: '苹果', audio_url: '', example_en: 'This is an apple.', example_cn: '这是一个苹果。', image_url: '', sort: 2 },
+];
+
 const previewPages = [
   {
     id: 1016814,
@@ -165,6 +180,12 @@ function previewResponse(path, params = {}) {
   }
   if (path === endpoints.getpindu) return previewPhonics;
   if (path === endpoints.getpindudetail) return previewPhonicsDetail;
+  if (path === endpoints.vocabularyUnits) return previewVocabularyUnits;
+  if (path === endpoints.vocabularyWords) {
+    return previewVocabularyWords.filter((item) => Number(item.unit_id) === Number(params.unit_id || 1));
+  }
+  if (path === endpoints.vocabularyProgress) return [];
+  if (path === endpoints.saveVocabularyProgress) return 1;
   throw new Error('预览数据暂不支持该接口');
 }
 
@@ -181,6 +202,10 @@ export const endpoints = {
   getpindu: '/api/learn_eg/getpindu',
   getpindudetail: '/api/learn_eg/getpindudetail',
   getpindufy: '/api/learn_eg/getpindufy',
+  vocabularyUnits: '/api/vocabulary/units',
+  vocabularyWords: '/api/vocabulary/words',
+  vocabularyProgress: '/api/vocabulary/progress',
+  saveVocabularyProgress: '/api/vocabulary/save-progress',
 };
 
 export function buildQuery(params = {}) {
@@ -203,6 +228,7 @@ function unwrapPayload(payload) {
 
 export function createH5Api() {
   async function request(path, params) {
+    const isVocabularyPath = path.startsWith('/api/vocabulary/');
     if (import.meta.env.PROD && globalThis.location?.hostname.endsWith('github.io')) {
       return previewResponse(path, params);
     }
@@ -212,16 +238,17 @@ export function createH5Api() {
         credentials: 'include',
       });
     } catch (error) {
-      if (import.meta.env.PROD) return previewResponse(path, params);
+      if (import.meta.env.PROD || isVocabularyPath) return previewResponse(path, params);
       throw error;
     }
     const contentType = response.headers.get('content-type') || '';
     if (!contentType.includes('application/json')) {
-      if (import.meta.env.PROD) return previewResponse(path, params);
+      if (import.meta.env.PROD || isVocabularyPath) return previewResponse(path, params);
       throw new Error(`接口返回异常：${response.status}`);
     }
     const payload = await response.json();
     if (!response.ok) {
+      if (isVocabularyPath) return previewResponse(path, params);
       throw new Error(payload?.msg || '请求失败');
     }
     return unwrapPayload(payload);
@@ -240,6 +267,10 @@ export function createH5Api() {
     getpindu: () => request(endpoints.getpindu),
     getpindudetail: (id) => request(endpoints.getpindudetail, { id }),
     getpindufy: (id) => request(endpoints.getpindufy, { id }),
+    getVocabularyUnits: (book_id) => request(endpoints.vocabularyUnits, { book_id }),
+    getVocabularyWords: (unit_id) => request(endpoints.vocabularyWords, { unit_id }),
+    getVocabularyProgress: (book_id) => request(endpoints.vocabularyProgress, { book_id }),
+    saveVocabularyProgress: (payload) => request(endpoints.saveVocabularyProgress, payload),
   };
 }
 
@@ -281,5 +312,9 @@ export function createMiniProgramApi(wxRef) {
     getpindu: () => request(endpoints.getpindu),
     getpindudetail: (id) => request(endpoints.getpindudetail, { id }),
     getpindufy: (id) => request(endpoints.getpindufy, { id }),
+    getVocabularyUnits: (book_id) => request(endpoints.vocabularyUnits, { book_id }),
+    getVocabularyWords: (unit_id) => request(endpoints.vocabularyWords, { unit_id }),
+    getVocabularyProgress: (book_id) => request(endpoints.vocabularyProgress, { book_id }),
+    saveVocabularyProgress: (payload) => request(endpoints.saveVocabularyProgress, payload),
   };
 }

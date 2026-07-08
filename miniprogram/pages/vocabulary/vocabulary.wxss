@@ -1,0 +1,91 @@
+@import "../reader/reader.wxss";
+
+.compact-nav {
+  height: 116rpx;
+  padding-top: 0;
+}
+
+.vocabulary-page {
+  min-height: calc(100vh - 116rpx);
+  padding: 28rpx;
+  background: #f7f8fa;
+}
+
+.unit-tabs {
+  white-space: nowrap;
+  padding-bottom: 28rpx;
+}
+
+.unit-tabs button {
+  display: inline-block;
+  min-width: 156rpx;
+  height: 72rpx;
+  margin-right: 20rpx;
+  border-radius: 36rpx;
+  background: #fff;
+  color: #647084;
+  font-weight: 700;
+}
+
+.unit-tabs button.active {
+  background: #20a8ff;
+  color: #fff;
+}
+
+.word-list {
+  display: grid;
+  gap: 20rpx;
+  padding-bottom: 168rpx;
+}
+
+.word-row {
+  display: grid;
+  grid-template-columns: 1fr 40rpx;
+  align-items: center;
+  padding: 28rpx 32rpx;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.word,
+.phonetic,
+.meaning {
+  display: block;
+}
+
+.word {
+  font-size: 40rpx;
+  font-weight: 800;
+}
+
+.phonetic {
+  margin-top: 8rpx;
+  color: #20a8ff;
+}
+
+.meaning {
+  margin-top: 10rpx;
+  color: #4b5563;
+}
+
+.arrow {
+  color: #9aa4b2;
+  font-size: 56rpx;
+}
+
+.primary {
+  width: 100%;
+  padding: 30rpx;
+  border-radius: 16rpx;
+  background: #26a8f5;
+  color: #fff;
+  font-weight: 800;
+}
+
+.sticky-action {
+  position: fixed;
+  left: 28rpx;
+  right: 28rpx;
+  bottom: calc(28rpx + env(safe-area-inset-bottom));
+  width: auto;
+}

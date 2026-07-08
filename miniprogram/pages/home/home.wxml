@@ -10,6 +10,7 @@
     <text class="progress">已学 {{page}} 页</text>
   </view>
   <button class="primary" bindtap="startReader">开始点读</button>
+  <button class="secondary" bindtap="openVocabulary">同步背单词</button>
 </view>
 <view class="panel">
   <text class="panel-title">音标学习</text>

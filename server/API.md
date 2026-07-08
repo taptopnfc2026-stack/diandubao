@@ -51,3 +51,14 @@
 - `paid_time`
 
 下一步接微信支付时，需要增加“创建订单”和“支付回调”两个接口。
+
+## 同步背单词接口预留
+
+SQL 草稿：`server/sql/vocabulary_mvp.sql`。
+
+- `GET /api/vocabulary/units?book_id=10168`
+- `GET /api/vocabulary/words?unit_id=1`
+- `GET /api/vocabulary/progress?book_id=10168`
+- `GET /api/vocabulary/save-progress`
+
+当前 H5 和小程序在接口不可用时会使用预览数据，便于先验证学习流程。

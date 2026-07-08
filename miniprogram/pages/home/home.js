@@ -37,6 +37,11 @@ Page({
   openPhonics() {
     wx.navigateTo({ url: '/pages/phonics/phonics' });
   },
+  openVocabulary() {
+    const book = this.data.book || {};
+    const bookId = book.id || book.book_id || '';
+    wx.navigateTo({ url: `/pages/vocabulary/vocabulary?book_id=${bookId}` });
+  },
   startReader() {
     const book = this.data.book;
     const bookId = book && (book.id || book.book_id);
