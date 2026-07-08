@@ -4,15 +4,20 @@ const { buildTapRegions, normalizeAudioItems } = require('../../utils/coordinate
 Page({
   data: {
     bookId: '',
+    bookName: '',
     pageNo: 1,
     page: null,
     regions: [],
   },
   audio: null,
+  playQueue: [],
+  playQueueIndex: 0,
   onLoad(options) {
     this.audio = wx.createInnerAudioContext();
+    this.audio.onEnded(() => this.playNextInQueue());
     this.setData({
       bookId: options.book_id || '',
+      bookName: decodeURIComponent(options.book_name || '') || '五年级上册',
       pageNo: Number(options.page || 1) || 1,
     });
     this.loadPage();
@@ -55,8 +60,23 @@ Page({
     const index = Number(event.currentTarget.dataset.index);
     const region = this.data.regions[index];
     if (!region || !region.audioUrl) return;
+    this.playQueue = [];
+    this.playQueueIndex = 0;
     this.audio.stop();
     this.audio.src = String(region.audioUrl).replace(/\\\//g, '/');
+    this.audio.play();
+  },
+  playAll() {
+    this.playQueue = this.data.regions.map((region) => region.audioUrl).filter(Boolean);
+    this.playQueueIndex = 0;
+    this.playNextInQueue();
+  },
+  playNextInQueue() {
+    const url = this.playQueue[this.playQueueIndex];
+    if (!url) return;
+    this.playQueueIndex += 1;
+    this.audio.stop();
+    this.audio.src = String(url).replace(/\\\//g, '/');
     this.audio.play();
   },
   async changePage(event) {

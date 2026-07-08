@@ -143,6 +143,7 @@ function playRegion(index) {
   const region = state.tapRegions[index];
   if (!region?.audioUrl) return;
   audio.pause();
+  audio.onended = null;
   audio.src = normalizeUrl(region.audioUrl);
   audio.play().catch(() => setState({ error: '音频播放失败，请再点一次' }));
   state.selectedAudio = region.audioUrl;
@@ -179,8 +180,22 @@ window.diandu = {
   replay() {
     if (audio.src) audio.play().catch(() => setState({ error: '音频播放失败，请再点一次' }));
   },
+  playAll() {
+    playRegionQueue(0);
+  },
   playRegion,
 };
+
+function playRegionQueue(index) {
+  const region = state.tapRegions[index];
+  if (!region?.audioUrl) return;
+  audio.pause();
+  audio.src = normalizeUrl(region.audioUrl);
+  audio.onended = () => playRegionQueue(index + 1);
+  audio.play().catch(() => setState({ error: '连读播放失败，请再试一次' }));
+  state.selectedAudio = region.audioUrl;
+  renderTapLayer();
+}
 
 function renderShell(content) {
   app.innerHTML = `
@@ -257,12 +272,19 @@ function firstPage() {
 
 function renderReader() {
   const page = firstPage();
+  const bookName = state.currentBook?.book_name || '五年级上册';
   renderShell(`
-    <header class="nav">
-      <button onclick="diandu.loadChapters()">‹</button>
+    <header class="reader-nav">
+      <button class="back-button" onclick="diandu.loadHome()" aria-label="返回">‹</button>
       <strong>点读学习</strong>
-      <button onclick="diandu.loadChapters()">目录</button>
+      <div class="mini-capsule" aria-label="小程序菜单">
+        <span>•••</span><i></i><b></b><em></em>
+      </div>
     </header>
+    <div class="reader-meta">
+      <span>${escapeHtml(bookName)}</span>
+      <button onclick="diandu.loadChapters()">目录 ›</button>
+    </div>
     <section class="reader">
       ${page?.bg_img ? `
         <div class="page-wrap">
@@ -272,9 +294,9 @@ function renderReader() {
       ` : '<div class="missing-page">暂无页面图片</div>'}
     </section>
     <footer class="reader-controls">
-      <button onclick="diandu.prevPage()">上一页</button>
-      <button onclick="diandu.replay()">复读</button>
-      <button onclick="diandu.nextPage()">下一页</button>
+      <button class="tool-button" onclick="diandu.replay()"><span class="tool-icon">↻</span><small>复读</small></button>
+      <button class="promo-button" onclick="diandu.replay()"><span class="promo-face"></span><small>免费领英语资料</small></button>
+      <button class="tool-button" onclick="diandu.playAll()"><span class="tool-icon">☵</span><small>连读</small></button>
     </footer>
   `);
 

@@ -1,7 +1,16 @@
-<view class="nav">
-  <button bindtap="goBack">‹</button>
+<view class="reader-nav">
+  <button class="back-button" bindtap="goBack">‹</button>
   <text>点读学习</text>
-  <button bindtap="openChapters">目录</button>
+  <view class="mini-capsule">
+    <text>•••</text>
+    <view></view>
+    <text>—</text>
+    <text>○</text>
+  </view>
+</view>
+<view class="reader-meta">
+  <text>{{bookName}}</text>
+  <button bindtap="openChapters">目录 ›</button>
 </view>
 <view class="reader">
   <view wx:if="{{page && page.bg_img}}" class="page-wrap">
@@ -20,7 +29,16 @@
   <view wx:else class="missing-page">暂无页面图片</view>
 </view>
 <view class="reader-controls">
-  <button data-delta="-1" bindtap="changePage">上一页</button>
-  <button bindtap="replay">复读</button>
-  <button data-delta="1" bindtap="changePage">下一页</button>
+  <button class="tool-button" bindtap="replay">
+    <text class="tool-icon">↻</text>
+    <text>复读</text>
+  </button>
+  <button class="promo-button" bindtap="replay">
+    <text class="promo-face"></text>
+    <text class="promo-label">免费领英语资料</text>
+  </button>
+  <button class="tool-button" bindtap="playAll">
+    <text class="tool-icon">☵</text>
+    <text>连读</text>
+  </button>
 </view>

@@ -34,6 +34,8 @@ Page({
       this.openBooks();
       return;
     }
-    wx.navigateTo({ url: `/pages/reader/reader?book_id=${book.id}&page=${this.data.page || 1}` });
+    wx.navigateTo({
+      url: `/pages/reader/reader?book_id=${book.id}&page=${this.data.page || 1}&book_name=${encodeURIComponent(book.book_name || '')}`,
+    });
   },
 });

@@ -27,7 +27,9 @@ Page({
     const index = Number(event.currentTarget.dataset.index);
     const chapter = this.data.chapters[index];
     const page = Number(chapter && chapter.start_page ? chapter.start_page : 1) || 1;
-    wx.navigateTo({ url: `/pages/reader/reader?book_id=${this.data.bookId}&page=${page}` });
+    wx.navigateTo({
+      url: `/pages/reader/reader?book_id=${this.data.bookId}&page=${page}&book_name=${encodeURIComponent(this.data.bookName || '')}`,
+    });
   },
   goBack() {
     wx.navigateBack();
