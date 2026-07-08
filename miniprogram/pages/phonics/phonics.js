@@ -16,6 +16,10 @@ Page({
       wx.showToast({ title: error.message || '加载失败', icon: 'none' });
     }
   },
+  openDetail(event) {
+    const { id, type } = event.currentTarget.dataset;
+    wx.navigateTo({ url: `/pages/phonics-detail/phonics-detail?id=${id}&type=${type || ''}` });
+  },
   goBack() {
     wx.navigateBack();
   },

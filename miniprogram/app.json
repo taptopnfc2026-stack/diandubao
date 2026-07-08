@@ -7,7 +7,8 @@
     "pages/phonetics/phonetics",
     "pages/phonetic-detail/phonetic-detail",
     "pages/alphabet/alphabet",
-    "pages/phonics/phonics"
+    "pages/phonics/phonics",
+    "pages/phonics-detail/phonics-detail"
   ],
   "window": {
     "navigationStyle": "custom",

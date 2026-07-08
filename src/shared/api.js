@@ -44,6 +44,37 @@ const previewPhonics = {
   },
 };
 
+const previewPhonicsDetail = {
+  details: {
+    id: 9,
+    zimu: 'f',
+    c_type: 2,
+    bg_img: 'https://diandu-oss.oss-cn-beijing.aliyuncs.com/read/shpimg_f.jpg?OSSAccessKeyId=LTAI5tE224VMNNzWPVzH7vSx&Expires=2077580465&Signature=tvb8Sn7oMPUHpnIfqqwIi837oaU%3D',
+    video_url: 'https://diandu-oss.oss-cn-beijing.aliyuncs.com/read/shpyp_f.mp4?OSSAccessKeyId=LTAI5tE224VMNNzWPVzH7vSx&Expires=2077580465&Signature=8kVyNhw%2Fpb4kNuJGvCUJUIyXseA%3D',
+    other_info: { 27: '[f]' },
+    yinbiao: {
+      id: 27,
+      fy: '[f]',
+      other_info: {
+        image: 'https://diandu-oss.oss-cn-beijing.aliyuncs.com/readyb/fy_27.gif?OSSAccessKeyId=LTAI5tE224VMNNzWPVzH7vSx&Expires=2077598294&Signature=utXzf8JLkcjmixGaE6%2F9n1JBP%2Bc%3D',
+        sound: 'https://diandu-oss.oss-cn-beijing.aliyuncs.com/readyb/fy_27.mp3?OSSAccessKeyId=LTAI5tE224VMNNzWPVzH7vSx&Expires=2077598294&Signature=bRJ7AGQpBSlwKgB%2FyD8B7xGetns%3D',
+        mouth: [
+          { id: 758, step_content: '上齿放在下唇的偏内侧，但不要咬唇。' },
+          { id: 759, step_content: '同时，下唇向内收，轻触上齿，形成轻微的阻塞。' },
+          { id: 760, step_content: '气流从唇齿间摩擦通过，声带不振动。' },
+        ],
+        word: [
+          { id: 173, word: 'fat   [fæt]   adj.肥胖的', sound: '', image: 'https://diandu-oss.oss-cn-beijing.aliyuncs.com/readyb/wd_173.jpg?OSSAccessKeyId=LTAI5tE224VMNNzWPVzH7vSx&Expires=2077598294&Signature=fMWGt4rmap0C44wocUBZe362mh0%3D' },
+          { id: 174, word: 'fish   [fɪʃ]   n.鱼', sound: '', image: '' },
+        ],
+        sentence: [
+          { id: 10751, sentence: 'That fat boy is my friend.', sound_man: '', sound_woman: '', translation: '那个胖胖的小男孩是我的朋友。' },
+        ],
+      },
+    },
+  },
+};
+
 const previewPages = [
   {
     id: 1016814,
@@ -133,6 +164,7 @@ function previewResponse(path, params = {}) {
     };
   }
   if (path === endpoints.getpindu) return previewPhonics;
+  if (path === endpoints.getpindudetail) return previewPhonicsDetail;
   throw new Error('预览数据暂不支持该接口');
 }
 

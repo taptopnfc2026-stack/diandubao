@@ -9,7 +9,14 @@
   <view wx:for="{{groups}}" wx:key="key" class="phonics-group">
     <text class="group-title">{{item.title}}</text>
     <view class="phonics-chip-grid">
-      <button wx:for="{{item.items}}" wx:for-item="child" wx:key="id">{{child.name}}</button>
+      <button
+        wx:for="{{item.items}}"
+        wx:for-item="child"
+        wx:key="id"
+        data-id="{{child.id}}"
+        data-type="{{item.key}}"
+        bindtap="openDetail"
+      >{{child.name}}</button>
     </view>
   </view>
 </view>

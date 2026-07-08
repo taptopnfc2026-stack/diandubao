@@ -6,6 +6,7 @@ import {
   normalizeAlphabetLetters,
   normalizePhoneticDetail,
   normalizePhoneticList,
+  normalizePhonicsDetail,
 } from '../shared/learning.js';
 import { getNextPageNumber, getSwipePageDelta, selectReaderPage } from '../shared/navigation.js';
 import './styles.css';
@@ -41,6 +42,9 @@ const state = {
   phoneticDetail: null,
   alphabetLetters: [],
   phonicsGroups: [],
+  phonicsDetail: null,
+  phonicsPeerItems: [],
+  activePhonicsTab: 'mouth',
 };
 
 function setState(patch) {
@@ -237,7 +241,27 @@ async function loadAlphabet() {
 async function loadPhonics() {
   await run(async () => {
     const data = await api.getpindu();
-    setState({ view: 'phonics', phonicsGroups: flattenPhonicsGroups(data?.list || data) });
+    setState({ view: 'phonics', phonicsGroups: flattenPhonicsGroups(data?.list || data), phonicsDetail: null });
+  });
+}
+
+function getPhonicsPeers(id, typeKey = '') {
+  const selectedGroup = state.phonicsGroups.find((group) => (
+    String(group.key) === String(typeKey)
+    || group.items.some((item) => String(item.id) === String(id))
+  ));
+  return selectedGroup?.items || state.phonicsGroups.flatMap((group) => group.items);
+}
+
+async function openPhonicsDetail(id, typeKey = '') {
+  await run(async () => {
+    const data = await api.getpindudetail(id);
+    setState({
+      view: 'phonicsDetail',
+      phonicsDetail: normalizePhonicsDetail(data),
+      phonicsPeerItems: getPhonicsPeers(id, typeKey),
+      activePhonicsTab: 'mouth',
+    });
   });
 }
 
@@ -317,6 +341,13 @@ window.diandu = {
     playAudioUrl(state.alphabetLetters[Number(index)]?.audioUrl);
   },
   loadPhonics,
+  openPhonicsDetail,
+  selectPhonicsDetailTab(tab) {
+    setState({ activePhonicsTab: tab });
+  },
+  playPhonicsDetail(url = '') {
+    playAudioUrl(url || state.phonicsDetail?.audioUrl);
+  },
 };
 
 function playRegionQueue(index) {
@@ -449,10 +480,99 @@ function renderPhonics() {
         <div class="phonics-group">
           <h2>${escapeHtml(group.title)}</h2>
           <div class="phonics-chip-grid">
-            ${group.items.map((item) => `<button>${escapeHtml(item.name)}</button>`).join('')}
+            ${group.items.map((item) => `<button onclick="diandu.openPhonicsDetail(${item.id}, '${escapeHtml(group.key)}')">${escapeHtml(item.name)}</button>`).join('')}
           </div>
         </div>
       `).join('')}
+    </section>
+  `);
+}
+
+function renderPhonicsDetailContent(detail) {
+  if (state.activePhonicsTab === 'word') {
+    return `
+      <section class="phonics-list">
+        ${detail.words.length ? detail.words.map((item) => `
+          <article class="phonics-word-card">
+            ${item.image ? `<img src="${item.image}" alt="${escapeHtml(item.text)}" />` : ''}
+            <div>
+              <strong>${escapeHtml(item.text)}</strong>
+              <button onclick="diandu.playPhonicsDetail('${escapeHtml(item.audioUrl)}')">播放</button>
+            </div>
+          </article>
+        `).join('') : '<p class="empty-text">暂无例词</p>'}
+      </section>
+    `;
+  }
+
+  if (state.activePhonicsTab === 'sentence') {
+    return `
+      <section class="phonics-list">
+        ${detail.sentences.length ? detail.sentences.map((item) => `
+          <article class="phonics-sentence-card">
+            <strong>${escapeHtml(item.text)}</strong>
+            ${item.translation ? `<span>${escapeHtml(item.translation)}</span>` : ''}
+            <div>
+              ${item.audioUrls.map((url, index) => `<button onclick="diandu.playPhonicsDetail('${escapeHtml(url)}')">${index === 0 ? '男声' : '女声'}</button>`).join('')}
+            </div>
+          </article>
+        `).join('') : '<p class="empty-text">暂无例句</p>'}
+      </section>
+    `;
+  }
+
+  return `
+    <section class="mouth-panel">
+      <div class="mouth-figure">
+        ${detail.image ? `<img src="${detail.image}" alt="${escapeHtml(detail.selectedPhonetic || detail.name)}" />` : ''}
+        <button class="floating-audio" onclick="diandu.playPhonicsDetail()" aria-label="播放发音">▶</button>
+      </div>
+      <button class="method-pill">发音方法</button>
+      <div class="step-list">
+        ${detail.mouthSteps.length ? detail.mouthSteps.map((step, index) => `
+          <article class="step-card">
+            <strong>第${index + 1}步</strong>
+            <p>${escapeHtml(step.text)}</p>
+          </article>
+        `).join('') : '<p class="empty-text">暂无发音方法</p>'}
+      </div>
+    </section>
+  `;
+}
+
+function renderPhonicsDetail() {
+  const detail = state.phonicsDetail || {};
+  const selectedId = String(detail.id || '');
+  const tabs = [
+    ['mouth', '口型'],
+    ['word', '例词'],
+    ['sentence', '例句'],
+  ];
+  renderShell(`
+    <header class="reader-nav compact-nav">
+      <button class="back-button" onclick="diandu.loadPhonics()" aria-label="返回">‹</button>
+      <strong>自然拼读</strong>
+      <div class="mini-capsule" aria-label="小程序菜单"><span>•••</span><i></i><b></b><em></em></div>
+    </header>
+    <section class="phonics-detail-head">
+      <div class="phonics-scroll-row">
+        ${state.phonicsPeerItems.map((item) => `
+          <button
+            class="${String(item.id) === selectedId ? 'active' : ''}"
+            onclick="diandu.openPhonicsDetail(${item.id}, '${escapeHtml(item.typeKey || '')}')"
+          >${escapeHtml(item.name)}</button>
+        `).join('')}
+        <span>展开⌄</span>
+      </div>
+      ${detail.selectedPhonetic ? `<b>${escapeHtml(detail.selectedPhonetic)}</b>` : ''}
+    </section>
+    <section class="phonics-detail-body">
+      <div class="detail-tabs">
+        ${tabs.map(([key, label]) => `
+          <button class="${state.activePhonicsTab === key ? 'active' : ''}" onclick="diandu.selectPhonicsDetailTab('${key}')">${label}</button>
+        `).join('')}
+      </div>
+      ${renderPhonicsDetailContent(detail)}
     </section>
   `);
 }
@@ -588,6 +708,7 @@ function render() {
   else if (state.view === 'phoneticDetail') renderPhoneticDetail();
   else if (state.view === 'alphabet') renderAlphabet();
   else if (state.view === 'phonics') renderPhonics();
+  else if (state.view === 'phonicsDetail') renderPhonicsDetail();
   else renderHome();
 }
 
