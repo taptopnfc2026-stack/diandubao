@@ -73,6 +73,12 @@ button {
   background: #fff;
 }
 
+.book-nav {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
 .nav > * {
   min-width: 48px;
 }
@@ -154,8 +160,7 @@ button {
   color: #7a8494;
 }
 
-.quick-grid,
-.book-grid {
+.quick-grid {
   display: grid;
   gap: 10px;
 }
@@ -179,23 +184,104 @@ button {
   background: #fff6e6;
 }
 
-.book-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  padding: 16px;
+.book-picker {
+  display: grid;
+  grid-template-columns: 144px 1fr;
+  min-height: calc(100vh - 58px);
   background: #fff;
+}
+
+.category-list {
+  background: #f4f4f4;
+  overflow-y: auto;
+}
+
+.category-list button {
+  width: 100%;
+  min-height: 54px;
+  padding: 12px 14px;
+  background: transparent;
+  color: #111827;
+  text-align: left;
+  font-weight: 500;
+}
+
+.category-list button.active {
+  background: #fff;
+  color: #0aa1f5;
+  font-weight: 800;
+}
+
+.book-panel {
+  min-width: 0;
+  padding: 16px 14px 24px;
+  background: #fff;
+}
+
+.book-panel h2 {
+  margin: 0 0 16px;
+  font-size: 15px;
+  text-align: center;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 12px;
 }
 
 .book-option {
   display: grid;
   justify-items: center;
   gap: 8px;
-  padding: 0 0 14px;
+  padding: 0 0 8px;
   background: transparent;
   color: #252b36;
 }
 
 .book-option span {
   font-weight: 700;
+}
+
+.cover-frame {
+  position: relative;
+  width: 116px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  display: block;
+}
+
+.book-option.selected .cover-frame {
+  border-color: #1ca8ff;
+}
+
+.book-option .cover-frame img,
+.book-option .cover-frame .cover-empty {
+  width: 100%;
+  display: block;
+}
+
+.book-option .cover-frame img {
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.checkmark {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #24aaf6;
+  color: #fff;
+  font-style: normal;
+  font-weight: 900;
+  box-shadow: 0 2px 8px rgba(36, 170, 246, 0.32);
 }
 
 .chapter-list {

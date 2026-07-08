@@ -3,16 +3,32 @@
   <text>选择教材</text>
   <view class="nav-spacer"></view>
 </view>
-<view class="book-grid">
-  <button
-    wx:for="{{books}}"
-    wx:key="id"
-    class="book-option"
-    data-index="{{index}}"
-    bindtap="selectBook"
-  >
-    <image wx:if="{{item.book_img}}" src="{{item.book_img}}" mode="aspectFill" />
-    <view wx:else class="cover-empty">暂无封面</view>
-    <text>{{item.book_name}}</text>
-  </button>
+<view class="book-picker">
+  <scroll-view class="category-list" scroll-y>
+    <button
+      wx:for="{{cates}}"
+      wx:key="id"
+      class="{{item.isActive ? 'active' : ''}}"
+      data-id="{{item.id}}"
+      bindtap="selectCate"
+    >{{item.name}}</button>
+  </scroll-view>
+  <scroll-view class="book-panel" scroll-y>
+    <view class="book-grid">
+      <button
+        wx:for="{{books}}"
+        wx:key="id"
+        class="book-option {{item.isSelected ? 'selected' : ''}}"
+        data-index="{{index}}"
+        bindtap="selectBook"
+      >
+        <view class="cover-frame">
+          <image wx:if="{{item.book_img}}" src="{{item.book_img}}" mode="aspectFill" />
+          <view wx:else class="cover-empty">暂无封面</view>
+          <text wx:if="{{item.isSelected}}" class="checkmark">✓</text>
+        </view>
+        <text>{{item.book_name}}</text>
+      </button>
+    </view>
+  </scroll-view>
 </view>

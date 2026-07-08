@@ -12,6 +12,8 @@ const state = {
   loading: false,
   error: '',
   home: null,
+  categories: [],
+  activeCatId: 7,
   books: [],
   chapters: [],
   currentBook: null,
@@ -87,11 +89,17 @@ async function loadHome() {
   });
 }
 
-async function loadBooks() {
+async function loadBooks(catId = state.currentBook?.cat_id || state.activeCatId || 7) {
   await run(async () => {
-    const data = await api.booklist({ cat_id: 7, type: 0 });
-    const books = firstArray(data?.list, data?.books, data);
-    setState({ view: 'books', books });
+    const data = await api.booklist({ cat_id: catId, type: 0 });
+    const categories = firstArray(data?.cates, state.categories);
+    const books = firstArray(data?.books, data?.list, data);
+    setState({
+      view: 'books',
+      categories,
+      activeCatId: catId,
+      books,
+    });
   });
 }
 
@@ -174,6 +182,9 @@ function playRegion(index) {
 window.diandu = {
   loadHome,
   loadBooks,
+  selectCategory(id) {
+    loadBooks(Number(id));
+  },
   selectBookById(id) {
     const book = state.books.find((item) => String(item.id) === String(id));
     if (book) selectBook(book);
@@ -253,18 +264,37 @@ function renderHome() {
 }
 
 function renderBooks() {
+  const activeCatId = Number(state.activeCatId || state.categories[0]?.id || 7);
+  const selectedBookId = String(getBookId(state.currentBook));
   renderShell(`
-    <header class="nav"><button onclick="diandu.loadHome()">‹</button><strong>选择教材</strong><span></span></header>
-    <section class="book-grid">
-      ${state.books.map((book) => {
-        const cover = normalizeUrl(book.book_img || book.bookurl || '');
-        return `
-          <button class="book-option" onclick="diandu.selectBookById('${book.id}')">
-            ${cover ? `<img src="${cover}" alt="${escapeHtml(book.book_name)}" />` : '<div class="cover-empty small">暂无封面</div>'}
-            <span>${escapeHtml(book.book_name)}</span>
-          </button>
-        `;
-      }).join('')}
+    <header class="nav book-nav"><button onclick="diandu.loadHome()">‹</button><strong>选择教材</strong><span></span></header>
+    <section class="book-picker">
+      <aside class="category-list">
+        ${state.categories.map((category) => `
+          <button
+            class="${Number(category.id) === activeCatId ? 'active' : ''}"
+            onclick="diandu.selectCategory('${category.id}')"
+          >${escapeHtml(category.name)}</button>
+        `).join('')}
+      </aside>
+      <div class="book-panel">
+        <h2>${escapeHtml(state.categories.find((item) => Number(item.id) === activeCatId)?.name || '教材')}</h2>
+        <div class="book-grid">
+          ${state.books.map((book) => {
+            const cover = normalizeUrl(book.book_img || book.bookurl || '');
+            const selected = String(getBookId(book)) === selectedBookId;
+            return `
+              <button class="book-option${selected ? ' selected' : ''}" onclick="diandu.selectBookById('${getBookId(book)}')">
+                <span class="cover-frame">
+                  ${cover ? `<img src="${cover}" alt="${escapeHtml(book.book_name)}" />` : '<span class="cover-empty small">暂无封面</span>'}
+                  ${selected ? '<i class="checkmark">✓</i>' : ''}
+                </span>
+                <span>${escapeHtml(book.book_name)}</span>
+              </button>
+            `;
+          }).join('')}
+        </div>
+      </div>
     </section>
   `);
 }
