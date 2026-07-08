@@ -1,0 +1,35 @@
+@import "../reader/reader.wxss";
+
+.compact-nav {
+  height: 116rpx;
+  padding-top: 0;
+}
+
+.alphabet-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24rpx 20rpx;
+  padding: 28rpx 24rpx 52rpx;
+  background: #fff;
+}
+
+.alphabet-grid button {
+  min-width: 0;
+  padding: 0;
+  border-radius: 20rpx;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.alphabet-grid image,
+.alphabet-grid text {
+  display: block;
+  width: 100%;
+  height: 238rpx;
+}
+
+.alphabet-grid text {
+  line-height: 238rpx;
+  font-size: 72rpx;
+  font-weight: 800;
+}

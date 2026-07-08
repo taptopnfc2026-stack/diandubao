@@ -1,0 +1,15 @@
+<view class="phonics-hero">
+  <button class="back-button" bindtap="goBack">‹</button>
+  <view>
+    <text class="title">自然拼读速记营</text>
+    <text class="sub">匹配新课标要求，见字能读听音能写</text>
+  </view>
+</view>
+<view class="phonics-panel">
+  <view wx:for="{{groups}}" wx:key="key" class="phonics-group">
+    <text class="group-title">{{item.title}}</text>
+    <view class="phonics-chip-grid">
+      <button wx:for="{{item.items}}" wx:for-item="child" wx:key="id">{{child.name}}</button>
+    </view>
+  </view>
+</view>

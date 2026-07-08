@@ -1,5 +1,12 @@
 import { createH5Api } from '../shared/api.js';
 import { buildTapRegions } from '../shared/coordinate.js';
+import {
+  flattenPhonicsGroups,
+  getFirstAudioUrl,
+  normalizeAlphabetLetters,
+  normalizePhoneticDetail,
+  normalizePhoneticList,
+} from '../shared/learning.js';
 import { getNextPageNumber, getSwipePageDelta, selectReaderPage } from '../shared/navigation.js';
 import './styles.css';
 
@@ -28,6 +35,12 @@ const state = {
   readerPages: [],
   tapRegions: [],
   selectedAudio: '',
+  phoneticTabs: [],
+  activePhoneticType: 0,
+  phoneticItemsByType: {},
+  phoneticDetail: null,
+  alphabetLetters: [],
+  phonicsGroups: [],
 };
 
 function setState(patch) {
@@ -186,6 +199,48 @@ function playRegion(index) {
   renderTapLayer();
 }
 
+function playAudioUrl(url) {
+  if (!url) return;
+  audio.pause();
+  audio.onended = null;
+  audio.src = normalizeUrl(url);
+  audio.play().catch(() => setState({ error: '音频播放失败，请再点一次' }));
+}
+
+async function loadPhonetics(type = state.activePhoneticType || 0) {
+  await run(async () => {
+    const data = await api.getfayinlist();
+    const normalized = normalizePhoneticList(data);
+    setState({
+      view: 'phonetics',
+      phoneticTabs: normalized.tabs,
+      activePhoneticType: Number(type),
+      phoneticItemsByType: normalized.itemsByType,
+    });
+  });
+}
+
+async function openPhoneticDetail(id) {
+  await run(async () => {
+    const data = await api.getfayindetail(id);
+    setState({ view: 'phoneticDetail', phoneticDetail: normalizePhoneticDetail(data) });
+  });
+}
+
+async function loadAlphabet() {
+  await run(async () => {
+    const data = await api.getfayin();
+    setState({ view: 'alphabet', alphabetLetters: normalizeAlphabetLetters(data) });
+  });
+}
+
+async function loadPhonics() {
+  await run(async () => {
+    const data = await api.getpindu();
+    setState({ view: 'phonics', phonicsGroups: flattenPhonicsGroups(data?.list || data) });
+  });
+}
+
 function getReaderMaxPage() {
   const max = Number(state.currentBook?.end_page);
   return Number.isFinite(max) && max > 0 ? max : Infinity;
@@ -249,6 +304,19 @@ window.diandu = {
     playRegionQueue(0);
   },
   playRegion,
+  loadPhonetics,
+  selectPhoneticTab(type) {
+    setState({ activePhoneticType: Number(type) });
+  },
+  openPhoneticDetail,
+  playPhoneticDetail(kind = 0) {
+    playAudioUrl(state.phoneticDetail?.audioUrls?.[Number(kind)] || state.phoneticDetail?.audioUrls?.[0]);
+  },
+  loadAlphabet,
+  playAlphabet(index) {
+    playAudioUrl(state.alphabetLetters[Number(index)]?.audioUrl);
+  },
+  loadPhonics,
 };
 
 function playRegionQueue(index) {
@@ -291,10 +359,100 @@ function renderHome() {
     <section class="panel">
       <h2>音标学习</h2>
       <div class="quick-grid">
-        <button>音标点读</button>
-        <button>字母点读</button>
-        <button>自然拼读</button>
+        <button onclick="diandu.loadPhonetics()">音标点读</button>
+        <button onclick="diandu.loadAlphabet()">字母点读</button>
+        <button onclick="diandu.loadPhonics()">自然拼读</button>
       </div>
+    </section>
+  `);
+}
+
+function renderPhonetics() {
+  const type = Number(state.activePhoneticType || 0);
+  const items = state.phoneticItemsByType[type] || [];
+  renderShell(`
+    <header class="reader-nav compact-nav">
+      <button class="back-button" onclick="diandu.loadHome()" aria-label="返回">‹</button>
+      <strong>音标练习</strong>
+      <div class="mini-capsule" aria-label="小程序菜单"><span>•••</span><i></i><b></b><em></em></div>
+    </header>
+    <div class="learning-tabs">
+      ${state.phoneticTabs.map((tab) => `
+        <button class="${Number(tab.id) === type ? 'active' : ''}" onclick="diandu.selectPhoneticTab(${tab.id})">${escapeHtml(tab.name)}</button>
+      `).join('')}
+    </div>
+    <section class="phonetic-grid">
+      ${items.map((item) => `
+        <button class="phonetic-card" onclick="diandu.openPhoneticDetail(${item.id})">
+          <strong>${escapeHtml(item.symbol)}</strong>
+          <span>${escapeHtml(item.subtitle)}</span>
+        </button>
+      `).join('')}
+    </section>
+  `);
+}
+
+function renderPhoneticDetail() {
+  const detail = state.phoneticDetail || {};
+  renderShell(`
+    <header class="reader-nav compact-nav">
+      <button class="back-button" onclick="diandu.loadPhonetics()" aria-label="返回">‹</button>
+      <strong>${escapeHtml(detail.symbol || '音标')}</strong>
+      <div class="mini-capsule" aria-label="小程序菜单"><span>•••</span><i></i><b></b><em></em></div>
+    </header>
+    <section class="phonetic-detail">
+      <strong class="detail-symbol">${escapeHtml(detail.symbol || '')}</strong>
+      <span>${escapeHtml(detail.subtitle || '')}</span>
+      <div class="audio-actions">
+        <button onclick="diandu.playPhoneticDetail(0)">▶</button>
+        <button onclick="diandu.playPhoneticDetail(1)">↻</button>
+      </div>
+      ${detail.image ? `
+        <figure>
+          <img src="${normalizeUrl(detail.image)}" alt="${escapeHtml(detail.symbol || '发音口型')}" />
+          <figcaption>/${escapeHtml(detail.symbol || '')}/</figcaption>
+        </figure>
+      ` : ''}
+      ${detail.explain ? `<p>${escapeHtml(detail.explain)}</p>` : ''}
+    </section>
+  `);
+}
+
+function renderAlphabet() {
+  renderShell(`
+    <header class="reader-nav compact-nav">
+      <button class="back-button" onclick="diandu.loadHome()" aria-label="返回">‹</button>
+      <strong>26个字母发音</strong>
+      <div class="mini-capsule" aria-label="小程序菜单"><span>•••</span><i></i><b></b><em></em></div>
+    </header>
+    <section class="alphabet-grid">
+      ${state.alphabetLetters.map((item, index) => `
+        <button onclick="diandu.playAlphabet(${index})">
+          ${item.image ? `<img src="${item.image}" alt="${escapeHtml(item.title)}" />` : `<strong>${escapeHtml(item.title)}</strong>`}
+        </button>
+      `).join('')}
+    </section>
+  `);
+}
+
+function renderPhonics() {
+  renderShell(`
+    <header class="phonics-hero">
+      <button class="back-button" onclick="diandu.loadHome()" aria-label="返回">‹</button>
+      <div>
+        <strong>自然拼读速记营</strong>
+        <span>匹配新课标要求，见字能读听音能写</span>
+      </div>
+    </header>
+    <section class="phonics-panel">
+      ${state.phonicsGroups.map((group) => `
+        <div class="phonics-group">
+          <h2>${escapeHtml(group.title)}</h2>
+          <div class="phonics-chip-grid">
+            ${group.items.map((item) => `<button>${escapeHtml(item.name)}</button>`).join('')}
+          </div>
+        </div>
+      `).join('')}
     </section>
   `);
 }
@@ -426,6 +584,10 @@ function render() {
   if (state.view === 'books') renderBooks();
   else if (state.view === 'chapters') renderChapters();
   else if (state.view === 'reader') renderReader();
+  else if (state.view === 'phonetics') renderPhonetics();
+  else if (state.view === 'phoneticDetail') renderPhoneticDetail();
+  else if (state.view === 'alphabet') renderAlphabet();
+  else if (state.view === 'phonics') renderPhonics();
   else renderHome();
 }
 

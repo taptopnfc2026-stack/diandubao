@@ -1,0 +1,62 @@
+.phonics-hero {
+  min-height: 380rpx;
+  padding: 60rpx 36rpx;
+  display: grid;
+  grid-template-columns: 64rpx 1fr;
+  gap: 24rpx;
+  background: linear-gradient(135deg, #36c3ff 0%, #1297ec 100%);
+  color: #fff;
+}
+
+.back-button {
+  color: #fff;
+  font-size: 60rpx;
+}
+
+.title {
+  display: block;
+  margin-top: 4rpx;
+  font-size: 48rpx;
+  font-weight: 900;
+}
+
+.sub {
+  display: block;
+  margin-top: 20rpx;
+  font-size: 26rpx;
+}
+
+.phonics-panel {
+  margin-top: -24rpx;
+  padding: 44rpx 30rpx 68rpx;
+  border-radius: 28rpx 28rpx 0 0;
+  background: #fff;
+}
+
+.phonics-group + .phonics-group {
+  margin-top: 68rpx;
+}
+
+.group-title {
+  display: block;
+  margin-bottom: 28rpx;
+  font-size: 34rpx;
+  font-weight: 800;
+}
+
+.phonics-chip-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 28rpx 24rpx;
+}
+
+.phonics-chip-grid button {
+  height: 72rpx;
+  border: 1rpx solid #d8dde6;
+  border-radius: 8rpx;
+  background:
+    repeating-linear-gradient(180deg, transparent 0, transparent 20rpx, rgba(140, 150, 165, 0.18) 22rpx, transparent 24rpx),
+    #fff;
+  font-size: 32rpx;
+  font-weight: 600;
+}

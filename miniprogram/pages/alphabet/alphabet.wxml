@@ -1,0 +1,11 @@
+<view class="reader-nav compact-nav">
+  <button class="back-button" bindtap="goBack">‹</button>
+  <text>26个字母发音</text>
+  <view class="mini-capsule"><text>•••</text><view></view><text>—</text><text>○</text></view>
+</view>
+<view class="alphabet-grid">
+  <button wx:for="{{letters}}" wx:key="id" data-index="{{index}}" bindtap="play">
+    <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" />
+    <text wx:else>{{item.title}}</text>
+  </button>
+</view>

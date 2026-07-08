@@ -1,0 +1,18 @@
+<view class="reader-nav compact-nav">
+  <button class="back-button" bindtap="goBack">‹</button>
+  <text>{{detail.symbol || '音标'}}</text>
+  <view class="mini-capsule"><text>•••</text><view></view><text>—</text><text>○</text></view>
+</view>
+<view wx:if="{{detail}}" class="phonetic-detail">
+  <text class="detail-symbol">{{detail.symbol}}</text>
+  <text>{{detail.subtitle}}</text>
+  <view class="audio-actions">
+    <button data-index="0" bindtap="play">▶</button>
+    <button data-index="1" bindtap="play">↻</button>
+  </view>
+  <view wx:if="{{detail.image}}" class="figure">
+    <image src="{{detail.image}}" mode="aspectFill" />
+    <text>/{{detail.symbol}}/</text>
+  </view>
+  <view wx:if="{{detail.explain}}" class="explain">{{detail.explain}}</view>
+</view>

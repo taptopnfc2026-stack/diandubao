@@ -38,4 +38,10 @@ module.exports = {
   bookpage: (book_id, start_page) => request('/api/learn_eg/bookpage', { book_id, start_page }),
   updateuserbook: (book_id) => request('/api/learn_eg/updateuserbook', { book_id }),
   updatebookpage: (book_id, page) => request('/api/learn_eg/updatebookpage', { book_id, page }),
+  getfayin: () => request('/api/learn_eg/getfayin'),
+  getfayinlist: () => request('/api/learn_eg/getfayinlist'),
+  getfayindetail: (id) => request('/api/learn_eg/getfayindetail', { id }),
+  getpindu: () => request('/api/learn_eg/getpindu'),
+  getpindudetail: (id) => request('/api/learn_eg/getpindudetail', { id }),
+  getpindufy: (id) => request('/api/learn_eg/getpindufy', { id }),
 };

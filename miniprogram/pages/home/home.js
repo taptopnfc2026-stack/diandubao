@@ -28,6 +28,15 @@ Page({
   openBooks() {
     wx.navigateTo({ url: '/pages/books/books' });
   },
+  openPhonetics() {
+    wx.navigateTo({ url: '/pages/phonetics/phonetics' });
+  },
+  openAlphabet() {
+    wx.navigateTo({ url: '/pages/alphabet/alphabet' });
+  },
+  openPhonics() {
+    wx.navigateTo({ url: '/pages/phonics/phonics' });
+  },
   startReader() {
     const book = this.data.book;
     const bookId = book && (book.id || book.book_id);

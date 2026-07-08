@@ -3,7 +3,11 @@
     "pages/home/home",
     "pages/books/books",
     "pages/chapters/chapters",
-    "pages/reader/reader"
+    "pages/reader/reader",
+    "pages/phonetics/phonetics",
+    "pages/phonetic-detail/phonetic-detail",
+    "pages/alphabet/alphabet",
+    "pages/phonics/phonics"
   ],
   "window": {
     "navigationStyle": "custom",

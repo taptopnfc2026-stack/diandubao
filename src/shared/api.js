@@ -18,6 +18,32 @@ const previewChapters = [
   { id: 1125910, book_id: 10168, chapter_name: 'Part C', start_page: 22, end_page: 25 },
 ];
 
+const previewPhonetics = {
+  cate: [{ id: 0, name: '元音' }, { id: 1, name: '辅音' }],
+  list: [
+    { id: 1, content: 'æ', combination: 'a', type: 0 },
+    { id: 2, content: 'i', combination: 'i/y', type: 0 },
+    { id: 3, content: 'i:', combination: 'ea/ee/ie/ei', type: 0 },
+    { id: 25, content: 'p', combination: 'p/pp', type: 1 },
+    { id: 26, content: 'b', combination: 'b/bb', type: 1 },
+    { id: 27, content: 't', combination: 't/tt', type: 1 },
+  ],
+};
+
+const previewAlphabet = [
+  { id: 1, title: 'Aa', pic: 'https://diandu-oss.oss-cn-beijing.aliyuncs.com/pblc/A.png?OSSAccessKeyId=LTAI5tE224VMNNzWPVzH7vSx&Expires=2076314472&Signature=c7on2ZFszlUYpwk406Zg1rXXaEE%3D', mp3: 'https://diandu-oss.oss-cn-beijing.aliyuncs.com/pblc/A.mp3?OSSAccessKeyId=LTAI5tE224VMNNzWPVzH7vSx&Expires=2076314472&Signature=Gm8fbD1QcRZ7xdHcHn2ZF6ue400%3D' },
+  { id: 2, title: 'Bb', pic: 'https://diandu-oss.oss-cn-beijing.aliyuncs.com/pblc/B.png?OSSAccessKeyId=LTAI5tE224VMNNzWPVzH7vSx&Expires=2076314563&Signature=pYhvpF3JfFrdW7lBFFEdqsXYO48%3D', mp3: 'https://diandu-oss.oss-cn-beijing.aliyuncs.com/pblc/B.mp3?OSSAccessKeyId=LTAI5tE224VMNNzWPVzH7vSx&Expires=2076314563&Signature=n2RDc%2FevQ3u%2FHVTqhzQGTKCCCdg%3D' },
+  { id: 3, title: 'Cc', pic: 'https://diandu-oss.oss-cn-beijing.aliyuncs.com/pblc/C.png?OSSAccessKeyId=LTAI5tE224VMNNzWPVzH7vSx&Expires=2076314563&Signature=U21d7kxkoHxMZK9xBEuej9CYji8%3D', mp3: '' },
+];
+
+const previewPhonics = {
+  list: {
+    1: [{ id: 1, name: 'a' }, { id: 2, name: 'e' }, { id: 3, name: 'i' }, { id: 4, name: 'o' }, { id: 5, name: 'u' }, { id: 23, name: 'y' }],
+    2: [{ id: 6, name: 'b' }, { id: 7, name: 'c' }, { id: 8, name: 'd' }, { id: 9, name: 'f' }, { id: 10, name: 'g' }, { id: 11, name: 'h' }],
+    3: [{ id: 27, name: 'aw' }, { id: 28, name: 'ai' }, { id: 29, name: 'ay' }, { id: 33, name: 'ee' }, { id: 34, name: 'ea' }],
+  },
+};
+
 const previewPages = [
   {
     id: 1016814,
@@ -96,6 +122,17 @@ function previewResponse(path, params = {}) {
   }
   if (path === endpoints.updateuserbook) return { info: previewBook, view_page: 14 };
   if (path === endpoints.updatebookpage) return 1;
+  if (path === endpoints.getfayin) return previewAlphabet;
+  if (path === endpoints.getfayinlist) return previewPhonetics;
+  if (path === endpoints.getfayindetail) {
+    const source = previewPhonetics.list.find((item) => Number(item.id) === Number(params.id)) || previewPhonetics.list[1];
+    return {
+      basic: { content: source.content, combination: source.combination, voice_url: '', img_url: '' },
+      explain: { content: `发音 ${source.content}，组合 ${source.combination}。`, voice_url: '' },
+      combination: [{ com_name: source.combination, sample: 'cat/hat/sit/fit' }],
+    };
+  }
+  if (path === endpoints.getpindu) return previewPhonics;
   throw new Error('预览数据暂不支持该接口');
 }
 
@@ -106,6 +143,12 @@ export const endpoints = {
   bookpage: '/api/learn_eg/bookpage',
   updateuserbook: '/api/learn_eg/updateuserbook',
   updatebookpage: '/api/learn_eg/updatebookpage',
+  getfayin: '/api/learn_eg/getfayin',
+  getfayinlist: '/api/learn_eg/getfayinlist',
+  getfayindetail: '/api/learn_eg/getfayindetail',
+  getpindu: '/api/learn_eg/getpindu',
+  getpindudetail: '/api/learn_eg/getpindudetail',
+  getpindufy: '/api/learn_eg/getpindufy',
 };
 
 export function buildQuery(params = {}) {
@@ -159,6 +202,12 @@ export function createH5Api() {
     bookpage: (book_id, start_page) => request(endpoints.bookpage, { book_id, start_page }),
     updateuserbook: (book_id) => request(endpoints.updateuserbook, { book_id }),
     updatebookpage: (book_id, page) => request(endpoints.updatebookpage, { book_id, page }),
+    getfayin: () => request(endpoints.getfayin),
+    getfayinlist: () => request(endpoints.getfayinlist),
+    getfayindetail: (id) => request(endpoints.getfayindetail, { id }),
+    getpindu: () => request(endpoints.getpindu),
+    getpindudetail: (id) => request(endpoints.getpindudetail, { id }),
+    getpindufy: (id) => request(endpoints.getpindufy, { id }),
   };
 }
 
@@ -194,5 +243,11 @@ export function createMiniProgramApi(wxRef) {
     bookpage: (book_id, start_page) => request(endpoints.bookpage, { book_id, start_page }),
     updateuserbook: (book_id) => request(endpoints.updateuserbook, { book_id }),
     updatebookpage: (book_id, page) => request(endpoints.updatebookpage, { book_id, page }),
+    getfayin: () => request(endpoints.getfayin),
+    getfayinlist: () => request(endpoints.getfayinlist),
+    getfayindetail: (id) => request(endpoints.getfayindetail, { id }),
+    getpindu: () => request(endpoints.getpindu),
+    getpindudetail: (id) => request(endpoints.getpindudetail, { id }),
+    getpindufy: (id) => request(endpoints.getpindufy, { id }),
   };
 }

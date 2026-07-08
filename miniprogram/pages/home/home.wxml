@@ -14,8 +14,8 @@
 <view class="panel">
   <text class="panel-title">音标学习</text>
   <view class="quick-grid">
-    <button>音标点读</button>
-    <button>字母点读</button>
-    <button>自然拼读</button>
+    <button bindtap="openPhonetics">音标点读</button>
+    <button bindtap="openAlphabet">字母点读</button>
+    <button bindtap="openPhonics">自然拼读</button>
   </view>
 </view>

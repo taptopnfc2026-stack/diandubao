@@ -1,0 +1,68 @@
+@import "../reader/reader.wxss";
+
+.compact-nav {
+  height: 116rpx;
+  padding-top: 0;
+}
+
+.learning-tabs {
+  height: 100rpx;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  background: #fff;
+  border-bottom: 1rpx solid #eceff4;
+}
+
+.learning-tabs button {
+  position: relative;
+  color: #6c7481;
+  font-weight: 700;
+}
+
+.learning-tabs button.active {
+  color: #111827;
+}
+
+.learning-tabs button.active::after {
+  content: "";
+  position: absolute;
+  left: 26%;
+  right: 26%;
+  bottom: 0;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: #20a8ff;
+}
+
+.phonetic-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20rpx;
+  padding: 20rpx 24rpx 48rpx;
+}
+
+.phonetic-card {
+  min-height: 196rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  border: 1rpx solid #e6eaf0;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.symbol {
+  color: #20a8ff;
+  font-size: 52rpx;
+  font-weight: 800;
+}
+
+.subtitle {
+  max-width: 180rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 26rpx;
+}

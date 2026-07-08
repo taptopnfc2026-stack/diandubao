@@ -184,6 +184,248 @@ button {
   background: #fff6e6;
 }
 
+.compact-nav {
+  height: 58px;
+  padding-top: 0;
+}
+
+.learning-tabs {
+  height: 50px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  background: #fff;
+  border-bottom: 1px solid #eceff4;
+}
+
+.learning-tabs button {
+  position: relative;
+  background: transparent;
+  color: #6c7481;
+  font-weight: 700;
+}
+
+.learning-tabs button.active {
+  color: #111827;
+}
+
+.learning-tabs button.active::after {
+  content: "";
+  position: absolute;
+  left: 26%;
+  right: 26%;
+  bottom: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: #20a8ff;
+}
+
+.phonetic-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 10px 12px 24px;
+  background: #f7f8fa;
+}
+
+.phonetic-card {
+  min-height: 98px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+  padding: 10px 8px;
+  border: 1px solid #e6eaf0;
+  border-radius: 8px;
+  background: #fff;
+  color: #111827;
+  overflow: hidden;
+}
+
+.phonetic-card strong {
+  color: #20a8ff;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.phonetic-card span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+.phonetic-detail {
+  min-height: calc(100vh - 58px);
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 18px;
+  padding: 16px 40px 32px;
+  background: #fff;
+  text-align: center;
+}
+
+.detail-symbol {
+  color: #20a8ff;
+  font-size: 64px;
+  line-height: 1;
+}
+
+.audio-actions {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  justify-content: center;
+}
+
+.audio-actions button {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #eef8ff;
+  color: #20a8ff;
+  font-weight: 900;
+}
+
+.phonetic-detail figure {
+  width: 100%;
+  margin: 10px 0 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #c8f5ff;
+}
+
+.phonetic-detail img {
+  display: block;
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+}
+
+.phonetic-detail figcaption {
+  padding: 10px;
+  color: #4b5563;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.phonetic-detail p {
+  margin: 4px 0 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #e6e6e6;
+  color: #111827;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.alphabet-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 10px;
+  padding: 14px 12px 26px;
+  background: #fff;
+}
+
+.alphabet-grid button {
+  min-width: 0;
+  padding: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f3f4f6;
+  box-shadow: 0 1px 0 rgba(16, 24, 40, 0.08);
+}
+
+.alphabet-grid img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1.22;
+  object-fit: cover;
+}
+
+.alphabet-grid strong {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1 / 1.22;
+  font-size: 36px;
+}
+
+.phonics-hero {
+  position: relative;
+  min-height: 190px;
+  padding: 30px 18px;
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 12px;
+  align-items: start;
+  background: linear-gradient(135deg, #36c3ff 0%, #1297ec 100%);
+  color: #fff;
+  overflow: hidden;
+}
+
+.phonics-hero::after {
+  content: "";
+  position: absolute;
+  right: 18px;
+  bottom: 20px;
+  width: 126px;
+  height: 98px;
+  border-radius: 28px 28px 10px 10px;
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: -30px 18px 0 rgba(255, 255, 255, 0.18);
+}
+
+.phonics-hero .back-button {
+  color: #fff;
+}
+
+.phonics-hero strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.phonics-hero span {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.phonics-panel {
+  margin-top: -12px;
+  padding: 22px 15px 34px;
+  border-radius: 14px 14px 0 0;
+  background: #fff;
+}
+
+.phonics-group + .phonics-group {
+  margin-top: 34px;
+}
+
+.phonics-group h2 {
+  margin: 0 0 14px;
+  font-size: 17px;
+}
+
+.phonics-chip-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px 12px;
+}
+
+.phonics-chip-grid button {
+  height: 36px;
+  border: 1px solid #d8dde6;
+  border-radius: 4px;
+  background:
+    repeating-linear-gradient(180deg, transparent 0, transparent 10px, rgba(140, 150, 165, 0.18) 11px, transparent 12px),
+    #fff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
 .book-picker {
   display: grid;
   grid-template-columns: 144px 1fr;
