@@ -46,11 +46,21 @@ function normalizeUrl(value) {
 }
 
 function getBookFromHome(data) {
-  return data?.info || data?.book || data?.pg || null;
+  return normalizeBook(data?.info || data?.book || data?.pg || null);
 }
 
 function getPageFromHome(data) {
   return Number(data?.view_page || data?.cur_page || data?.pg?.cur_page || data?.info?.cur_page || 1) || 1;
+}
+
+function getBookId(book) {
+  return book?.id || book?.book_id || '';
+}
+
+function normalizeBook(book) {
+  if (!book) return null;
+  const id = getBookId(book);
+  return id ? { ...book, id } : book;
 }
 
 async function run(task) {
@@ -87,31 +97,41 @@ async function loadBooks() {
 
 async function selectBook(book) {
   await run(async () => {
-    await api.updateuserbook(book.id);
-    setState({ currentBook: book, currentPage: Number(book.start_page || 1) || 1 });
-    await loadChapters(book);
+    const data = await api.updateuserbook(book.id);
+    const currentBook = normalizeBook({ ...book, ...(data?.info || {}) });
+    const currentPage = Number(data?.view_page || data?.cur_page || currentBook.start_page || 1) || 1;
+    setState({
+      view: 'home',
+      currentBook,
+      currentPage,
+      chapters: [],
+      readerPages: [],
+      tapRegions: [],
+    });
   });
 }
 
 async function loadChapters(book = state.currentBook) {
-  if (!book?.id) {
+  const bookId = getBookId(book);
+  if (!bookId) {
     await loadBooks();
     return;
   }
   await run(async () => {
-    const data = await api.bookchapter(book.id);
+    const data = await api.bookchapter(bookId);
     const chapters = firstArray(data?.chapers, data?.chapters, data?.list, data);
-    setState({ view: 'chapters', currentBook: book, chapters });
+    setState({ view: 'chapters', currentBook: normalizeBook(book), chapters });
   });
 }
 
 async function loadReader(book = state.currentBook || PREVIEW_BOOK, page = state.currentPage || 1) {
-  if (!book?.id) {
+  const bookId = getBookId(book);
+  if (!bookId) {
     await loadBooks();
     return;
   }
   await run(async () => {
-    const data = await api.bookpage(book.id, page);
+    const data = await api.bookpage(bookId, page);
     const nestedPages = Array.isArray(data?.pages?.pages) ? data.pages.pages : null;
     const pages = firstArray(nestedPages, data?.pages, data?.list);
     const normalizedPages = pages.map((item) => ({
@@ -122,7 +142,7 @@ async function loadReader(book = state.currentBook || PREVIEW_BOOK, page = state
     const nextPage = Number(normalizedPages[0]?.c_page || page) || 1;
     setState({
       view: 'reader',
-      currentBook: book,
+      currentBook: normalizeBook(book),
       currentPage: nextPage,
       readerPages: normalizedPages,
       tapRegions: [],
@@ -131,9 +151,10 @@ async function loadReader(book = state.currentBook || PREVIEW_BOOK, page = state
 }
 
 async function savePage(page) {
-  if (!state.currentBook?.id) return;
+  const bookId = getBookId(state.currentBook);
+  if (!bookId) return;
   try {
-    await api.updatebookpage(state.currentBook.id, page);
+    await api.updatebookpage(bookId, page);
   } catch {
     // H5 preview keeps reading usable even if anonymous progress saving fails.
   }
@@ -164,9 +185,6 @@ window.diandu = {
     loadReader(state.currentBook, page);
   },
   loadReader,
-  openPreview() {
-    loadReader(PREVIEW_BOOK, 1);
-  },
   nextPage() {
     const next = state.currentPage + 1;
     savePage(next);
@@ -222,7 +240,6 @@ function renderHome() {
         <span>已学 ${escapeHtml(state.currentPage || 1)} 页</span>
       </div>
       <button class="primary" onclick="diandu.loadReader()">开始点读</button>
-      <button class="secondary" onclick="diandu.openPreview()">打开预览教材</button>
     </section>
     <section class="panel">
       <h2>音标学习</h2>

@@ -29,9 +29,7 @@ Page({
       await api.updateuserbook(book.id);
       app.globalData.currentBook = book;
       app.globalData.currentPage = Number(book.start_page || 1) || 1;
-      wx.navigateTo({
-        url: `/pages/chapters/chapters?book_id=${book.id}&book_name=${encodeURIComponent(book.book_name || '')}`,
-      });
+      wx.redirectTo({ url: '/pages/home/home' });
     } catch (error) {
       wx.showToast({ title: error.message || '切换失败', icon: 'none' });
     }

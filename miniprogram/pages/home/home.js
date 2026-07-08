@@ -30,12 +30,13 @@ Page({
   },
   startReader() {
     const book = this.data.book;
-    if (!book || !book.id) {
+    const bookId = book && (book.id || book.book_id);
+    if (!bookId) {
       this.openBooks();
       return;
     }
     wx.navigateTo({
-      url: `/pages/reader/reader?book_id=${book.id}&page=${this.data.page || 1}&book_name=${encodeURIComponent(book.book_name || '')}`,
+      url: `/pages/reader/reader?book_id=${bookId}&page=${this.data.page || 1}&book_name=${encodeURIComponent(book.book_name || '')}`,
     });
   },
 });
