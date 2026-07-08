@@ -1,5 +1,5 @@
 const api = require('../../utils/api');
-const { buildTapRegions, normalizeAudioItems } = require('../../utils/coordinate');
+const { buildTapRegions } = require('../../utils/coordinate');
 const { getNextPageNumber, getSwipePageDelta, selectReaderPage } = require('../../utils/navigation');
 
 Page({
@@ -39,7 +39,7 @@ Page({
           ? data.pages
           : [];
       const selectedPage = selectReaderPage(pages, this.data.pageNo);
-      const page = selectedPage ? { ...selectedPage, word_mp3: normalizeAudioItems(selectedPage.word_mp3) } : null;
+      const page = selectedPage ? { ...selectedPage } : null;
       this.setData({ page, pageNo: Number(page && page.c_page ? page.c_page : this.data.pageNo), regions: [] });
     } catch (error) {
       wx.showToast({ title: error.message || '加载失败', icon: 'none' });

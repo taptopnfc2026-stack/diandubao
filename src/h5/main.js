@@ -1,5 +1,5 @@
 import { createH5Api } from '../shared/api.js';
-import { buildTapRegions, normalizeAudioItems } from '../shared/coordinate.js';
+import { buildTapRegions } from '../shared/coordinate.js';
 import { getNextPageNumber, getSwipePageDelta, selectReaderPage } from '../shared/navigation.js';
 import './styles.css';
 
@@ -152,7 +152,6 @@ async function loadReader(book = state.currentBook || PREVIEW_BOOK, page = state
     const normalizedPages = pages.map((item) => ({
       ...item,
       bg_img: normalizeUrl(item.bg_img),
-      word_mp3: normalizeAudioItems(item.word_mp3),
     }));
     const selectedPage = selectReaderPage(normalizedPages, page);
     const nextPage = Number(selectedPage?.c_page || page) || 1;
