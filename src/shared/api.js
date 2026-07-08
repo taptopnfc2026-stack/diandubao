@@ -1,4 +1,5 @@
 const MINI_BASE = 'https://diandu.xiongmaoxiazai.com';
+const H5_BASE = import.meta.env.PROD ? MINI_BASE : '';
 
 export const endpoints = {
   index: '/api/learn_eg/index',
@@ -29,7 +30,7 @@ function unwrapPayload(payload) {
 
 export function createH5Api() {
   async function request(path, params) {
-    const response = await fetch(`${path}${buildQuery(params)}`, {
+    const response = await fetch(`${H5_BASE}${path}${buildQuery(params)}`, {
       credentials: 'include',
     });
     const contentType = response.headers.get('content-type') || '';
