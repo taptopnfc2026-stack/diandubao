@@ -3,7 +3,7 @@ const MINI_BASE = 'https://diandu.xiongmaoxiazai.com';
 export const endpoints = {
   index: '/api/learn_eg/index',
   booklist: '/api/learn_eg/booklist',
-  bookchapter: '/api/learn_eg/bookchapter',
+  bookchapter: '/api/learn_eg/bookchaper',
   bookpage: '/api/learn_eg/bookpage',
   updateuserbook: '/api/learn_eg/updateuserbook',
   updatebookpage: '/api/learn_eg/updatebookpage',
@@ -32,6 +32,10 @@ export function createH5Api() {
     const response = await fetch(`${path}${buildQuery(params)}`, {
       credentials: 'include',
     });
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      throw new Error(`接口返回异常：${response.status}`);
+    }
     const payload = await response.json();
     if (!response.ok) {
       throw new Error(payload?.msg || '请求失败');

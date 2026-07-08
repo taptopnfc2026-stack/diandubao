@@ -72,7 +72,7 @@ The frontend reuses existing endpoints:
 
 - `/api/learn_eg/index`
 - `/api/learn_eg/booklist`
-- `/api/learn_eg/bookchapter`
+- `/api/learn_eg/bookchaper`
 - `/api/learn_eg/bookpage`
 - `/api/learn_eg/updateuserbook`
 - `/api/learn_eg/updatebookpage`

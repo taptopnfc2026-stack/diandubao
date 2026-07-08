@@ -34,7 +34,7 @@ function request(path, data = {}) {
 module.exports = {
   index: () => request('/api/learn_eg/index'),
   booklist: (params = {}) => request('/api/learn_eg/booklist', params),
-  bookchapter: (book_id) => request('/api/learn_eg/bookchapter', { book_id }),
+  bookchapter: (book_id) => request('/api/learn_eg/bookchaper', { book_id }),
   bookpage: (book_id, start_page) => request('/api/learn_eg/bookpage', { book_id, start_page }),
   updateuserbook: (book_id) => request('/api/learn_eg/updateuserbook', { book_id }),
   updatebookpage: (book_id, page) => request('/api/learn_eg/updatebookpage', { book_id, page }),
