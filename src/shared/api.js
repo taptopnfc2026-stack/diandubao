@@ -128,6 +128,9 @@ function unwrapPayload(payload) {
 
 export function createH5Api() {
   async function request(path, params) {
+    if (import.meta.env.PROD && globalThis.location?.hostname.endsWith('github.io')) {
+      return previewResponse(path, params);
+    }
     let response;
     try {
       response = await fetch(`${H5_BASE}${path}${buildQuery(params)}`, {
