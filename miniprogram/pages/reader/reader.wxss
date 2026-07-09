@@ -103,16 +103,15 @@
   right: 0;
   bottom: 0;
   display: grid;
-  grid-template-columns: 1fr 224rpx 1fr;
-  align-items: end;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
   gap: 16rpx;
   padding: 16rpx 44rpx calc(16rpx + env(safe-area-inset-bottom));
   background: #fff;
   box-shadow: 0 -8rpx 32rpx rgba(30, 40, 55, 0.06);
 }
 
-.tool-button,
-.promo-button {
+.tool-button {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -133,27 +132,4 @@
 
 .tool-button text:last-child {
   font-size: 24rpx;
-}
-
-.promo-button {
-  margin-top: -76rpx;
-  color: #fff;
-}
-
-.promo-face {
-  width: 144rpx;
-  height: 144rpx;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #b9b6ff 0%, #7fdcff 100%);
-  border: 6rpx solid #fff;
-  box-shadow: 0 12rpx 36rpx rgba(75, 126, 222, 0.28);
-}
-
-.promo-label {
-  margin-top: -30rpx;
-  padding: 6rpx 16rpx;
-  border-radius: 999rpx;
-  background: #77d8e5;
-  font-size: 20rpx;
-  white-space: nowrap;
 }

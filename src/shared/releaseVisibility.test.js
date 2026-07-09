@@ -50,4 +50,15 @@ describe('launch visibility', () => {
     expect(miniMyJs).toContain('openAdTask()');
     expect(miniMyJs).toContain('openMemberTask()');
   });
+
+  it('hides launch-only promo and watch-record entries', () => {
+    const h5Main = readFileSync('src/h5/main.js', 'utf8');
+    const miniReaderWxml = readFileSync('miniprogram/pages/reader/reader.wxml', 'utf8');
+    const miniMyJs = readFileSync('miniprogram/pages/my/my.js', 'utf8');
+
+    expect(h5Main).not.toContain('免费领英语资料');
+    expect(miniReaderWxml).not.toContain('免费领英语资料');
+    expect(h5Main).not.toContain('观看记录');
+    expect(miniMyJs).not.toContain('观看记录');
+  });
 });

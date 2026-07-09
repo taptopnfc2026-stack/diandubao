@@ -734,7 +734,6 @@ function renderMy() {
     ['gift', '我的邀请', `${profile.reward.inviteCount} 人`],
     ['coin', '我的奖励', `已获得 ${profile.reward.earnedMinutes} 分钟`],
     ['card', '兑换记录', `${profile.reward.memberExchangeCount} 次`],
-    ['clock', '观看记录', `${profile.reward.adWatchCount} 次`],
     ['chart', '学习报告', ''],
     ['gear', '设置', ''],
   ];
@@ -1247,7 +1246,6 @@ function renderReader() {
     </section>
     <footer class="reader-controls">
       <button class="tool-button" onclick="diandu.replay()"><span class="tool-icon">↻</span><small>复读</small></button>
-      <button class="promo-button" onclick="diandu.replay()"><span class="promo-face"></span><small>免费领英语资料</small></button>
       <button class="tool-button" onclick="diandu.playAll()"><span class="tool-icon">☵</span><small>连读</small></button>
     </footer>
   `);

@@ -1785,16 +1785,15 @@ button {
   width: min(100vw, 414px);
   bottom: 0;
   display: grid;
-  grid-template-columns: 1fr 112px 1fr;
-  align-items: end;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
   gap: 8px;
   padding: 8px 22px max(8px, env(safe-area-inset-bottom));
   background: #fff;
   box-shadow: 0 -4px 16px rgba(30, 40, 55, 0.06);
 }
 
-.tool-button,
-.promo-button {
+.tool-button {
   display: grid;
   justify-items: center;
   gap: 2px;
@@ -1814,34 +1813,6 @@ button {
 
 .tool-button small {
   font-size: 12px;
-}
-
-.promo-button {
-  position: relative;
-  margin-top: -38px;
-  color: #fff;
-}
-
-.promo-face {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  display: block;
-  background:
-    radial-gradient(circle at 50% 42%, #ffe0bd 0 20%, transparent 21%),
-    radial-gradient(circle at 50% 28%, #f6c48a 0 19%, transparent 20%),
-    linear-gradient(135deg, #b9b6ff 0%, #7fdcff 100%);
-  border: 3px solid #fff;
-  box-shadow: 0 6px 18px rgba(75, 126, 222, 0.28);
-}
-
-.promo-button small {
-  margin-top: -15px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: #77d8e5;
-  font-size: 10px;
-  white-space: nowrap;
 }
 
 .missing-page {

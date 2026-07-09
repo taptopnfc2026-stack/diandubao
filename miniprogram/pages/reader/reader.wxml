@@ -38,10 +38,6 @@
     <text class="tool-icon">↻</text>
     <text>复读</text>
   </button>
-  <button class="promo-button" bindtap="replay">
-    <text class="promo-face"></text>
-    <text class="promo-label">免费领英语资料</text>
-  </button>
   <button class="tool-button" bindtap="playAll">
     <text class="tool-icon">☵</text>
     <text>连读</text>

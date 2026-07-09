@@ -8,7 +8,7 @@ describe('admin dashboard data helpers', () => {
       users: [
         { id: 1, nickname: 'Amy', create_time: 1783440000, last_login_time: 1783510000, member_expire_time: 1783590000 },
       ],
-    });
+    }, 1783510000);
 
     expect(dashboard.counters).toMatchObject({
       totalUsers: 8,

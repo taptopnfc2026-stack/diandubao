@@ -51,7 +51,6 @@ Page({
         { icon: 'gift', title: '我的邀请', aside: `${profile.reward.inviteCount} 人` },
         { icon: 'coin', title: '我的奖励', aside: `已获得 ${profile.reward.earnedMinutes} 分钟` },
         { icon: 'card', title: '兑换记录', aside: `${profile.reward.memberExchangeCount} 次` },
-        { icon: 'clock', title: '观看记录', aside: `${profile.reward.adWatchCount} 次` },
         { icon: 'chart', title: '学习报告', aside: '' },
         { icon: 'gear', title: '设置', aside: '' },
       ],
