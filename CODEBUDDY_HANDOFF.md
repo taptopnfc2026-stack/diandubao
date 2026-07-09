@@ -39,7 +39,7 @@ feature/diandu-h5-miniprogram-mvp
 当前最新提交：
 
 ```text
-e14441c docs: add CodeBuddy handoff guide
+以 origin/feature/diandu-h5-miniprogram-mvp 最新 HEAD 为准
 ```
 
 接手后建议先基于当前分支继续开发，不要另起新架构。
@@ -399,4 +399,3 @@ http://127.0.0.1:5175/admin.html
 - 先保证点读主链路
 - 会员、广告、背单词后置
 - 每次改动后跑 `npm test && npm run build:h5`
-
