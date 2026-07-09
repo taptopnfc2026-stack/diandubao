@@ -1,18 +1,30 @@
-.hero {
-  min-height: 560rpx;
-  padding: 56rpx 28rpx;
-  background: linear-gradient(180deg, #d7f8ff 0%, #eef9ff 100%);
-}
-
 page {
+  box-sizing: border-box;
   padding-bottom: 150rpx;
   background: #f7f8fa;
+}
+
+view,
+text,
+image,
+button {
+  box-sizing: border-box;
+}
+
+.hero {
+  min-height: 760rpx;
+  padding: 56rpx 28rpx 300rpx;
+  padding-top: calc(88rpx + env(safe-area-inset-top));
+  background: linear-gradient(180deg, #d7f8ff 0%, #eef9ff 66%, #f7f8fa 100%);
 }
 
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 20rpx;
+  min-height: 72rpx;
+  padding-right: 190rpx;
 }
 
 .title {
@@ -21,9 +33,13 @@ page {
 }
 
 .topbar button {
+  flex: 0 0 auto;
   padding: 16rpx 20rpx;
   border-radius: 12rpx;
   background: rgba(255, 255, 255, 0.86);
+  color: #172033;
+  font-size: 28rpx;
+  line-height: 1.2;
 }
 
 .book-card {
@@ -56,7 +72,10 @@ page {
 }
 
 .primary {
+  display: block;
   width: 100%;
+  max-width: 560rpx;
+  margin: 0 auto;
   padding: 30rpx;
   border-radius: 16rpx;
   background: #26a8f5;
@@ -75,10 +94,13 @@ page {
 }
 
 .panel {
-  margin: -20rpx 28rpx 36rpx;
+  position: relative;
+  z-index: 2;
+  margin: -260rpx 28rpx 36rpx;
   padding: 32rpx 24rpx;
   border-radius: 16rpx;
   background: #fff;
+  overflow: hidden;
 }
 
 .panel-title {
@@ -91,13 +113,25 @@ page {
   grid-template-columns: repeat(3, 1fr);
   gap: 20rpx;
   margin-top: 24rpx;
+  width: 100%;
+  overflow: hidden;
 }
 
 .quick-grid button {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-width: 0;
   min-height: 160rpx;
+  padding: 18rpx 8rpx;
   border-radius: 16rpx;
   background: #f8edf9;
+  color: #111827;
   font-weight: 800;
+  font-size: 28rpx;
+  line-height: 1.2;
+  white-space: normal;
+  overflow: hidden;
 }
 
 .quick-grid button:nth-child(2) {

@@ -61,4 +61,17 @@ describe('launch visibility', () => {
     expect(h5Main).not.toContain('观看记录');
     expect(miniMyJs).not.toContain('观看记录');
   });
+
+  it('keeps mini program home aligned with the H5 launch layout', () => {
+    const miniHomeWxml = readFileSync('miniprogram/pages/home/home.wxml', 'utf8');
+    const miniHomeWxss = readFileSync('miniprogram/pages/home/home.wxss', 'utf8');
+
+    expect(miniHomeWxml).toContain('openPhonetics');
+    expect(miniHomeWxml).toContain('openAlphabet');
+    expect(miniHomeWxml).toContain('openPhonics');
+    expect(miniHomeWxss).toContain('padding-top: calc(88rpx + env(safe-area-inset-top))');
+    expect(miniHomeWxss).toContain('padding-right: 190rpx');
+    expect(miniHomeWxss).toContain('min-width: 0');
+    expect(miniHomeWxss).toContain('overflow: hidden');
+  });
 });
