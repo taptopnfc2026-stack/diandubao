@@ -13,7 +13,9 @@ import { getNextPageNumber, getSwipePageDelta, selectReaderPage } from '../share
 import {
   createProfileView,
   defaultOperationSettings,
+  getTimeLimitPrompt,
   getUsagePercent,
+  isUsageExpired,
   mockProfile,
   normalizeOperationSettings,
 } from '../shared/profile.js';
@@ -70,6 +72,7 @@ const state = {
   wordStudySession: null,
   spellingHint: '',
   choiceFeedback: null,
+  dismissedTimeLimitPrompt: false,
 };
 
 function setState(patch) {
@@ -139,7 +142,50 @@ function updateProfilePayload(updater) {
     reward: { ...(payload.reward || {}) },
   });
   saveProfilePayload(next);
-  setState({ view: 'my' });
+  setState({ dismissedTimeLimitPrompt: false });
+}
+
+function getTimeLimitModal() {
+  const profile = getProfileView();
+  if (!isUsageExpired(profile.usage) || state.dismissedTimeLimitPrompt) return '';
+  const prompt = getTimeLimitPrompt(profile);
+  return `
+    <section class="time-limit-mask" role="dialog" aria-label="${escapeHtml(prompt.title)}">
+      <div class="time-limit-card">
+        <button class="time-limit-close" onclick="diandu.closeTimeLimitPrompt()" aria-label="关闭">×</button>
+        <div class="time-limit-hero">
+          <div class="time-limit-avatar"><span></span></div>
+          <div>
+            <h2>免费时长<span>已用完</span></h2>
+            <p>${escapeHtml(prompt.subtitle)}</p>
+            <small>⏱ ${escapeHtml(prompt.message)}</small>
+          </div>
+        </div>
+        <strong class="time-limit-title">做任务获取更多时长</strong>
+        <div class="time-limit-actions">
+          <button onclick="diandu.claimInviteReward()">
+            <i>👥</i>
+            <span><b>邀请好友</b><small>每成功邀请1位好友</small></span>
+            <em>+${escapeHtml(prompt.inviteRewardMinutes)} 分钟</em>
+            <strong>去邀请</strong>
+          </button>
+          <button onclick="diandu.claimAdReward()">
+            <i>▶</i>
+            <span><b>观看广告</b><small>观看完整视频广告</small></span>
+            <em>+${escapeHtml(prompt.adRewardMinutes)} 分钟</em>
+            <strong>去观看</strong>
+          </button>
+        </div>
+        <div class="time-limit-divider"><span>或</span></div>
+        <button class="time-limit-member" onclick="diandu.exchangeMember()">
+          <i>♕</i>
+          <span><b>${escapeHtml(prompt.memberTitle)}</b><small>${escapeHtml(prompt.memberSubtitle)}</small></span>
+          <strong>立即开通</strong>
+        </button>
+        <p class="time-limit-safe">◆ 安全可靠，家长放心</p>
+      </div>
+    </section>
+  `;
 }
 
 function getBookFromHome(data) {
@@ -488,20 +534,39 @@ window.diandu = {
     updateProfilePayload((payload) => ({
       ...payload,
       growth: { ...payload.growth, inviteCount: Number(payload.growth.inviteCount || 0) + 1 },
+      usage: {
+        ...payload.usage,
+        remainingMinutes: getProfileView().usage.remainingMinutes + getOperationSettings().inviteRewardMinutes,
+        totalMinutesToday: getProfileView().usage.totalMinutesToday + getOperationSettings().inviteRewardMinutes,
+      },
     }));
   },
   claimAdReward() {
     updateProfilePayload((payload) => ({
       ...payload,
       growth: { ...payload.growth, adWatchCount: Number(payload.growth.adWatchCount || 0) + 1 },
+      usage: {
+        ...payload.usage,
+        remainingMinutes: getProfileView().usage.remainingMinutes + getOperationSettings().adRewardMinutes,
+        totalMinutesToday: getProfileView().usage.totalMinutesToday + getOperationSettings().adRewardMinutes,
+      },
     }));
   },
   exchangeMember() {
+    const profile = getProfileView();
     updateProfilePayload((payload) => ({
       ...payload,
       user: { ...payload.user, registered: true, nickname: payload.user.nickname || '本地预览用户' },
       growth: { ...payload.growth, memberExchangeCount: Number(payload.growth.memberExchangeCount || 0) + 1 },
+      usage: {
+        ...payload.usage,
+        remainingMinutes: Math.max(profile.usage.remainingMinutes, 9999),
+        totalMinutesToday: Math.max(profile.usage.totalMinutesToday, profile.usage.usedMinutesToday + 9999),
+      },
     }));
+  },
+  closeTimeLimitPrompt() {
+    setState({ dismissedTimeLimitPrompt: true });
   },
   loadBooks,
   selectCategory(id) {
@@ -594,6 +659,7 @@ function renderShell(content) {
       ${state.loading ? '<div class="toast">加载中...</div>' : ''}
       ${state.error ? `<button class="toast error" onclick="diandu.loadHome()">${escapeHtml(state.error)}</button>` : ''}
       ${content}
+      ${getTimeLimitModal()}
     </main>
   `;
 }

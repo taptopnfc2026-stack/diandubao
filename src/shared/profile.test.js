@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { createProfileView, getUsagePercent, mockProfile } from './profile.js';
+import {
+  createProfileView,
+  getTimeLimitPrompt,
+  getUsagePercent,
+  isUsageExpired,
+  mockProfile,
+} from './profile.js';
 
 describe('profile mock data', () => {
   it('provides usage data for my page', () => {
@@ -31,5 +37,35 @@ describe('profile mock data', () => {
       adWatchCount: 3,
       memberExchangeCount: 1,
     });
+  });
+
+  it('builds a free-time expired prompt with reward actions', () => {
+    const profile = createProfileView({
+      usage: { usedMinutesToday: 70, totalMinutesToday: 70 },
+      settings: {
+        newUserFreeMinutes: 70,
+        inviteRewardMinutes: 30,
+        adRewardMinutes: 10,
+      },
+    });
+    const prompt = getTimeLimitPrompt(profile);
+
+    expect(isUsageExpired(profile.usage)).toBe(true);
+    expect(prompt).toMatchObject({
+      visible: true,
+      title: '免费时长已用完',
+      usedMinutes: 70,
+      inviteRewardMinutes: 30,
+      adRewardMinutes: 10,
+    });
+  });
+
+  it('treats explicit zero remaining minutes as expired', () => {
+    const profile = createProfileView({
+      usage: { usedMinutesToday: 18, totalMinutesToday: 70, remainingMinutes: 0 },
+    });
+
+    expect(profile.usage.remainingMinutes).toBe(0);
+    expect(isUsageExpired(profile.usage)).toBe(true);
   });
 });

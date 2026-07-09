@@ -30,7 +30,9 @@ function createProfileView(payload = {}) {
   const earnedMinutes = manualRewardMinutes + inviteCount * settings.inviteRewardMinutes + adWatchCount * settings.adRewardMinutes;
   const usedMinutesToday = toNumber(usage.used_minutes_today || usage.usedMinutesToday);
   const totalMinutesToday = toNumber(usage.total_minutes_today || usage.totalMinutesToday) || settings.newUserFreeMinutes + earnedMinutes;
-  const remainingMinutes = Math.max(0, toNumber(usage.remaining_minutes || usage.remainingMinutes) || totalMinutesToday - usedMinutesToday);
+  const hasRemainingMinutes = usage.remaining_minutes !== undefined || usage.remainingMinutes !== undefined;
+  const remainingValue = usage.remaining_minutes !== undefined ? usage.remaining_minutes : usage.remainingMinutes;
+  const remainingMinutes = Math.max(0, hasRemainingMinutes ? toNumber(remainingValue) : totalMinutesToday - usedMinutesToday);
   const registered = Boolean(user.registered || user.id || user.openid || user.nickname);
 
   return {
@@ -67,10 +69,36 @@ function getUsagePercent(usage = {}) {
   return total > 0 ? Math.round((used / total) * 100) : 0;
 }
 
+function isUsageExpired(usage = {}) {
+  const total = toNumber(usage.totalMinutesToday);
+  const remaining = toNumber(usage.remainingMinutes);
+  return total > 0 && remaining <= 0;
+}
+
+function getTimeLimitPrompt(profile = {}) {
+  const usage = profile.usage || {};
+  const settings = normalizeOperationSettings(profile.settings);
+  const usedMinutes = toNumber(usage.usedMinutesToday);
+  const expired = isUsageExpired(usage);
+  return {
+    visible: expired,
+    title: '免费时长已用完',
+    subtitle: '完成任务可继续使用',
+    usedMinutes,
+    message: `已用完 ${usedMinutes} 分钟，快去获取更多时长吧~`,
+    inviteRewardMinutes: settings.inviteRewardMinutes,
+    adRewardMinutes: settings.adRewardMinutes,
+    memberTitle: '开通会员无限使用',
+    memberSubtitle: '畅享所有功能，学习不受限',
+  };
+}
+
 module.exports = {
   createProfileView,
   defaultOperationSettings,
+  getTimeLimitPrompt,
   mockProfile,
+  isUsageExpired,
   normalizeOperationSettings,
   getUsagePercent,
 };

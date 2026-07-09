@@ -1,4 +1,9 @@
-const { createProfileView, defaultOperationSettings, getUsagePercent } = require('../../utils/profile');
+const {
+  createProfileView,
+  defaultOperationSettings,
+  getTimeLimitPrompt,
+  getUsagePercent,
+} = require('../../utils/profile');
 
 const PROFILE_STORAGE_KEY = 'diandu-my-profile';
 const SETTINGS_STORAGE_KEY = 'diandu-operation-settings';
@@ -25,6 +30,8 @@ Page({
     usagePercent: initialUsagePercent,
     ringDeg: initialUsagePercent * 3.6,
     menuItems: [],
+    timeLimitPrompt: getTimeLimitPrompt(initialProfile),
+    showTimeLimitPrompt: getTimeLimitPrompt(initialProfile).visible,
   },
   onLoad() {
     this.refreshProfile();
@@ -32,10 +39,13 @@ Page({
   refreshProfile() {
     const profile = createProfileView({ ...getProfilePayload(), settings: getSettings() });
     const usagePercent = getUsagePercent(profile.usage);
+    const timeLimitPrompt = getTimeLimitPrompt(profile);
     this.setData({
       profile,
       usagePercent,
       ringDeg: usagePercent * 3.6,
+      timeLimitPrompt,
+      showTimeLimitPrompt: timeLimitPrompt.visible,
       menuItems: [
         { icon: 'gift', title: '我的邀请', aside: `${profile.reward.inviteCount} 人` },
         { icon: 'coin', title: '我的奖励', aside: `已获得 ${profile.reward.earnedMinutes} 分钟` },
@@ -86,8 +96,16 @@ Page({
       ...payload,
       user: { ...payload.user, registered: true, nickname: payload.user.nickname || '小程序用户' },
       growth: { ...payload.growth, memberExchangeCount: Number(payload.growth.memberExchangeCount || 0) + 1 },
+      usage: {
+        ...payload.usage,
+        remainingMinutes: Math.max(this.data.profile.usage.remainingMinutes, 9999),
+        totalMinutesToday: Math.max(this.data.profile.usage.totalMinutesToday, this.data.profile.usage.usedMinutesToday + 9999),
+      },
     }));
     wx.showToast({ title: '已记录会员兑换', icon: 'none' });
+  },
+  closeTimeLimitPrompt() {
+    this.setData({ showTimeLimitPrompt: false });
   },
   loginPreview() {
     this.updateProfile((payload) => ({
@@ -99,12 +117,22 @@ Page({
     this.updateProfile((payload) => ({
       ...payload,
       growth: { ...payload.growth, inviteCount: Number(payload.growth.inviteCount || 0) + 1 },
+      usage: {
+        ...payload.usage,
+        remainingMinutes: this.data.profile.usage.remainingMinutes + this.data.profile.settings.inviteRewardMinutes,
+        totalMinutesToday: this.data.profile.usage.totalMinutesToday + this.data.profile.settings.inviteRewardMinutes,
+      },
     }));
   },
   claimAdReward() {
     this.updateProfile((payload) => ({
       ...payload,
       growth: { ...payload.growth, adWatchCount: Number(payload.growth.adWatchCount || 0) + 1 },
+      usage: {
+        ...payload.usage,
+        remainingMinutes: this.data.profile.usage.remainingMinutes + this.data.profile.settings.adRewardMinutes,
+        totalMinutesToday: this.data.profile.usage.totalMinutesToday + this.data.profile.settings.adRewardMinutes,
+      },
     }));
   },
   noop() {},
