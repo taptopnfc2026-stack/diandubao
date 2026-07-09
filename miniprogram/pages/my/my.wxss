@@ -1,0 +1,382 @@
+page {
+  min-height: 100vh;
+  padding-bottom: 160rpx;
+  background:
+    radial-gradient(circle at 18% 6%, rgba(169, 237, 255, 0.86), transparent 34%),
+    linear-gradient(180deg, #e9f8ff 0%, #f7f8fa 48%, #f7f8fa 100%);
+}
+
+.my-page {
+  padding: 34rpx 28rpx 42rpx;
+}
+
+.my-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 26rpx;
+}
+
+.my-header > text {
+  font-size: 34rpx;
+  font-weight: 900;
+  color: #101828;
+}
+
+.mini-capsule {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.mini-capsule .capsule-line {
+  width: 2rpx;
+  height: 28rpx;
+  background: #d7dde6;
+}
+
+.mini-capsule .capsule-dot,
+.mini-capsule .capsule-ring {
+  width: 24rpx;
+  height: 24rpx;
+  border: 4rpx solid #111827;
+  border-radius: 50%;
+}
+
+.mini-capsule .capsule-ring {
+  width: 16rpx;
+  height: 16rpx;
+  border-width: 3rpx;
+}
+
+.profile-card,
+.usage-card,
+.my-menu {
+  border-radius: 22rpx;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 14rpx 34rpx rgba(38, 80, 120, 0.08);
+}
+
+.profile-card {
+  display: grid;
+  grid-template-columns: 96rpx 1fr auto;
+  gap: 22rpx;
+  align-items: center;
+  min-height: 142rpx;
+  padding: 24rpx 28rpx;
+}
+
+.avatar-face {
+  position: relative;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(160deg, #ffe0c9 0%, #fff3df 54%, #76d7ff 55%);
+}
+
+.avatar-face::before {
+  content: "";
+  position: absolute;
+  left: 24rpx;
+  top: 14rpx;
+  width: 42rpx;
+  height: 30rpx;
+  border-radius: 50% 50% 46% 46%;
+  background: #6d351f;
+}
+
+.avatar-face view {
+  position: absolute;
+  left: 30rpx;
+  top: 38rpx;
+  width: 28rpx;
+  height: 18rpx;
+  border-radius: 0 0 18rpx 18rpx;
+  border-bottom: 4rpx solid #d96d5f;
+}
+
+.profile-copy {
+  display: grid;
+  gap: 8rpx;
+}
+
+.profile-copy text:first-child {
+  font-size: 30rpx;
+  font-weight: 900;
+  color: #121826;
+}
+
+.profile-copy text:last-child {
+  font-size: 22rpx;
+  color: #667085;
+}
+
+.profile-card button {
+  padding: 16rpx 26rpx;
+  border-radius: 999rpx;
+  color: #fff;
+  font-size: 22rpx;
+  font-weight: 800;
+  background: linear-gradient(135deg, #4cc6ff, #1688ff);
+}
+
+.profile-card button::after,
+.member-card::after,
+.my-menu button::after,
+.bottom-tabbar button::after,
+.usage-actions button::after {
+  display: none;
+}
+
+.usage-card {
+  margin-top: 24rpx;
+  padding: 26rpx 28rpx 28rpx;
+}
+
+.card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 24rpx;
+}
+
+.card-title text:first-child {
+  font-weight: 900;
+  color: #1f2937;
+}
+
+.card-title text:last-child {
+  color: #98a2b3;
+}
+
+.usage-content {
+  display: grid;
+  grid-template-columns: 142rpx 1fr;
+  gap: 34rpx;
+  align-items: center;
+  margin-top: 24rpx;
+}
+
+.usage-ring {
+  display: grid;
+  place-items: center;
+  width: 142rpx;
+  height: 142rpx;
+  border-radius: 50%;
+}
+
+.usage-ring view {
+  display: grid;
+  place-items: center;
+  width: 108rpx;
+  height: 108rpx;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.usage-ring text:first-child {
+  font-size: 40rpx;
+  font-weight: 900;
+}
+
+.usage-ring text:last-child {
+  font-size: 20rpx;
+}
+
+.usage-info {
+  display: grid;
+  gap: 14rpx;
+  color: #344054;
+  font-size: 22rpx;
+}
+
+.usage-bar {
+  height: 12rpx;
+  border-radius: 999rpx;
+  overflow: hidden;
+  background: #edf5ff;
+}
+
+.usage-bar view {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #24a9ff, #118cff);
+}
+
+.usage-info > text:nth-child(3) {
+  justify-self: end;
+}
+
+.usage-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14rpx;
+}
+
+.usage-actions button {
+  display: grid;
+  gap: 4rpx;
+  justify-items: center;
+  min-height: 74rpx;
+  padding: 10rpx;
+  border-radius: 14rpx;
+  color: #253044;
+  font-size: 21rpx;
+  font-weight: 800;
+  line-height: 1.2;
+  background: linear-gradient(135deg, #eef9ff, #f3f5ff);
+}
+
+.usage-actions text {
+  color: #168ff3;
+}
+
+.usage-actions .action-reward {
+  color: #3b4657;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+.member-card {
+  display: grid;
+  grid-template-columns: 48rpx 1fr auto;
+  gap: 16rpx;
+  align-items: center;
+  width: 100%;
+  margin-top: 24rpx;
+  padding: 18rpx 24rpx;
+  border-radius: 18rpx;
+  color: #7a4a09;
+  text-align: left;
+  background: linear-gradient(90deg, #fff8e8, #fff1d4);
+}
+
+.member-card > text:first-child {
+  display: grid;
+  place-items: center;
+  width: 42rpx;
+  height: 42rpx;
+  border-radius: 50%;
+  color: #f7a91b;
+  background: #fff;
+}
+
+.member-card view {
+  display: grid;
+  gap: 4rpx;
+}
+
+.member-card view text:first-child {
+  font-size: 24rpx;
+  font-weight: 900;
+}
+
+.member-card view text:last-child,
+.member-card > text:last-child {
+  font-size: 20rpx;
+}
+
+.my-menu {
+  margin-top: 22rpx;
+  overflow: hidden;
+}
+
+.my-menu button {
+  display: grid;
+  grid-template-columns: 38rpx 1fr auto 24rpx;
+  gap: 18rpx;
+  align-items: center;
+  width: 100%;
+  min-height: 84rpx;
+  padding: 0 28rpx;
+  border-bottom: 1rpx solid #eef1f5;
+  color: #1f2937;
+  text-align: left;
+  font-size: 25rpx;
+  font-weight: 700;
+  background: #fff;
+}
+
+.my-menu button:last-child {
+  border-bottom: 0;
+}
+
+.my-menu button > text:nth-child(3) {
+  color: #ff7a2d;
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.my-menu button > text:last-child {
+  color: #98a2b3;
+}
+
+.menu-icon {
+  display: block;
+  width: 28rpx;
+  height: 28rpx;
+  border: 3rpx solid currentColor;
+  border-radius: 8rpx;
+  color: #20b5ff;
+}
+
+.menu-icon.gift {
+  color: #ff7a2d;
+}
+
+.menu-icon.coin {
+  color: #ff7a2d;
+  border-radius: 50%;
+}
+
+.menu-icon.clock,
+.menu-icon.gear {
+  color: #6c82ff;
+  border-radius: 50%;
+}
+
+.menu-icon.chart,
+.menu-icon.card {
+  color: #22cfc5;
+}
+
+.bottom-tabbar {
+  position: fixed;
+  left: 28rpx;
+  right: 28rpx;
+  bottom: 22rpx;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12rpx;
+  padding: 12rpx;
+  border-radius: 30rpx;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 16rpx 38rpx rgba(38, 80, 120, 0.16);
+}
+
+.bottom-tabbar button {
+  display: grid;
+  gap: 4rpx;
+  justify-items: center;
+  padding: 12rpx 0;
+  border-radius: 22rpx;
+  color: #6f7b8c;
+  font-size: 22rpx;
+  line-height: 1.2;
+  background: transparent;
+}
+
+.bottom-tabbar .tab-icon {
+  font-size: 34rpx;
+  font-weight: 800;
+}
+
+.bottom-tabbar button.active {
+  color: #159df2;
+  background: #eaf7ff;
+}

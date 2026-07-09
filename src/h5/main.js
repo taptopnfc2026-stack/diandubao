@@ -10,6 +10,7 @@ import {
   normalizePhonicsDetail,
 } from '../shared/learning.js';
 import { getNextPageNumber, getSwipePageDelta, selectReaderPage } from '../shared/navigation.js';
+import { getUsagePercent, mockProfile } from '../shared/profile.js';
 import {
   StudyStep,
   buildChooseOptions,
@@ -420,6 +421,9 @@ function getEventPoint(event, key = 'touches') {
 
 window.diandu = {
   loadHome,
+  loadMy() {
+    setState({ view: 'my' });
+  },
   loadBooks,
   selectCategory(id) {
     loadBooks(Number(id));
@@ -515,6 +519,22 @@ function renderShell(content) {
   `;
 }
 
+function renderBottomTabs(active = 'home') {
+  return `
+    <footer class="bottom-tabbar">
+      <button class="${active === 'home' ? 'active' : ''}" onclick="diandu.loadHome()">
+        <span>⌂</span><small>首页</small>
+      </button>
+      <button onclick="diandu.loadReader()">
+        <span>▣</span><small>点读</small>
+      </button>
+      <button class="${active === 'my' ? 'active' : ''}" onclick="diandu.loadMy()">
+        <span>○</span><small>我的</small>
+      </button>
+    </footer>
+  `;
+}
+
 function renderHome() {
   const book = state.currentBook || {};
   const cover = normalizeUrl(book.book_img || book.bookurl || '');
@@ -539,6 +559,77 @@ function renderHome() {
         <button onclick="diandu.loadPhonics()">自然拼读</button>
       </div>
     </section>
+    ${renderBottomTabs('home')}
+  `);
+}
+
+function renderMy() {
+  const profile = mockProfile;
+  const usagePercent = getUsagePercent(profile.usage);
+  const menuItems = [
+    ['gift', '我的邀请', ''],
+    ['coin', '我的奖励', `已获得 ${profile.reward.earnedMinutes} 分钟`],
+    ['card', '兑换记录', ''],
+    ['clock', '观看记录', ''],
+    ['chart', '学习报告', ''],
+    ['gear', '设置', ''],
+  ];
+  renderShell(`
+    <section class="my-page">
+      <header class="my-header">
+        <h1>我的</h1>
+        <div class="mini-capsule" aria-label="小程序菜单"><span>•••</span><i></i><b></b><em></em></div>
+      </header>
+
+      <section class="profile-card">
+        <div class="avatar-face"><span></span></div>
+        <div>
+          <strong>${escapeHtml(profile.user.title)}</strong>
+          <p>${escapeHtml(profile.user.subtitle)}</p>
+        </div>
+        <button>立即登录</button>
+      </section>
+
+      <section class="usage-card">
+        <div class="card-title">
+          <strong>我的使用时长</strong>
+          <span>明细 ›</span>
+        </div>
+        <div class="usage-content">
+          <div class="usage-ring" style="--progress:${usagePercent * 3.6}deg">
+            <strong>${escapeHtml(profile.usage.remainingMinutes)}</strong>
+            <span>分钟</span>
+          </div>
+          <div class="usage-info">
+            <span>今日已用 ${escapeHtml(profile.usage.usedMinutesToday)} 分钟</span>
+            <div class="usage-bar"><i style="width:${usagePercent}%"></i></div>
+            <small>${escapeHtml(profile.usage.usedMinutesToday)}/${escapeHtml(profile.usage.totalMinutesToday)} 分钟</small>
+            <div class="usage-actions">
+              <button><b>＋</b>邀请好友<br><small>+20分钟</small></button>
+              <button><b>▶</b>观看广告<br><small>+10分钟</small></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <button class="member-card">
+        <span>♕</span>
+        <div><strong>兑换会员</strong><small>开通会员，畅享更多权益</small></div>
+        <b>立即兑换 ›</b>
+      </button>
+
+      <section class="my-menu">
+        ${menuItems.map(([icon, title, aside]) => `
+          <button>
+            <span class="menu-icon ${icon}"></span>
+            <strong>${escapeHtml(title)}</strong>
+            ${aside ? `<small>${escapeHtml(aside)}</small>` : '<small></small>'}
+            <b>›</b>
+          </button>
+        `).join('')}
+      </section>
+    </section>
+    ${renderBottomTabs('my')}
   `);
 }
 
@@ -980,6 +1071,7 @@ function render() {
   else if (state.view === 'vocabulary') renderVocabulary();
   else if (state.view === 'wordStudy') renderWordStudy();
   else if (state.view === 'wordStudyResult') renderWordStudyResult();
+  else if (state.view === 'my') renderMy();
   else renderHome();
 }
 

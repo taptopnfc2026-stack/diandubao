@@ -37,6 +37,9 @@ Page({
   openPhonics() {
     wx.navigateTo({ url: '/pages/phonics/phonics' });
   },
+  openMy() {
+    wx.navigateTo({ url: '/pages/my/my' });
+  },
   startReader() {
     const book = this.data.book;
     const bookId = book && (book.id || book.book_id);

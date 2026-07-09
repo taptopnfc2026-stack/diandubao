@@ -4,6 +4,11 @@
   background: linear-gradient(180deg, #d7f8ff 0%, #eef9ff 100%);
 }
 
+page {
+  padding-bottom: 150rpx;
+  background: #f7f8fa;
+}
+
 .topbar {
   display: flex;
   align-items: center;
@@ -101,4 +106,45 @@
 
 .quick-grid button:nth-child(3) {
   background: #fff6e6;
+}
+
+.bottom-tabbar {
+  position: fixed;
+  left: 28rpx;
+  right: 28rpx;
+  bottom: 22rpx;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12rpx;
+  padding: 12rpx;
+  border-radius: 30rpx;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 16rpx 38rpx rgba(38, 80, 120, 0.16);
+}
+
+.bottom-tabbar button {
+  display: grid;
+  gap: 4rpx;
+  justify-items: center;
+  padding: 12rpx 0;
+  border-radius: 22rpx;
+  color: #6f7b8c;
+  font-size: 22rpx;
+  line-height: 1.2;
+  background: transparent;
+}
+
+.bottom-tabbar button::after {
+  display: none;
+}
+
+.bottom-tabbar .tab-icon {
+  font-size: 34rpx;
+  font-weight: 800;
+}
+
+.bottom-tabbar button.active {
+  color: #159df2;
+  background: #eaf7ff;
 }

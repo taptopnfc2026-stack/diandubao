@@ -14,4 +14,16 @@ describe('launch visibility', () => {
     expect(miniApp.pages).not.toContain('pages/vocabulary/vocabulary');
     expect(miniApp.pages).not.toContain('pages/word-study/word-study');
   });
+
+  it('exposes my page as the last launch tab', () => {
+    const h5Main = readFileSync('src/h5/main.js', 'utf8');
+    const miniHomeWxml = readFileSync('miniprogram/pages/home/home.wxml', 'utf8');
+    const miniHomeJs = readFileSync('miniprogram/pages/home/home.js', 'utf8');
+    const miniApp = JSON.parse(readFileSync('miniprogram/app.json', 'utf8'));
+
+    expect(h5Main).toContain('diandu.loadMy()');
+    expect(miniHomeWxml).toContain('我的');
+    expect(miniHomeJs).toContain('openMy');
+    expect(miniApp.pages).toContain('pages/my/my');
+  });
 });

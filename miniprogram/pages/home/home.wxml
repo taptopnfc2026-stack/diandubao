@@ -19,3 +19,18 @@
     <button bindtap="openPhonics">自然拼读</button>
   </view>
 </view>
+
+<view class="bottom-tabbar">
+  <button class="active">
+    <text class="tab-icon">⌂</text>
+    <text>首页</text>
+  </button>
+  <button bindtap="startReader">
+    <text class="tab-icon">▣</text>
+    <text>点读</text>
+  </button>
+  <button bindtap="openMy">
+    <text class="tab-icon">○</text>
+    <text>我的</text>
+  </button>
+</view>
