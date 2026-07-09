@@ -43,6 +43,7 @@ const demoPayload = {
 
 const SETTINGS_KEY = 'diandu-operation-settings';
 const PROFILE_KEY = 'diandu-my-profile';
+const USER_OVERRIDES_KEY = 'diandu-admin-user-overrides';
 
 function readJson(key, fallback) {
   try {
@@ -61,10 +62,22 @@ function readLocalProfile() {
   return readJson(PROFILE_KEY, null);
 }
 
+function readUserOverrides() {
+  return readJson(USER_OVERRIDES_KEY, {});
+}
+
+function applyUserOverrides(users) {
+  const overrides = readUserOverrides();
+  return users.map((user) => ({
+    ...user,
+    ...(overrides[String(user.id)] || {}),
+  }));
+}
+
 function mergeLocalPreviewData(payload) {
   const settings = readLocalSettings();
   const profile = readLocalProfile();
-  if (!profile) return { ...payload, settings };
+  if (!profile) return { ...payload, settings, users: applyUserOverrides(payload.users) };
 
   const growth = profile.growth || {};
   const usage = profile.usage || {};
@@ -90,7 +103,7 @@ function mergeLocalPreviewData(payload) {
     member_exchange_count: memberExchangeCount,
   };
 
-  return {
+  const merged = {
     ...payload,
     settings,
     counters: {
@@ -113,6 +126,10 @@ function mergeLocalPreviewData(payload) {
       ...payload.rewards,
     ],
   };
+  return {
+    ...merged,
+    users: applyUserOverrides(merged.users),
+  };
 }
 
 export async function fetchDashboard() {
@@ -134,5 +151,15 @@ export async function saveOperationSettings(settings) {
     inviteRewardMinutes: Number(settings.inviteRewardMinutes || 0),
     adRewardMinutes: Number(settings.adRewardMinutes || 0),
   }));
+  return fetchDashboard();
+}
+
+export async function saveUserProfile(id, patch) {
+  const overrides = readUserOverrides();
+  overrides[String(id)] = {
+    ...(overrides[String(id)] || {}),
+    ...patch,
+  };
+  localStorage.setItem(USER_OVERRIDES_KEY, JSON.stringify(overrides));
   return fetchDashboard();
 }

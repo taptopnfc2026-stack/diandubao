@@ -249,7 +249,7 @@ table {
 
 th,
 td {
-  padding: 12px 10px;
+  padding: 10px 8px;
   border-bottom: 1px solid #edf1f6;
   text-align: left;
 }
@@ -266,6 +266,51 @@ th {
   background: #eaf4ff;
   color: #1677c9;
   font-weight: 700;
+}
+
+.user-edit-form {
+  display: none;
+}
+
+.user-input {
+  width: 112px;
+  height: 34px;
+  padding: 0 9px;
+  border: 1px solid #d8dee9;
+  border-radius: 6px;
+  background: #fff;
+  color: #172033;
+}
+
+.user-input:focus {
+  outline: 2px solid rgba(24, 141, 240, 0.18);
+  border-color: #188df0;
+}
+
+.wide-input {
+  width: 170px;
+}
+
+.number-input {
+  width: 72px;
+}
+
+.minute-input {
+  width: 92px;
+}
+
+.time-input {
+  width: 174px;
+}
+
+.save-row-button {
+  height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: #188df0;
+  color: #fff;
+  font-weight: 800;
 }
 
 .plan-row,

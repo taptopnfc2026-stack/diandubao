@@ -1,5 +1,5 @@
 import { formatDateTime, normalizeDashboard } from './adminData.js';
-import { fetchDashboard, saveOperationSettings } from './adminApi.js';
+import { fetchDashboard, saveOperationSettings, saveUserProfile } from './adminApi.js';
 import './styles.css';
 
 const app = document.querySelector('#admin-app');
@@ -22,6 +22,20 @@ function escapeHtml(value) {
     '"': '&quot;',
     "'": '&#39;',
   })[char]);
+}
+
+function toDateTimeLocal(value) {
+  const timestamp = Number(value || 0);
+  if (!timestamp) return '';
+  const date = new Date(timestamp * 1000);
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
+
+function fromDateTimeLocal(value) {
+  if (!value) return 0;
+  const timestamp = Math.floor(new Date(value).getTime() / 1000);
+  return Number.isFinite(timestamp) ? timestamp : 0;
 }
 
 function setState(patch) {
@@ -57,6 +71,25 @@ window.adminApp = {
       newUserFreeMinutes: form.get('newUserFreeMinutes'),
       inviteRewardMinutes: form.get('inviteRewardMinutes'),
       adRewardMinutes: form.get('adRewardMinutes'),
+    });
+    setState({ dashboard: normalizeDashboard(payload), loading: false });
+  },
+  async saveUser(event, id) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    setState({ loading: true });
+    const payload = await saveUserProfile(id, {
+      nickname: form.get('nickname'),
+      mobile: form.get('mobile'),
+      currentBook: form.get('currentBook'),
+      currentPage: Number(form.get('currentPage') || 0),
+      memberState: form.get('memberState'),
+      inviteCount: Number(form.get('inviteCount') || 0),
+      adWatchCount: Number(form.get('adWatchCount') || 0),
+      rewardMinutes: Number(form.get('rewardMinutes') || 0),
+      remainingMinutes: Number(form.get('remainingMinutes') || 0),
+      memberExchangeCount: Number(form.get('memberExchangeCount') || 0),
+      lastLoginTime: fromDateTimeLocal(form.get('lastLoginTime')),
     });
     setState({ dashboard: normalizeDashboard(payload), loading: false });
   },
@@ -138,22 +171,30 @@ function renderUsersTable(users) {
   return `
     <section class="panel wide">
       <h2>用户管理</h2>
+      ${users.map((user) => `
+        <form id="user-form-${escapeHtml(user.id)}" class="user-edit-form" onsubmit="adminApp.saveUser(event, '${escapeHtml(user.id)}')"></form>
+      `).join('')}
       <table>
-        <thead><tr><th>用户</th><th>手机号</th><th>当前教材</th><th>页数</th><th>会员</th><th>邀请</th><th>广告</th><th>奖励</th><th>剩余</th><th>兑换</th><th>最近登录</th></tr></thead>
+        <thead><tr><th>用户</th><th>手机号</th><th>当前教材</th><th>页数</th><th>会员</th><th>邀请</th><th>广告</th><th>奖励</th><th>剩余</th><th>兑换</th><th>最近登录</th><th>操作</th></tr></thead>
         <tbody>
           ${users.map((user) => `
             <tr>
-              <td>${escapeHtml(user.nickname)}</td>
-              <td>${escapeHtml(user.mobile || '-')}</td>
-              <td>${escapeHtml(user.currentBook)}</td>
-              <td>${user.currentPage}</td>
-              <td><span class="badge">${escapeHtml(user.memberState)}</span></td>
-              <td>${user.inviteCount}</td>
-              <td>${user.adWatchCount}</td>
-              <td>${user.rewardMinutes} 分钟</td>
-              <td>${user.remainingMinutes} 分钟</td>
-              <td>${user.memberExchangeCount}</td>
-              <td>${formatDateTime(user.lastLoginTime)}</td>
+              <td><input form="user-form-${escapeHtml(user.id)}" class="user-input" name="nickname" value="${escapeHtml(user.nickname)}" /></td>
+              <td><input form="user-form-${escapeHtml(user.id)}" class="user-input" name="mobile" value="${escapeHtml(user.mobile || '')}" placeholder="-" /></td>
+              <td><input form="user-form-${escapeHtml(user.id)}" class="user-input wide-input" name="currentBook" value="${escapeHtml(user.currentBook)}" /></td>
+              <td><input form="user-form-${escapeHtml(user.id)}" class="user-input number-input" name="currentPage" type="number" min="0" value="${user.currentPage}" /></td>
+              <td>
+                <select form="user-form-${escapeHtml(user.id)}" class="user-input" name="memberState">
+                  ${['免费', '会员', '已过期'].map((stateName) => `<option value="${stateName}" ${user.memberState === stateName ? 'selected' : ''}>${stateName}</option>`).join('')}
+                </select>
+              </td>
+              <td><input form="user-form-${escapeHtml(user.id)}" class="user-input number-input" name="inviteCount" type="number" min="0" value="${user.inviteCount}" /></td>
+              <td><input form="user-form-${escapeHtml(user.id)}" class="user-input number-input" name="adWatchCount" type="number" min="0" value="${user.adWatchCount}" /></td>
+              <td><input form="user-form-${escapeHtml(user.id)}" class="user-input minute-input" name="rewardMinutes" type="number" min="0" value="${user.rewardMinutes}" /></td>
+              <td><input form="user-form-${escapeHtml(user.id)}" class="user-input minute-input" name="remainingMinutes" type="number" min="0" value="${user.remainingMinutes}" /></td>
+              <td><input form="user-form-${escapeHtml(user.id)}" class="user-input number-input" name="memberExchangeCount" type="number" min="0" value="${user.memberExchangeCount}" /></td>
+              <td><input form="user-form-${escapeHtml(user.id)}" class="user-input time-input" name="lastLoginTime" type="datetime-local" value="${toDateTimeLocal(user.lastLoginTime)}" title="${formatDateTime(user.lastLoginTime)}" /></td>
+              <td><button form="user-form-${escapeHtml(user.id)}" class="save-row-button">保存</button></td>
             </tr>
           `).join('')}
         </tbody>
