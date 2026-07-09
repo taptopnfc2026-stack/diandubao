@@ -112,7 +112,19 @@ function getOperationSettings() {
   return normalizeOperationSettings(readJsonStorage(SETTINGS_STORAGE_KEY, defaultOperationSettings));
 }
 
+function isTimeLimitPreview() {
+  return new URLSearchParams(window.location.search).get('timeLimitPreview') === '1';
+}
+
 function getProfilePayload() {
+  if (isTimeLimitPreview()) {
+    return {
+      user: { registered: false },
+      usage: { usedMinutesToday: 70, totalMinutesToday: 70, remainingMinutes: 0 },
+      growth: { inviteCount: 0, adWatchCount: 0, memberExchangeCount: 0 },
+      reward: { manualRewardMinutes: 0 },
+    };
+  }
   return readJsonStorage(PROFILE_STORAGE_KEY, {
     user: { registered: false },
     usage: { usedMinutesToday: 18 },
