@@ -446,18 +446,37 @@ page {
 .time-limit-avatar::before {
   content: "";
   position: absolute;
-  left: 54rpx;
-  top: 28rpx;
-  width: 78rpx;
-  height: 56rpx;
+  left: 50rpx;
+  top: 24rpx;
+  width: 88rpx;
+  height: 64rpx;
   border-radius: 52% 48% 42% 44%;
   background: #7b3f24;
+  box-shadow:
+    -20rpx 20rpx 0 -12rpx #7b3f24,
+    24rpx 20rpx 0 -12rpx #7b3f24,
+    6rpx -8rpx 0 -3rpx #8d4a2b;
+}
+
+.time-limit-avatar::after {
+  content: "";
+  position: absolute;
+  left: 56rpx;
+  top: 62rpx;
+  width: 74rpx;
+  height: 74rpx;
+  border-radius: 50%;
+  background: #ffd6bf;
+  box-shadow:
+    inset 16rpx 0 0 rgba(255, 232, 218, 0.8),
+    44rpx 40rpx 0 -22rpx #ffd54c,
+    -42rpx 50rpx 0 -24rpx #ffd54c;
 }
 
 .time-limit-avatar view {
   position: absolute;
   left: 52rpx;
-  bottom: 30rpx;
+  bottom: 24rpx;
   width: 82rpx;
   height: 82rpx;
   border-radius: 22rpx 22rpx 42rpx 42rpx;
@@ -467,8 +486,8 @@ page {
 .time-limit-avatar view::after {
   content: "";
   position: absolute;
-  right: -28rpx;
-  top: -12rpx;
+  right: -34rpx;
+  top: 8rpx;
   width: 58rpx;
   height: 58rpx;
   border-radius: 16rpx;
@@ -526,7 +545,7 @@ page {
 .time-limit-actions button,
 .time-limit-member {
   display: grid;
-  grid-template-columns: 88rpx 1fr auto auto;
+  grid-template-columns: 88rpx 1fr auto;
   gap: 18rpx;
   align-items: center;
   width: 100%;
@@ -583,6 +602,12 @@ page {
   font-weight: 900;
 }
 
+.limit-task-side {
+  display: grid;
+  gap: 10rpx;
+  justify-items: end;
+}
+
 .limit-action {
   padding: 16rpx 22rpx;
   border-radius: 999rpx;
@@ -632,4 +657,159 @@ page {
   text-align: center;
   color: #8a94a6;
   font-size: 24rpx;
+}
+
+.task-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 30rpx;
+  background: rgba(30, 45, 70, 0.52);
+}
+
+.task-sheet {
+  position: relative;
+  width: 100%;
+  padding: 42rpx 30rpx 34rpx;
+  border-radius: 36rpx;
+  background: linear-gradient(180deg, #fbfdff 0%, #f4f8ff 100%);
+  box-shadow: 0 34rpx 90rpx rgba(10, 28, 60, 0.26);
+}
+
+.task-close {
+  position: absolute;
+  top: 18rpx;
+  right: 18rpx;
+  display: grid;
+  place-items: center;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: #eef2f7;
+  color: #4b5563;
+  font-size: 44rpx;
+  font-weight: 900;
+}
+
+.task-close::after,
+.task-primary::after {
+  display: none;
+}
+
+.task-hero {
+  display: grid;
+  grid-template-columns: 96rpx 1fr;
+  gap: 22rpx;
+  align-items: center;
+  padding-right: 72rpx;
+}
+
+.task-icon {
+  display: grid;
+  place-items: center;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 26rpx;
+  background: linear-gradient(135deg, #4fc3ff, #1688ff);
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: 900;
+}
+
+.task-icon.ad {
+  background: linear-gradient(135deg, #b982ff, #7c4dff);
+}
+
+.task-icon.crown {
+  background: linear-gradient(135deg, #ffd971, #f0a22a);
+}
+
+.task-hero view {
+  display: grid;
+  gap: 8rpx;
+}
+
+.task-hero view text:first-child {
+  color: #111827;
+  font-size: 36rpx;
+  font-weight: 900;
+}
+
+.task-hero view text:last-child {
+  color: #ff8500;
+  font-size: 26rpx;
+  font-weight: 900;
+}
+
+.task-copy {
+  margin: 26rpx 0 22rpx;
+  color: #667085;
+  font-size: 27rpx;
+  line-height: 1.7;
+}
+
+.task-steps {
+  display: grid;
+  gap: 14rpx;
+  margin-bottom: 26rpx;
+}
+
+.task-steps text,
+.task-video,
+.task-member-card {
+  padding: 22rpx;
+  border-radius: 22rpx;
+  background: #fff;
+  color: #344054;
+  font-size: 26rpx;
+  box-shadow: 0 10rpx 30rpx rgba(28, 42, 68, 0.06);
+}
+
+.task-video {
+  display: grid;
+  place-items: center;
+  height: 220rpx;
+  margin-bottom: 26rpx;
+  border: 2rpx dashed #b8dcff;
+  color: #159df2;
+}
+
+.task-member-card {
+  display: grid;
+  gap: 8rpx;
+  margin-bottom: 26rpx;
+  background: linear-gradient(90deg, #fff7e8, #fff0d0);
+  border: 1rpx solid #ffe1a8;
+}
+
+.task-member-card text:first-child {
+  color: #5b3600;
+  font-size: 30rpx;
+  font-weight: 900;
+}
+
+.task-member-card text:last-child {
+  color: #8a651f;
+}
+
+.task-primary {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 999rpx;
+  background: #1688ff;
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: 900;
+}
+
+.task-primary.purple {
+  background: #855cff;
+}
+
+.task-primary.gold {
+  background: #f3c268;
+  color: #70470a;
 }

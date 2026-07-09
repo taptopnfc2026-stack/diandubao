@@ -35,14 +35,14 @@
         <view class="usage-bar"><view style="width: {{usagePercent}}%;"></view></view>
         <text>{{profile.usage.usedMinutesToday}}/{{profile.usage.totalMinutesToday}} 分钟</text>
         <view class="usage-actions">
-          <button bindtap="claimInviteReward"><text>＋</text><text>邀请好友</text><text class="action-reward">+{{profile.settings.inviteRewardMinutes}}分钟</text></button>
-          <button bindtap="claimAdReward"><text>▶</text><text>观看广告</text><text class="action-reward">+{{profile.settings.adRewardMinutes}}分钟</text></button>
+          <button bindtap="openInviteTask"><text>＋</text><text>邀请好友</text><text class="action-reward">+{{profile.settings.inviteRewardMinutes}}分钟</text></button>
+          <button bindtap="openAdTask"><text>▶</text><text>观看广告</text><text class="action-reward">+{{profile.settings.adRewardMinutes}}分钟</text></button>
         </view>
       </view>
     </view>
   </view>
 
-  <button class="member-card" bindtap="openMember">
+  <button class="member-card" bindtap="openMemberTask">
     <text>♕</text>
     <view>
       <text>兑换会员</text>
@@ -79,29 +79,33 @@
     <view class="time-limit-title">做任务获取更多时长</view>
 
     <view class="time-limit-actions">
-      <button bindtap="claimInviteReward">
+      <button bindtap="openInviteTask">
         <text class="limit-icon invite">＋</text>
         <view>
           <text>邀请好友</text>
           <text>每成功邀请1位好友</text>
         </view>
-        <text class="limit-reward">+{{timeLimitPrompt.inviteRewardMinutes}} 分钟</text>
-        <text class="limit-action">去邀请</text>
+        <view class="limit-task-side">
+          <text class="limit-reward">+{{timeLimitPrompt.inviteRewardMinutes}} 分钟</text>
+          <text class="limit-action">去邀请</text>
+        </view>
       </button>
-      <button bindtap="claimAdReward">
+      <button bindtap="openAdTask">
         <text class="limit-icon ad">▶</text>
         <view>
           <text>观看广告</text>
           <text>观看完整视频广告</text>
         </view>
-        <text class="limit-reward">+{{timeLimitPrompt.adRewardMinutes}} 分钟</text>
-        <text class="limit-action purple">去观看</text>
+        <view class="limit-task-side">
+          <text class="limit-reward">+{{timeLimitPrompt.adRewardMinutes}} 分钟</text>
+          <text class="limit-action purple">去观看</text>
+        </view>
       </button>
     </view>
 
     <view class="time-limit-divider"><text>或</text></view>
 
-    <button class="time-limit-member" bindtap="openMember">
+    <button class="time-limit-member" bindtap="openMemberTask">
       <text class="limit-icon crown">♕</text>
       <view>
         <text>{{timeLimitPrompt.memberTitle}}</text>
@@ -111,6 +115,55 @@
     </button>
 
     <view class="time-limit-safe">◆ 安全可靠，家长放心</view>
+  </view>
+</view>
+
+<view wx:if="{{taskView}}" class="task-mask">
+  <view class="task-sheet">
+    <button class="task-close" bindtap="closeTaskView">×</button>
+    <block wx:if="{{taskView == 'invite'}}">
+      <view class="task-hero">
+        <text class="task-icon invite">＋</text>
+        <view>
+          <text>邀请好友</text>
+          <text>+{{profile.settings.inviteRewardMinutes}} 分钟</text>
+        </view>
+      </view>
+      <view class="task-copy">分享点读助手给好友，好友完成登录 / 注册后即可获得奖励时长。</view>
+      <view class="task-steps">
+        <text>1. 分享邀请海报或口令</text>
+        <text>2. 好友完成登录 / 注册</text>
+        <text>3. 系统发放免费时长</text>
+      </view>
+      <button class="task-primary" bindtap="completeInviteTask">模拟邀请成功</button>
+    </block>
+    <block wx:elif="{{taskView == 'ad'}}">
+      <view class="task-hero">
+        <text class="task-icon ad">▶</text>
+        <view>
+          <text>观看广告</text>
+          <text>+{{profile.settings.adRewardMinutes}} 分钟</text>
+        </view>
+      </view>
+      <view class="task-copy">观看完整激励视频广告后，可继续使用点读和练习功能。</view>
+      <view class="task-video">广告视频预览位</view>
+      <button class="task-primary purple" bindtap="completeAdTask">完成观看并领取</button>
+    </block>
+    <block wx:else>
+      <view class="task-hero">
+        <text class="task-icon crown">♕</text>
+        <view>
+          <text>开通会员</text>
+          <text>学习不受限</text>
+        </view>
+      </view>
+      <view class="task-copy">开通会员后可不受免费时长限制，后续可扩展教材包和学习报告权益。</view>
+      <view class="task-member-card">
+        <text>会员无限使用</text>
+        <text>适合长期学习英语点读</text>
+      </view>
+      <button class="task-primary gold" bindtap="completeMemberTask">模拟开通会员</button>
+    </block>
   </view>
 </view>
 

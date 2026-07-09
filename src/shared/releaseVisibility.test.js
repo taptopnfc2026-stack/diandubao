@@ -26,4 +26,28 @@ describe('launch visibility', () => {
     expect(miniHomeJs).toContain('openMy');
     expect(miniApp.pages).toContain('pages/my/my');
   });
+
+  it('routes expired-time actions into task flows before rewards are granted', () => {
+    const h5Main = readFileSync('src/h5/main.js', 'utf8');
+    const miniMyWxml = readFileSync('miniprogram/pages/my/my.wxml', 'utf8');
+    const miniMyJs = readFileSync('miniprogram/pages/my/my.js', 'utf8');
+
+    expect(h5Main).toContain('diandu.openInviteTask()');
+    expect(h5Main).toContain('diandu.openAdTask()');
+    expect(h5Main).toContain('diandu.openMemberTask()');
+    expect(h5Main).not.toContain('<button onclick="diandu.claimInviteReward()">');
+    expect(h5Main).not.toContain('<button onclick="diandu.claimAdReward()">');
+    expect(h5Main).not.toContain('<button class="time-limit-member" onclick="diandu.exchangeMember()">');
+
+    expect(miniMyWxml).toContain('bindtap="openInviteTask"');
+    expect(miniMyWxml).toContain('bindtap="openAdTask"');
+    expect(miniMyWxml).toContain('bindtap="openMemberTask"');
+    expect(miniMyWxml).not.toContain('<button bindtap="claimInviteReward">');
+    expect(miniMyWxml).not.toContain('<button bindtap="claimAdReward">');
+    expect(miniMyWxml).not.toContain('<button class="time-limit-member" bindtap="openMember">');
+
+    expect(miniMyJs).toContain('openInviteTask()');
+    expect(miniMyJs).toContain('openAdTask()');
+    expect(miniMyJs).toContain('openMemberTask()');
+  });
 });

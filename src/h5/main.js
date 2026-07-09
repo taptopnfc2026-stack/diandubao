@@ -144,7 +144,7 @@ function getProfileView() {
   });
 }
 
-function updateProfilePayload(updater) {
+function updateProfilePayload(updater, statePatch = {}) {
   const payload = getProfilePayload();
   const next = updater({
     ...payload,
@@ -154,7 +154,7 @@ function updateProfilePayload(updater) {
     reward: { ...(payload.reward || {}) },
   });
   saveProfilePayload(next);
-  setState({ dismissedTimeLimitPrompt: false });
+  setState({ dismissedTimeLimitPrompt: false, ...statePatch });
 }
 
 function getTimeLimitModal() {
@@ -175,22 +175,20 @@ function getTimeLimitModal() {
         </div>
         <strong class="time-limit-title">做任务获取更多时长</strong>
         <div class="time-limit-actions">
-          <button onclick="diandu.claimInviteReward()">
-            <i>👥</i>
+          <button onclick="diandu.openInviteTask()">
+            <i class="limit-icon-people"><b></b></i>
             <span><b>邀请好友</b><small>每成功邀请1位好友</small></span>
-            <em>+${escapeHtml(prompt.inviteRewardMinutes)} 分钟</em>
-            <strong>去邀请</strong>
+            <span class="limit-task-side"><em>+${escapeHtml(prompt.inviteRewardMinutes)} 分钟</em><strong>去邀请</strong></span>
           </button>
-          <button onclick="diandu.claimAdReward()">
-            <i>▶</i>
+          <button onclick="diandu.openAdTask()">
+            <i class="limit-icon-video"><b></b></i>
             <span><b>观看广告</b><small>观看完整视频广告</small></span>
-            <em>+${escapeHtml(prompt.adRewardMinutes)} 分钟</em>
-            <strong>去观看</strong>
+            <span class="limit-task-side purple"><em>+${escapeHtml(prompt.adRewardMinutes)} 分钟</em><strong>去观看</strong></span>
           </button>
         </div>
         <div class="time-limit-divider"><span>或</span></div>
-        <button class="time-limit-member" onclick="diandu.exchangeMember()">
-          <i>♕</i>
+        <button class="time-limit-member" onclick="diandu.openMemberTask()">
+          <i class="limit-icon-crown">♕</i>
           <span><b>${escapeHtml(prompt.memberTitle)}</b><small>${escapeHtml(prompt.memberSubtitle)}</small></span>
           <strong>立即开通</strong>
         </button>
@@ -536,6 +534,15 @@ window.diandu = {
   loadMy() {
     setState({ view: 'my' });
   },
+  openInviteTask() {
+    setState({ view: 'inviteTask', dismissedTimeLimitPrompt: true });
+  },
+  openAdTask() {
+    setState({ view: 'adTask', dismissedTimeLimitPrompt: true });
+  },
+  openMemberTask() {
+    setState({ view: 'memberTask', dismissedTimeLimitPrompt: true });
+  },
   loginPreviewUser() {
     updateProfilePayload((payload) => ({
       ...payload,
@@ -551,7 +558,7 @@ window.diandu = {
         remainingMinutes: getProfileView().usage.remainingMinutes + getOperationSettings().inviteRewardMinutes,
         totalMinutesToday: getProfileView().usage.totalMinutesToday + getOperationSettings().inviteRewardMinutes,
       },
-    }));
+    }), { view: 'my', dismissedTimeLimitPrompt: true });
   },
   claimAdReward() {
     updateProfilePayload((payload) => ({
@@ -562,7 +569,7 @@ window.diandu = {
         remainingMinutes: getProfileView().usage.remainingMinutes + getOperationSettings().adRewardMinutes,
         totalMinutesToday: getProfileView().usage.totalMinutesToday + getOperationSettings().adRewardMinutes,
       },
-    }));
+    }), { view: 'my', dismissedTimeLimitPrompt: true });
   },
   exchangeMember() {
     const profile = getProfileView();
@@ -575,7 +582,7 @@ window.diandu = {
         remainingMinutes: Math.max(profile.usage.remainingMinutes, 9999),
         totalMinutesToday: Math.max(profile.usage.totalMinutesToday, profile.usage.usedMinutesToday + 9999),
       },
-    }));
+    }), { view: 'my', dismissedTimeLimitPrompt: true });
   },
   closeTimeLimitPrompt() {
     setState({ dismissedTimeLimitPrompt: true });
@@ -762,14 +769,14 @@ function renderMy() {
             <div class="usage-bar"><i style="width:${usagePercent}%"></i></div>
             <small>${escapeHtml(profile.usage.usedMinutesToday)}/${escapeHtml(profile.usage.totalMinutesToday)} 分钟</small>
             <div class="usage-actions">
-              <button onclick="diandu.claimInviteReward()"><b>＋</b>邀请好友<br><small>+${escapeHtml(profile.settings.inviteRewardMinutes)}分钟</small></button>
-              <button onclick="diandu.claimAdReward()"><b>▶</b>观看广告<br><small>+${escapeHtml(profile.settings.adRewardMinutes)}分钟</small></button>
+              <button onclick="diandu.openInviteTask()"><b>＋</b>邀请好友<br><small>+${escapeHtml(profile.settings.inviteRewardMinutes)}分钟</small></button>
+              <button onclick="diandu.openAdTask()"><b>▶</b>观看广告<br><small>+${escapeHtml(profile.settings.adRewardMinutes)}分钟</small></button>
             </div>
           </div>
         </div>
       </section>
 
-      <button class="member-card" onclick="diandu.exchangeMember()">
+      <button class="member-card" onclick="diandu.openMemberTask()">
         <span>♕</span>
         <div><strong>兑换会员</strong><small>开通会员，畅享更多权益</small></div>
         <b>立即兑换 ›</b>
@@ -785,6 +792,68 @@ function renderMy() {
           </button>
         `).join('')}
       </section>
+    </section>
+    ${renderBottomTabs('my')}
+  `);
+}
+
+function renderTaskPage(type) {
+  const profile = getProfileView() || mockProfile;
+  const taskMap = {
+    inviteTask: {
+      title: '邀请好友',
+      icon: 'people',
+      badge: `+${profile.settings.inviteRewardMinutes} 分钟`,
+      desc: '把点读助手分享给好友，好友完成注册后即可获得免费学习时长。',
+      primary: '模拟邀请成功',
+      onclick: 'diandu.claimInviteReward()',
+      steps: ['分享邀请海报或口令给家长好友', '好友打开后完成登录 / 注册', '系统自动发放邀请奖励时长'],
+    },
+    adTask: {
+      title: '观看广告',
+      icon: 'video',
+      badge: `+${profile.settings.adRewardMinutes} 分钟`,
+      desc: '观看完整激励视频广告后，可继续使用点读、音标和自然拼读功能。',
+      primary: '完成观看并领取',
+      onclick: 'diandu.claimAdReward()',
+      steps: ['进入广告播放页', '完整观看视频内容', '返回后自动领取奖励时长'],
+    },
+    memberTask: {
+      title: '开通会员',
+      icon: 'crown',
+      badge: '无限使用',
+      desc: '会员可不受免费时长限制，后续也可扩展教材包、学习报告等权益。',
+      primary: '模拟开通会员',
+      onclick: 'diandu.exchangeMember()',
+      steps: ['选择会员套餐', '完成兑换或支付', '会员权益立即生效'],
+    },
+  };
+  const task = taskMap[type] || taskMap.inviteTask;
+  renderShell(`
+    <section class="task-page">
+      <header class="reader-nav compact-nav">
+        <button class="back-button" onclick="diandu.loadMy()" aria-label="返回">‹</button>
+        <strong>${escapeHtml(task.title)}</strong>
+        <div class="mini-capsule" aria-label="小程序菜单"><span>•••</span><i></i><b></b><em></em></div>
+      </header>
+      <section class="task-hero-card">
+        <span class="task-large-icon ${escapeHtml(task.icon)}"></span>
+        <div>
+          <small>${escapeHtml(task.badge)}</small>
+          <h1>${escapeHtml(task.title)}</h1>
+          <p>${escapeHtml(task.desc)}</p>
+        </div>
+      </section>
+      <section class="task-flow-card">
+        <h2>任务流程</h2>
+        ${task.steps.map((step, index) => `
+          <article>
+            <b>${index + 1}</b>
+            <span>${escapeHtml(step)}</span>
+          </article>
+        `).join('')}
+      </section>
+      <button class="primary task-primary" onclick="${task.onclick}">${escapeHtml(task.primary)}</button>
     </section>
     ${renderBottomTabs('my')}
   `);
@@ -1228,6 +1297,7 @@ function render() {
   else if (state.view === 'vocabulary') renderVocabulary();
   else if (state.view === 'wordStudy') renderWordStudy();
   else if (state.view === 'wordStudyResult') renderWordStudyResult();
+  else if (state.view === 'inviteTask' || state.view === 'adTask' || state.view === 'memberTask') renderTaskPage(state.view);
   else if (state.view === 'my') renderMy();
   else renderHome();
 }

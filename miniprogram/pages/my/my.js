@@ -32,6 +32,7 @@ Page({
     menuItems: [],
     timeLimitPrompt: getTimeLimitPrompt(initialProfile),
     showTimeLimitPrompt: getTimeLimitPrompt(initialProfile).visible,
+    taskView: '',
   },
   onLoad() {
     this.refreshProfile();
@@ -103,6 +104,32 @@ Page({
       },
     }));
     wx.showToast({ title: '已记录会员兑换', icon: 'none' });
+  },
+  openInviteTask() {
+    this.setData({ taskView: 'invite', showTimeLimitPrompt: false });
+  },
+  openAdTask() {
+    this.setData({ taskView: 'ad', showTimeLimitPrompt: false });
+  },
+  openMemberTask() {
+    this.setData({ taskView: 'member', showTimeLimitPrompt: false });
+  },
+  closeTaskView() {
+    this.setData({ taskView: '' });
+  },
+  completeInviteTask() {
+    this.claimInviteReward();
+    this.setData({ taskView: '' });
+    wx.showToast({ title: '已领取邀请奖励', icon: 'none' });
+  },
+  completeAdTask() {
+    this.claimAdReward();
+    this.setData({ taskView: '' });
+    wx.showToast({ title: '已领取广告奖励', icon: 'none' });
+  },
+  completeMemberTask() {
+    this.openMember();
+    this.setData({ taskView: '' });
   },
   closeTimeLimitPrompt() {
     this.setData({ showTimeLimitPrompt: false });
