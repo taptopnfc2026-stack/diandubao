@@ -10,7 +10,13 @@ import {
   normalizePhonicsDetail,
 } from '../shared/learning.js';
 import { getNextPageNumber, getSwipePageDelta, selectReaderPage } from '../shared/navigation.js';
-import { getUsagePercent, mockProfile } from '../shared/profile.js';
+import {
+  createProfileView,
+  defaultOperationSettings,
+  getUsagePercent,
+  mockProfile,
+  normalizeOperationSettings,
+} from '../shared/profile.js';
 import {
   StudyStep,
   buildChooseOptions,
@@ -22,6 +28,8 @@ import {
 import './styles.css';
 
 const PREVIEW_BOOK = { id: 103, book_name: '预览教材', start_page: 1 };
+const PROFILE_STORAGE_KEY = 'diandu-my-profile';
+const SETTINGS_STORAGE_KEY = 'diandu-operation-settings';
 const api = createH5Api();
 const vocabularyRepository = new VocabularyRepository(api);
 const audio = new Audio();
@@ -86,6 +94,52 @@ function firstArray(...values) {
 function normalizeUrl(value) {
   if (!value) return '';
   return String(value).replace(/\\\//g, '/');
+}
+
+function readJsonStorage(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function getOperationSettings() {
+  return normalizeOperationSettings(readJsonStorage(SETTINGS_STORAGE_KEY, defaultOperationSettings));
+}
+
+function getProfilePayload() {
+  return readJsonStorage(PROFILE_STORAGE_KEY, {
+    user: { registered: false },
+    usage: { usedMinutesToday: 18 },
+    growth: { inviteCount: 0, adWatchCount: 0, memberExchangeCount: 0 },
+    reward: { manualRewardMinutes: 30 },
+  });
+}
+
+function saveProfilePayload(payload) {
+  localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(payload));
+}
+
+function getProfileView() {
+  return createProfileView({
+    ...getProfilePayload(),
+    settings: getOperationSettings(),
+  });
+}
+
+function updateProfilePayload(updater) {
+  const payload = getProfilePayload();
+  const next = updater({
+    ...payload,
+    user: { ...(payload.user || {}) },
+    usage: { ...(payload.usage || {}) },
+    growth: { ...(payload.growth || {}) },
+    reward: { ...(payload.reward || {}) },
+  });
+  saveProfilePayload(next);
+  setState({ view: 'my' });
 }
 
 function getBookFromHome(data) {
@@ -424,6 +478,31 @@ window.diandu = {
   loadMy() {
     setState({ view: 'my' });
   },
+  loginPreviewUser() {
+    updateProfilePayload((payload) => ({
+      ...payload,
+      user: { ...payload.user, registered: true, nickname: '本地预览用户' },
+    }));
+  },
+  claimInviteReward() {
+    updateProfilePayload((payload) => ({
+      ...payload,
+      growth: { ...payload.growth, inviteCount: Number(payload.growth.inviteCount || 0) + 1 },
+    }));
+  },
+  claimAdReward() {
+    updateProfilePayload((payload) => ({
+      ...payload,
+      growth: { ...payload.growth, adWatchCount: Number(payload.growth.adWatchCount || 0) + 1 },
+    }));
+  },
+  exchangeMember() {
+    updateProfilePayload((payload) => ({
+      ...payload,
+      user: { ...payload.user, registered: true, nickname: payload.user.nickname || '本地预览用户' },
+      growth: { ...payload.growth, memberExchangeCount: Number(payload.growth.memberExchangeCount || 0) + 1 },
+    }));
+  },
   loadBooks,
   selectCategory(id) {
     loadBooks(Number(id));
@@ -564,13 +643,13 @@ function renderHome() {
 }
 
 function renderMy() {
-  const profile = mockProfile;
+  const profile = getProfileView() || mockProfile;
   const usagePercent = getUsagePercent(profile.usage);
   const menuItems = [
-    ['gift', '我的邀请', ''],
+    ['gift', '我的邀请', `${profile.reward.inviteCount} 人`],
     ['coin', '我的奖励', `已获得 ${profile.reward.earnedMinutes} 分钟`],
-    ['card', '兑换记录', ''],
-    ['clock', '观看记录', ''],
+    ['card', '兑换记录', `${profile.reward.memberExchangeCount} 次`],
+    ['clock', '观看记录', `${profile.reward.adWatchCount} 次`],
     ['chart', '学习报告', ''],
     ['gear', '设置', ''],
   ];
@@ -587,7 +666,7 @@ function renderMy() {
           <strong>${escapeHtml(profile.user.title)}</strong>
           <p>${escapeHtml(profile.user.subtitle)}</p>
         </div>
-        <button>立即登录</button>
+        <button onclick="diandu.loginPreviewUser()">${profile.user.registered ? '已登录' : '立即登录'}</button>
       </section>
 
       <section class="usage-card">
@@ -605,14 +684,14 @@ function renderMy() {
             <div class="usage-bar"><i style="width:${usagePercent}%"></i></div>
             <small>${escapeHtml(profile.usage.usedMinutesToday)}/${escapeHtml(profile.usage.totalMinutesToday)} 分钟</small>
             <div class="usage-actions">
-              <button><b>＋</b>邀请好友<br><small>+20分钟</small></button>
-              <button><b>▶</b>观看广告<br><small>+10分钟</small></button>
+              <button onclick="diandu.claimInviteReward()"><b>＋</b>邀请好友<br><small>+${escapeHtml(profile.settings.inviteRewardMinutes)}分钟</small></button>
+              <button onclick="diandu.claimAdReward()"><b>▶</b>观看广告<br><small>+${escapeHtml(profile.settings.adRewardMinutes)}分钟</small></button>
             </div>
           </div>
         </div>
       </section>
 
-      <button class="member-card">
+      <button class="member-card" onclick="diandu.exchangeMember()">
         <span>♕</span>
         <div><strong>兑换会员</strong><small>开通会员，畅享更多权益</small></div>
         <b>立即兑换 ›</b>

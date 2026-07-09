@@ -1,5 +1,5 @@
 import { formatDateTime, normalizeDashboard } from './adminData.js';
-import { fetchDashboard } from './adminApi.js';
+import { fetchDashboard, saveOperationSettings } from './adminApi.js';
 import './styles.css';
 
 const app = document.querySelector('#admin-app');
@@ -45,6 +45,17 @@ window.adminApp = {
     localStorage.removeItem('diandu-admin-demo-auth');
     setState({ authed: false });
   },
+  async saveSettings(event) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    setState({ loading: true });
+    const payload = await saveOperationSettings({
+      newUserFreeMinutes: form.get('newUserFreeMinutes'),
+      inviteRewardMinutes: form.get('inviteRewardMinutes'),
+      adRewardMinutes: form.get('adRewardMinutes'),
+    });
+    setState({ dashboard: normalizeDashboard(payload), loading: false });
+  },
 };
 
 function renderLogin() {
@@ -62,7 +73,7 @@ function renderLogin() {
 }
 
 function renderDashboard() {
-  const { counters, users, plans, orders } = state.dashboard;
+  const { counters, users, plans, orders, settings, exchanges, rewards } = state.dashboard;
   app.innerHTML = `
     <main class="admin-shell">
       <aside>
@@ -70,6 +81,7 @@ function renderDashboard() {
         <a class="active">数据看板</a>
         <a>用户管理</a>
         <a>会员套餐</a>
+        <a>运营设置</a>
         <a>订单管理</a>
         <button onclick="adminApp.logout()">退出</button>
       </aside>
@@ -87,12 +99,26 @@ function renderDashboard() {
           <article><small>活跃用户</small><strong>${counters.activeUsers}</strong></article>
           <article><small>会员用户</small><strong>${counters.paidUsers}</strong></article>
           <article><small>累计收入</small><strong>${money(counters.revenueCents)}</strong></article>
+          <article><small>会员兑换</small><strong>${counters.memberExchangeCount}</strong></article>
+          <article><small>邀请人数</small><strong>${counters.inviteCount}</strong></article>
+          <article><small>广告次数</small><strong>${counters.adWatchCount}</strong></article>
+          <article><small>发放分钟</small><strong>${counters.grantedMinutes}</strong></article>
+          <article><small>剩余分钟</small><strong>${counters.remainingMinutes}</strong></article>
         </div>
         <div class="section-grid">
           <section class="panel wide">
+            <h2>运营设置</h2>
+            <form class="settings-form" onsubmit="adminApp.saveSettings(event)">
+              <label><span>新用户默认免费时长</span><div><input name="newUserFreeMinutes" type="number" min="0" value="${settings.newUserFreeMinutes}" /><small>分钟</small></div></label>
+              <label><span>邀请好友奖励时长</span><div><input name="inviteRewardMinutes" type="number" min="0" value="${settings.inviteRewardMinutes}" /><small>分钟</small></div></label>
+              <label><span>观看广告奖励时长</span><div><input name="adRewardMinutes" type="number" min="0" value="${settings.adRewardMinutes}" /><small>分钟</small></div></label>
+              <button>${state.loading ? '保存中...' : '保存设置'}</button>
+            </form>
+          </section>
+          <section class="panel wide">
             <h2>最近用户</h2>
             <table>
-              <thead><tr><th>用户</th><th>手机号</th><th>当前教材</th><th>页数</th><th>会员</th><th>最近登录</th></tr></thead>
+              <thead><tr><th>用户</th><th>手机号</th><th>当前教材</th><th>页数</th><th>会员</th><th>邀请</th><th>广告</th><th>奖励</th><th>剩余</th><th>兑换</th><th>最近登录</th></tr></thead>
               <tbody>
                 ${users.map((user) => `
                   <tr>
@@ -101,6 +127,11 @@ function renderDashboard() {
                     <td>${escapeHtml(user.currentBook)}</td>
                     <td>${user.currentPage}</td>
                     <td><span class="badge">${escapeHtml(user.memberState)}</span></td>
+                    <td>${user.inviteCount}</td>
+                    <td>${user.adWatchCount}</td>
+                    <td>${user.rewardMinutes} 分钟</td>
+                    <td>${user.remainingMinutes} 分钟</td>
+                    <td>${user.memberExchangeCount}</td>
                     <td>${formatDateTime(user.lastLoginTime)}</td>
                   </tr>
                 `).join('')}
@@ -122,6 +153,24 @@ function renderDashboard() {
               <div class="order-row">
                 <strong>${escapeHtml(order.order_no)}</strong>
                 <span>${escapeHtml(order.nickname)} · ${escapeHtml(order.plan_name)} · ${money(order.amount_cents)}</span>
+              </div>
+            `).join('')}
+          </section>
+          <section class="panel">
+            <h2>会员兑换记录</h2>
+            ${exchanges.map((exchange) => `
+              <div class="order-row">
+                <strong>${escapeHtml(exchange.nickname)}</strong>
+                <span>${escapeHtml(exchange.planName)} · ${formatDateTime(exchange.exchangeTime)}</span>
+              </div>
+            `).join('')}
+          </section>
+          <section class="panel">
+            <h2>奖励记录</h2>
+            ${rewards.map((reward) => `
+              <div class="order-row">
+                <strong>${escapeHtml(reward.nickname)} · ${escapeHtml(reward.typeLabel)}</strong>
+                <span>+${reward.minutes} 分钟 · ${formatDateTime(reward.createTime)}</span>
               </div>
             `).join('')}
           </section>

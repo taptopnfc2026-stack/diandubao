@@ -10,7 +10,7 @@ describe('admin dashboard data helpers', () => {
       ],
     });
 
-    expect(dashboard.counters).toEqual({
+    expect(dashboard.counters).toMatchObject({
       totalUsers: 8,
       todayUsers: 2,
       activeUsers: 5,
@@ -33,5 +33,62 @@ describe('admin dashboard data helpers', () => {
   it('formats unix timestamps for display', () => {
     expect(formatDateTime(0)).toBe('-');
     expect(formatDateTime(1783510000)).toMatch(/2026/);
+  });
+
+  it('normalizes operations settings and growth counters', () => {
+    const dashboard = normalizeDashboard({
+      counters: {
+        total_users: 8,
+        member_exchange_count: 3,
+        invite_count: 12,
+        ad_watch_count: 41,
+        granted_minutes: 820,
+        remaining_minutes: 430,
+      },
+      settings: {
+        new_user_free_minutes: 80,
+        invite_reward_minutes: 25,
+        ad_reward_minutes: 12,
+      },
+      users: [
+        {
+          id: 1,
+          nickname: 'Amy',
+          invite_count: 2,
+          ad_watch_count: 5,
+          reward_minutes: 90,
+          remaining_minutes: 52,
+          member_exchange_count: 1,
+        },
+      ],
+      exchanges: [
+        { id: 11, nickname: 'Amy', plan_name: '月卡', exchange_time: 1783510000 },
+      ],
+      rewards: [
+        { id: 21, nickname: 'Amy', type: 'invite', minutes: 25, create_time: 1783510000 },
+      ],
+    });
+
+    expect(dashboard.counters).toMatchObject({
+      memberExchangeCount: 3,
+      inviteCount: 12,
+      adWatchCount: 41,
+      grantedMinutes: 820,
+      remainingMinutes: 430,
+    });
+    expect(dashboard.settings).toEqual({
+      newUserFreeMinutes: 80,
+      inviteRewardMinutes: 25,
+      adRewardMinutes: 12,
+    });
+    expect(dashboard.users[0]).toMatchObject({
+      inviteCount: 2,
+      adWatchCount: 5,
+      rewardMinutes: 90,
+      remainingMinutes: 52,
+      memberExchangeCount: 1,
+    });
+    expect(dashboard.exchanges).toHaveLength(1);
+    expect(dashboard.rewards[0].typeLabel).toBe('邀请好友');
   });
 });

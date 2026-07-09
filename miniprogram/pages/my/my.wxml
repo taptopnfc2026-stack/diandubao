@@ -15,7 +15,7 @@
       <text>{{profile.user.title}}</text>
       <text>{{profile.user.subtitle}}</text>
     </view>
-    <button bindtap="noop">立即登录</button>
+    <button bindtap="loginPreview">{{profile.user.registered ? '已登录' : '立即登录'}}</button>
   </view>
 
   <view class="usage-card">
@@ -35,8 +35,8 @@
         <view class="usage-bar"><view style="width: {{usagePercent}}%;"></view></view>
         <text>{{profile.usage.usedMinutesToday}}/{{profile.usage.totalMinutesToday}} 分钟</text>
         <view class="usage-actions">
-          <button bindtap="noop"><text>＋</text><text>邀请好友</text><text class="action-reward">+20分钟</text></button>
-          <button bindtap="noop"><text>▶</text><text>观看广告</text><text class="action-reward">+10分钟</text></button>
+          <button bindtap="claimInviteReward"><text>＋</text><text>邀请好友</text><text class="action-reward">+{{profile.settings.inviteRewardMinutes}}分钟</text></button>
+          <button bindtap="claimAdReward"><text>▶</text><text>观看广告</text><text class="action-reward">+{{profile.settings.adRewardMinutes}}分钟</text></button>
         </view>
       </view>
     </view>
