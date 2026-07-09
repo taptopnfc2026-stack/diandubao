@@ -530,7 +530,6 @@ function renderHome() {
         <span>已学 ${escapeHtml(state.currentPage || 1)} 页</span>
       </div>
       <button class="primary" onclick="diandu.loadReader()">开始点读</button>
-      <button class="secondary" onclick="diandu.loadVocabulary()">同步背单词</button>
     </section>
     <section class="panel">
       <h2>音标学习</h2>

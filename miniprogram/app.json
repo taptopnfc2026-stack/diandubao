@@ -8,9 +8,7 @@
     "pages/phonetic-detail/phonetic-detail",
     "pages/alphabet/alphabet",
     "pages/phonics/phonics",
-    "pages/phonics-detail/phonics-detail",
-    "pages/vocabulary/vocabulary",
-    "pages/word-study/word-study"
+    "pages/phonics-detail/phonics-detail"
   ],
   "window": {
     "navigationStyle": "custom",
