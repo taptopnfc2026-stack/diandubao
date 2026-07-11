@@ -1,26 +1,26 @@
-<view class="reader-nav compact-nav">
-  <button class="back-button" bindtap="goBack">‹</button>
-  <text>音标练习</text>
-  <view class="mini-capsule"><text>•••</text><view></view><text>—</text><text>○</text></view>
-</view>
-<view class="learning-tabs">
-  <button
-    wx:for="{{tabs}}"
-    wx:key="id"
-    class="{{item.id === activeType ? 'active' : ''}}"
-    data-type="{{item.id}}"
-    bindtap="selectTab"
-  >{{item.name}}</button>
-</view>
-<view class="phonetic-grid">
-  <button
-    wx:for="{{currentItems}}"
-    wx:key="id"
-    class="phonetic-card"
-    data-id="{{item.id}}"
-    bindtap="openDetail"
-  >
-    <text class="symbol">{{item.symbol}}</text>
-    <text class="subtitle">{{item.subtitle}}</text>
-  </button>
+<!-- 音标练习页 -->
+<view class="phonetics-page">
+  <nav-bar title="音标练习" showBack="{{true}}" background="#fff"></nav-bar>
+
+  <view class="learning-tabs">
+    <button
+      wx:for="{{tabs}}"
+      wx:key="id"
+      class="{{item.id === activeType ? 'active' : ''}}"
+      data-type="{{item.id}}"
+      bindtap="selectTab"
+    >{{item.name}}</button>
+  </view>
+  <view class="phonetic-grid">
+    <view
+      wx:for="{{currentItems}}"
+      wx:key="id"
+      class="phonetic-card"
+      data-id="{{item.id}}"
+      bindtap="openDetail"
+    >
+      <text class="symbol">{{item.symbol}}</text>
+      <text class="subtitle">{{item.subtitle}}</text>
+    </view>
+  </view>
 </view>

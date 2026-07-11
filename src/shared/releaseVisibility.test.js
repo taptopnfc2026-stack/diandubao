@@ -65,12 +65,15 @@ describe('launch visibility', () => {
   it('keeps mini program home aligned with the H5 launch layout', () => {
     const miniHomeWxml = readFileSync('miniprogram/pages/home/home.wxml', 'utf8');
     const miniHomeWxss = readFileSync('miniprogram/pages/home/home.wxss', 'utf8');
+    const navBarJs = readFileSync('miniprogram/components/nav-bar/nav-bar.js', 'utf8');
 
     expect(miniHomeWxml).toContain('openPhonetics');
     expect(miniHomeWxml).toContain('openAlphabet');
     expect(miniHomeWxml).toContain('openPhonics');
-    expect(miniHomeWxss).toContain('padding-top: calc(88rpx + env(safe-area-inset-top))');
-    expect(miniHomeWxss).toContain('padding-right: 190rpx');
+    // nav-bar component handles status bar + capsule avoidance
+    expect(miniHomeWxml).toContain('nav-bar');
+    expect(navBarJs).toContain('statusBarHeight');
+    expect(navBarJs).toContain('getMenuButtonBoundingClientRect');
     expect(miniHomeWxss).toContain('min-width: 0');
     expect(miniHomeWxss).toContain('overflow: hidden');
   });

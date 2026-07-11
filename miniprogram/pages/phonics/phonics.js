@@ -20,6 +20,9 @@ Page({
     const { id, type } = event.currentTarget.dataset;
     wx.navigateTo({ url: `/pages/phonics-detail/phonics-detail?id=${id}&type=${type || ''}` });
   },
+  goExperience() {
+    wx.showToast({ title: '即将开启体验', icon: 'none' });
+  },
   goBack() {
     wx.navigateBack();
   },

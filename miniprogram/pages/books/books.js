@@ -24,9 +24,10 @@ Page({
       const activeCatId = Number(catId || 7);
       const cates = (Array.isArray(data.cates) ? data.cates : this.data.cates)
         .map((item) => ({ ...item, isActive: Number(item.id) === activeCatId }));
+      const activeCate = cates.find((item) => item.isActive) || {};
       const books = (Array.isArray(data.books) ? data.books : Array.isArray(data.list) ? data.list : Array.isArray(data) ? data : [])
         .map((item) => ({ ...item, isSelected: String(item.id) === this.data.selectedBookId }));
-      this.setData({ cates, books, activeCatId });
+      this.setData({ cates, books, activeCatId, activeCatName: activeCate.name || '' });
     } catch (error) {
       wx.showToast({ title: error.message || '加载失败', icon: 'none' });
     } finally {

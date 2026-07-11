@@ -1,39 +1,46 @@
-.nav {
-  height: 116rpx;
-  padding: 44rpx 28rpx 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* 选择教材页样式 */
+.books-page {
+  min-height: 100vh;
   background: #fff;
-  font-weight: 800;
-}
-
-.nav button,
-.nav-spacer {
-  width: 72rpx;
-  height: 72rpx;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
 .book-picker {
-  display: grid;
-  grid-template-columns: 288rpx 1fr;
-  height: calc(100vh - 116rpx);
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
   background: #fff;
 }
 
+/* 左侧分类栏 */
 .category-list {
-  height: 100%;
-  background: #f4f4f4;
+  flex: 0 0 180rpx;
+  width: 180rpx;
+  background: #f7f8fa;
+  padding-bottom: calc(28rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
 }
 
 .category-list button {
+  position: relative;
   width: 100%;
-  min-height: 108rpx;
-  padding: 24rpx 28rpx;
+  min-height: 96rpx;
+  padding: 24rpx 18rpx;
   background: transparent;
-  color: #111827;
-  text-align: left;
+  color: #6b7280;
+  text-align: center;
   font-weight: 500;
+  font-size: 24rpx;
+  box-sizing: border-box;
+  line-height: 1.35;
+  white-space: normal;
+}
+
+.category-list button::after {
+  display: none;
 }
 
 .category-list button.active {
@@ -42,65 +49,108 @@
   font-weight: 800;
 }
 
+.category-list button.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4rpx;
+  height: 36rpx;
+  border-radius: 0 4rpx 4rpx 0;
+  background: #0aa1f5;
+}
+
+/* 右侧教材面板 */
 .book-panel {
-  height: 100%;
+  flex: 1;
   min-width: 0;
-  padding: 32rpx 28rpx 48rpx;
+  padding: 24rpx 24rpx 0;
   background: #fff;
+  box-sizing: border-box;
+}
+
+.panel-title {
+  display: block;
+  margin-bottom: 24rpx;
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.3;
 }
 
 .book-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 44rpx 24rpx;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32rpx 16rpx;
 }
 
 .book-option {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16rpx;
-  color: #252b36;
+  gap: 14rpx;
+  background: transparent;
+  box-sizing: border-box;
 }
 
 .cover-frame {
   position: relative;
-  width: 232rpx;
-  border: 4rpx solid transparent;
-  border-radius: 20rpx;
+  width: 100%;
+  border-radius: 16rpx;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .book-option.selected .cover-frame {
-  border-color: #1ca8ff;
+  box-shadow: 0 0 0 4rpx #24aaf6;
 }
 
-.book-option image,
-.cover-empty {
+.cover-ratio {
+  position: relative;
   width: 100%;
-  height: 310rpx;
+  padding-bottom: 133%;
   border-radius: 16rpx;
-  box-shadow: 0 12rpx 24rpx rgba(42, 65, 93, 0.14);
+  overflow: hidden;
+  background: #f4f6f9;
+  box-shadow: 0 8rpx 20rpx rgba(42, 65, 93, 0.1);
+}
+
+.cover-ratio image,
+.cover-empty {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 16rpx;
 }
 
 .cover-empty {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f4f6f9;
-  color: #7c8797;
+  color: #9ca3af;
+  font-size: 24rpx;
 }
 
-.book-option text {
-  font-size: 28rpx;
-  font-weight: 700;
+.book-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #374151;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 .checkmark {
   position: absolute;
   right: 10rpx;
   bottom: 10rpx;
-  width: 52rpx;
-  height: 52rpx;
+  width: 44rpx;
+  height: 44rpx;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -108,5 +158,10 @@
   background: #24aaf6;
   color: #fff;
   font-weight: 900;
-  box-shadow: 0 4rpx 16rpx rgba(36, 170, 246, 0.32);
+  font-size: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(36, 170, 246, 0.35);
+}
+
+.panel-bottom {
+  height: calc(48rpx + env(safe-area-inset-bottom));
 }

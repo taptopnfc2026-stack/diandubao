@@ -37,7 +37,19 @@ export function normalizeOtherInfo(otherInfo) {
 
 export function pickAudioUrl(item) {
   if (typeof item === 'string') return item;
-  return item?.url || item?.originSoundUrl || item?.encryptSoundUrl || item?.audio || item?.mp3 || '';
+  if (!item || typeof item !== 'object') return '';
+  return item.url
+    || item.originSoundUrl
+    || item.encryptSoundUrl
+    || item.originSound
+    || item.encryptSound
+    || item.sound
+    || item.soundUrl
+    || item.audio_url
+    || item.audioUrl
+    || item.audio
+    || item.mp3
+    || '';
 }
 
 export function toOverlayRect(coordinate, imageBox) {
@@ -61,12 +73,15 @@ export function buildTapRegions(page, imageBox) {
   const audioMap = normalizeAudioMap(page?.word_mp3);
   const items = Array.isArray(otherInfo.pieces) ? otherInfo.pieces : normalizeAudioItems(page?.word_mp3);
   return items
-    .map((item, index) => ({
-      id: item.pieceId || item.id || `${page?.id || 'page'}-${index}`,
-      text: item.original || item.richOriginal || item.translation || '',
-      audioUrl: audioMap[`a${item.pieceId}`] || audioMap[item.pieceId] || pickAudioUrl(item),
-      rect: toOverlayRect(item.coordinate, imageBox),
-      raw: item,
-    }))
+    .map((item, index) => {
+      const mappedAudio = audioMap[`a${item.pieceId}`] || audioMap[item.pieceId] || audioMap[item.id];
+      return {
+        id: item.pieceId || item.id || `${page?.id || 'page'}-${index}`,
+        text: item.original || item.richOriginal || item.translation || '',
+        audioUrl: pickAudioUrl(mappedAudio) || pickAudioUrl(item),
+        rect: toOverlayRect(item.coordinate, imageBox),
+        raw: item,
+      };
+    })
     .filter((item) => item.audioUrl && item.rect);
 }

@@ -1,22 +1,31 @@
-<view class="phonics-hero">
-  <button class="back-button" bindtap="goBack">‹</button>
-  <view>
-    <text class="title">自然拼读速记营</text>
-    <text class="sub">匹配新课标要求，见字能读听音能写</text>
+<!-- 自然拼读列表页 -->
+<view class="phonics-page">
+  <view class="phonics-hero">
+    <nav-bar title="" showBack="{{true}}" background="transparent">
+      <view slot="center">
+        <text class="phonics-hero-title">自然拼读速记营</text>
+      </view>
+    </nav-bar>
+    <view class="phonics-hero-content">
+      <text class="phonics-hero-sub">匹配新课标要求，见字能读听音能写</text>
+      <view class="phonics-hero-btn" bindtap="goExperience">
+        <text>点击去体验 >></text>
+      </view>
+    </view>
   </view>
-</view>
-<view class="phonics-panel">
-  <view wx:for="{{groups}}" wx:key="key" class="phonics-group">
-    <text class="group-title">{{item.title}}</text>
-    <view class="phonics-chip-grid">
-      <button
-        wx:for="{{item.items}}"
-        wx:for-item="child"
-        wx:key="id"
-        data-id="{{child.id}}"
-        data-type="{{item.key}}"
-        bindtap="openDetail"
-      >{{child.name}}</button>
+  <view class="phonics-panel">
+    <view wx:for="{{groups}}" wx:key="key" class="phonics-group">
+      <text class="group-title">{{item.title}}</text>
+      <view class="phonics-chip-grid">
+        <button
+          wx:for="{{item.items}}"
+          wx:for-item="child"
+          wx:key="id"
+          data-id="{{child.id}}"
+          data-type="{{item.key}}"
+          bindtap="openDetail"
+        >{{child.name}}</button>
+      </view>
     </view>
   </view>
 </view>

@@ -1,0 +1,578 @@
+/* ==================== SaaS 平台统一样式 ==================== */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #eef2f7;
+  color: #172033;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+/* ==================== Login ==================== */
+.saas-login {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.saas-login-card {
+  width: min(440px, 100%);
+  display: grid;
+  gap: 16px;
+  padding: 32px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 20px 60px rgba(28, 42, 68, 0.12);
+}
+
+.saas-login-card h1 {
+  margin: 0;
+  font-size: 22px;
+  text-align: center;
+}
+
+.saas-login-card p {
+  margin: 0 0 8px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.saas-login-card label {
+  display: grid;
+  gap: 6px;
+  color: #4b5563;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.saas-login-card input {
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #d8dee9;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.saas-login-card button {
+  height: 44px;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 8px;
+  background: #188df0;
+  color: #fff;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.saas-login-card button:hover {
+  background: #1478d0;
+}
+
+/* ==================== Shell ==================== */
+.saas-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 230px 1fr;
+}
+
+/* ==================== Sidebar ==================== */
+.saas-sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px;
+  background: #142033;
+  color: #fff;
+  min-height: 100vh;
+}
+
+.saas-sidebar-header {
+  margin-bottom: 24px;
+}
+
+.saas-sidebar-header strong {
+  display: block;
+  font-size: 18px;
+}
+
+.saas-sidebar-header small {
+  display: block;
+  margin-top: 4px;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.saas-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.saas-sidebar nav a {
+  padding: 12px 14px;
+  border-radius: 8px;
+  color: #cbd5e1;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.16s, color 0.16s;
+}
+
+.saas-sidebar nav a:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.saas-sidebar nav a.active {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.saas-sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.saas-sidebar-footer button {
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  background: transparent;
+  color: #cbd5e1;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.saas-sidebar-footer button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* ==================== Content ==================== */
+.saas-content {
+  padding: 28px;
+  min-width: 0;
+}
+
+.saas-content-loading {
+  padding: 40px;
+  text-align: center;
+  color: #64748b;
+}
+
+/* ==================== Dashboard ==================== */
+.saas-dashboard h2,
+.saas-section h2 {
+  margin: 0 0 16px;
+  font-size: 20px;
+}
+
+/* Metrics Grid */
+.saas-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.saas-metric-grid article {
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  transition: transform 0.16s, box-shadow 0.16s;
+}
+
+.saas-metric-grid article:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(28, 42, 68, 0.08);
+}
+
+.saas-metric-grid article.green { border-left: 4px solid #16a34a; }
+.saas-metric-grid article.red { border-left: 4px solid #dc2626; }
+
+.saas-metric-grid small {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.saas-metric-grid strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 30px;
+  font-weight: 900;
+}
+
+/* ==================== Panel ==================== */
+.saas-panel {
+  padding: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+  margin-bottom: 16px;
+}
+
+.saas-panel h3 {
+  margin: 0 0 14px;
+  font-size: 16px;
+}
+
+/* ==================== Table ==================== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px 10px;
+  border-bottom: 1px solid #edf1f6;
+  text-align: left;
+  font-size: 14px;
+}
+
+th {
+  color: #64748b;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+code {
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 13px;
+}
+
+.saas-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* ==================== Badges ==================== */
+.saas-badge {
+  display: inline-flex;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #eaf4ff;
+  color: #1677c9;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.saas-badge.green {
+  background: #dff5eb;
+  color: #087443;
+}
+
+.saas-badge.red {
+  background: #ffeaea;
+  color: #b91c1c;
+}
+
+/* ==================== Buttons ==================== */
+.saas-btn-primary {
+  height: 40px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 8px;
+  background: #188df0;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.saas-btn-primary:hover {
+  background: #1478d0;
+}
+
+.saas-btn-secondary {
+  height: 40px;
+  padding: 0 20px;
+  border: 1px solid #d8dee9;
+  border-radius: 8px;
+  background: #fff;
+  color: #475569;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.saas-btn-sm {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid #d8dee9;
+  border-radius: 6px;
+  background: #fff;
+  color: #475569;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.saas-btn-sm:hover {
+  background: #f8fafc;
+}
+
+.saas-btn-sm.danger {
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.saas-btn-sm.danger:hover {
+  background: #fef2f2;
+}
+
+.saas-btn-sm.success {
+  color: #16a34a;
+  border-color: #bbf7d0;
+}
+
+.saas-btn-close {
+  height: 32px;
+  width: 32px;
+  border: 0;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ==================== Forms ==================== */
+.saas-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.saas-form-grid label {
+  display: grid;
+  gap: 6px;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.saas-form-grid label span {
+  color: #64748b;
+}
+
+.saas-form-grid input,
+.saas-form-grid select {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #d8dee9;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.saas-form-grid input:focus,
+.saas-form-grid select:focus {
+  outline: 2px solid rgba(24, 141, 240, 0.2);
+  border-color: #188df0;
+}
+
+.saas-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.saas-form-msg {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ==================== Create Form ==================== */
+.saas-create-form {
+  border: 2px solid #188df0;
+  background: #f8fbff;
+}
+
+/* ==================== Detail ==================== */
+.saas-detail-panel {
+  border: 2px solid #e2e8f0;
+  background: #fafbfc;
+}
+
+.saas-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.saas-detail-grid > div {
+  display: grid;
+  gap: 4px;
+}
+
+.saas-detail-grid label {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* ==================== Plan Cards ==================== */
+.saas-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.saas-plan-card {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fbff;
+}
+
+.saas-plan-card strong {
+  font-size: 18px;
+}
+
+.saas-plan-card span {
+  color: #475569;
+}
+
+.saas-plan-card small {
+  justify-self: start;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #dff5eb;
+  color: #087443;
+  font-weight: 800;
+}
+
+/* ==================== Pagination ==================== */
+.saas-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.saas-pagination button {
+  height: 34px;
+  min-width: 34px;
+  padding: 0 10px;
+  border: 1px solid #d8dee9;
+  border-radius: 6px;
+  background: #fff;
+  color: #475569;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.saas-pagination button.active {
+  background: #188df0;
+  color: #fff;
+  border-color: #188df0;
+}
+
+.saas-pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.saas-pagination span {
+  color: #94a3b8;
+}
+
+/* ==================== Toggle Switch ==================== */
+.saas-pay-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.saas-toggle {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.24s;
+}
+
+.saas-toggle.on {
+  background: #16a34a;
+}
+
+.saas-toggle.off {
+  background: #cbd5e1;
+}
+
+.saas-toggle-dot {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+  transition: transform 0.24s;
+}
+
+.saas-toggle.on .saas-toggle-dot {
+  transform: translateX(24px);
+}
+
+/* ==================== Responsive ==================== */
+@media (max-width: 860px) {
+  .saas-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .saas-sidebar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    min-height: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, auto);
+    gap: 4px;
+    padding: 12px;
+  }
+
+  .saas-sidebar nav {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .saas-metric-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .saas-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .saas-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}

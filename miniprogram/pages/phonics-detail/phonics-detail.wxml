@@ -1,60 +1,69 @@
-<view class="reader-nav compact-nav">
-  <button class="back-button" bindtap="goBack">‹</button>
-  <text>自然拼读</text>
-  <view class="mini-capsule"><text>•••</text><view></view><text>—</text><text>○</text></view>
-</view>
+<!-- 自然拼读详情页 -->
+<view class="phonics-detail-page">
+  <nav-bar title="自然拼读" showBack="{{true}}" background="#fff"></nav-bar>
 
-<view wx:if="{{detail}}" class="phonics-detail-head">
-  <scroll-view class="phonics-scroll-row" scroll-x>
-    <button
-      wx:for="{{peerItems}}"
-      wx:key="id"
-      class="{{item.id === detail.id ? 'active' : ''}}"
-      data-id="{{item.id}}"
-      bindtap="openPeer"
-    >{{item.name}}</button>
-    <text>展开⌄</text>
-  </scroll-view>
-  <text wx:if="{{detail.selectedPhonetic}}" class="sound-badge">{{detail.selectedPhonetic}}</text>
-</view>
-
-<view wx:if="{{detail}}" class="phonics-detail-body">
-  <view class="detail-tabs">
-    <button class="{{activeTab === 'mouth' ? 'active' : ''}}" data-tab="mouth" bindtap="switchTab">口型</button>
-    <button class="{{activeTab === 'word' ? 'active' : ''}}" data-tab="word" bindtap="switchTab">例词</button>
-    <button class="{{activeTab === 'sentence' ? 'active' : ''}}" data-tab="sentence" bindtap="switchTab">例句</button>
+  <view wx:if="{{detail}}" class="phonics-detail-head">
+    <view class="letter-row-wrap">
+      <scroll-view class="phonics-scroll-row" scroll-x enhanced show-scrollbar="{{false}}">
+        <button
+          wx:for="{{peerItems}}"
+          wx:key="id"
+          class="{{item.id === detail.id ? 'active' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="openPeer"
+        >{{item.name}}</button>
+      </scroll-view>
+      <button class="expand-btn">展开⌄</button>
+    </view>
+    <scroll-view wx:if="{{detail.phonetics && detail.phonetics.length}}" class="sound-row" scroll-x enhanced show-scrollbar="{{false}}">
+      <button
+        wx:for="{{detail.phonetics}}"
+        wx:key="id"
+        class="{{item.id === detail.phoneticId ? 'active' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="openPhonetic"
+      >{{item.label}}</button>
+    </scroll-view>
   </view>
 
-  <view wx:if="{{activeTab === 'mouth'}}" class="mouth-panel">
-    <view class="mouth-figure">
-      <image wx:if="{{detail.image}}" src="{{detail.image}}" mode="aspectFill" />
-      <button class="floating-audio" bindtap="play">▶</button>
+  <view wx:if="{{detail}}" class="phonics-detail-body">
+    <view class="detail-tabs">
+      <button class="{{activeTab === 'mouth' ? 'active' : ''}}" data-tab="mouth" bindtap="switchTab">口型</button>
+      <button class="{{activeTab === 'word' ? 'active' : ''}}" data-tab="word" bindtap="switchTab">例词</button>
+      <button class="{{activeTab === 'sentence' ? 'active' : ''}}" data-tab="sentence" bindtap="switchTab">例句</button>
     </view>
-    <button class="method-pill">发音方法</button>
-    <view class="step-list">
-      <view wx:for="{{detail.mouthSteps}}" wx:key="id" class="step-card">
-        <text>第{{index + 1}}步</text>
-        <view>{{item.text}}</view>
+
+    <view wx:if="{{activeTab === 'mouth'}}" class="mouth-panel">
+      <view class="mouth-figure">
+        <image wx:if="{{detail.image}}" src="{{detail.image}}" mode="aspectFill" />
+        <view class="floating-audio" bindtap="play">🔊</view>
+      </view>
+      <button class="method-pill">发音方法</button>
+      <view class="step-list">
+        <view wx:for="{{detail.mouthSteps}}" wx:key="id" class="step-card">
+          <text>第{{index + 1}}步</text>
+          <view>{{item.text}}</view>
+        </view>
       </view>
     </view>
-  </view>
 
-  <view wx:if="{{activeTab === 'word'}}" class="phonics-list">
-    <view wx:for="{{detail.words}}" wx:key="id" class="word-card">
-      <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" />
-      <view>
+    <view wx:if="{{activeTab === 'word'}}" class="phonics-list">
+      <view wx:for="{{detail.words}}" wx:key="id" class="word-card">
+        <image wx:if="{{item.image}}" src="{{item.image}}" mode="aspectFill" />
+        <view>
+          <text>{{item.text}}</text>
+          <button data-url="{{item.audioUrl}}" bindtap="play">播放</button>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{activeTab === 'sentence'}}" class="phonics-list">
+      <view wx:for="{{detail.sentences}}" wx:key="id" class="sentence-card">
         <text>{{item.text}}</text>
-        <button data-url="{{item.audioUrl}}" bindtap="play">播放</button>
-      </view>
-    </view>
-  </view>
-
-  <view wx:if="{{activeTab === 'sentence'}}" class="phonics-list">
-    <view wx:for="{{detail.sentences}}" wx:key="id" class="sentence-card">
-      <text>{{item.text}}</text>
-      <view wx:if="{{item.translation}}">{{item.translation}}</view>
-      <view class="audio-row">
-        <button wx:for="{{item.audioUrls}}" wx:for-item="url" wx:key="*this" data-url="{{url}}" bindtap="play">播放</button>
+        <view wx:if="{{item.translation}}">{{item.translation}}</view>
+        <view class="audio-row">
+          <button wx:for="{{item.audioUrls}}" wx:for-item="url" wx:key="*this" data-url="{{url}}" bindtap="play">播放</button>
+        </view>
       </view>
     </view>
   </view>

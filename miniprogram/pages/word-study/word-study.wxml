@@ -1,52 +1,50 @@
-<view class="reader-nav compact-nav">
-  <button class="back-button" bindtap="goBack">‹</button>
-  <text>{{result ? '学习完成' : (session.step === 'learn' ? '学' : (session.step === 'choose' ? '选' : '拼写'))}}</text>
-  <view class="mini-capsule"><text>•••</text><view></view><text>—</text><text>○</text></view>
-</view>
+<view class="word-study-page">
+  <nav-bar title="{{result ? '学习完成' : (session.step === 'learn' ? '学' : (session.step === 'choose' ? '选' : '拼写'))}}" showBack="{{true}}" background="#fff"></nav-bar>
 
-<view wx:if="{{!result && word}}" class="study-page">
-  <view class="study-progress">{{session.currentIndex + 1}} / {{words.length}}</view>
+  <view wx:if="{{!result && word}}" class="study-page">
+    <view class="study-progress">{{session.currentIndex + 1}} / {{words.length}}</view>
 
-  <view wx:if="{{session.step === 'learn'}}" class="study-card">
-    <text class="study-word">{{word.word}}</text>
-    <text class="phonetic">{{word.phonetic}}</text>
-    <text class="meaning">{{word.meaning}}</text>
-    <button class="audio-button" bindtap="play">播放</button>
-    <view wx:if="{{word.exampleEn}}" class="example">{{word.exampleEn}}</view>
-    <button class="primary" bindtap="nextStep">下一步</button>
-  </view>
+    <view wx:if="{{session.step === 'learn'}}" class="study-card">
+      <text class="study-word">{{word.word}}</text>
+      <text class="phonetic">{{word.phonetic}}</text>
+      <text class="meaning">{{word.meaning}}</text>
+      <button class="audio-button" bindtap="play">播放</button>
+      <view wx:if="{{word.exampleEn}}" class="example">{{word.exampleEn}}</view>
+      <button class="primary" bindtap="nextStep">下一步</button>
+    </view>
 
-  <view wx:if="{{session.step === 'choose'}}" class="study-card">
-    <text class="study-word">{{word.word}}</text>
-    <text class="phonetic">{{word.phonetic}}</text>
-    <button class="audio-button" bindtap="play">播放</button>
-    <view class="choice-list">
-      <button
-        wx:for="{{options}}"
-        wx:key="text"
-        class="{{choiceFeedback && choiceFeedback.index === index ? (choiceFeedback.passed ? 'correct' : 'wrong') : ''}}"
-        data-index="{{index}}"
-        bindtap="choose"
-      >○ {{item.text}}</button>
+    <view wx:if="{{session.step === 'choose'}}" class="study-card">
+      <text class="study-word">{{word.word}}</text>
+      <text class="phonetic">{{word.phonetic}}</text>
+      <button class="audio-button" bindtap="play">播放</button>
+      <view class="choice-list">
+        <button
+          wx:for="{{options}}"
+          wx:key="text"
+          class="{{choiceFeedback && choiceFeedback.index === index ? (choiceFeedback.passed ? 'correct' : 'wrong') : ''}}"
+          data-index="{{index}}"
+          bindtap="choose"
+        >○ {{item.text}}</button>
+      </view>
+    </view>
+
+    <view wx:if="{{session.step === 'spell'}}" class="study-card">
+      <text class="label">中文：</text>
+      <text class="meaning">{{word.meaning}}</text>
+      <input class="spell-input" value="{{spellingInput}}" bindinput="inputSpell" placeholder="请输入英文单词" />
+      <view wx:if="{{spellingHint}}" class="spelling-hint">{{spellingHint}}</view>
+      <button class="primary" bindtap="submitSpell">提交</button>
     </view>
   </view>
 
-  <view wx:if="{{session.step === 'spell'}}" class="study-card">
-    <text class="label">中文：</text>
-    <text class="meaning">{{word.meaning}}</text>
-    <input class="spell-input" value="{{spellingInput}}" bindinput="inputSpell" placeholder="请输入英文单词" />
-    <view wx:if="{{spellingHint}}" class="spelling-hint">{{spellingHint}}</view>
-    <button class="primary" bindtap="submitSpell">提交</button>
+  <view wx:if="{{result}}" class="result-page">
+    <text class="celebration">🎉</text>
+    <text class="result-title">学习完成</text>
+    <view class="result-card">
+      <text>学习</text><text>{{result.total}} 个单词</text>
+      <text>正确率</text><text>{{result.correctRate}}%</text>
+      <text>耗时</text><text>{{result.durationMinutes}} 分钟</text>
+    </view>
+    <button class="primary" bindtap="continueReader">继续教材学习</button>
   </view>
-</view>
-
-<view wx:if="{{result}}" class="result-page">
-  <text class="celebration">🎉</text>
-  <text class="result-title">学习完成</text>
-  <view class="result-card">
-    <text>学习</text><text>{{result.total}} 个单词</text>
-    <text>正确率</text><text>{{result.correctRate}}%</text>
-    <text>耗时</text><text>{{result.durationMinutes}} 分钟</text>
-  </view>
-  <button class="primary" bindtap="continueReader">继续教材学习</button>
 </view>

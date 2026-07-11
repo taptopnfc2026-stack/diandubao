@@ -44,6 +44,8 @@ const demoPayload = {
 const SETTINGS_KEY = 'diandu-operation-settings';
 const PROFILE_KEY = 'diandu-my-profile';
 const USER_OVERRIDES_KEY = 'diandu-admin-user-overrides';
+const AD_CONFIG_KEY = 'diandu-ad-config';
+const PAY_CONFIG_KEY = 'diandu-pay-config';
 
 function readJson(key, fallback) {
   try {
@@ -146,6 +148,18 @@ export async function fetchDashboard() {
 }
 
 export async function saveOperationSettings(settings) {
+  try {
+    const response = await fetch('/api/admin_dashboard/saveOperationSettings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings),
+      credentials: 'include',
+    });
+    const payload = await response.json();
+    if (payload.code === 1) return payload.data || payload;
+  } catch {
+    // fallback to localStorage
+  }
   localStorage.setItem(SETTINGS_KEY, JSON.stringify({
     newUserFreeMinutes: Number(settings.newUserFreeMinutes || 0),
     inviteRewardMinutes: Number(settings.inviteRewardMinutes || 0),
@@ -162,4 +176,81 @@ export async function saveUserProfile(id, patch) {
   };
   localStorage.setItem(USER_OVERRIDES_KEY, JSON.stringify(overrides));
   return fetchDashboard();
+}
+
+// ==================== 广告配置 ====================
+
+export async function fetchAdConfig() {
+  try {
+    const response = await fetch('/api/admin_dashboard/getAdConfig', { credentials: 'include' });
+    const payload = await response.json();
+    if (payload.code === 1 && payload.data) {
+      return {
+        ad_unit_id: payload.data.ad_unit_id || '',
+        ad_name: payload.data.ad_name || '激励视频广告',
+        status: payload.data.ad_enabled ? 1 : 0,
+      };
+    }
+  } catch {
+    // fallback to localStorage
+  }
+  return readJson(AD_CONFIG_KEY, { ad_unit_id: '', ad_name: '激励视频广告', status: 1 });
+}
+
+export async function saveAdConfig(config) {
+  try {
+    const response = await fetch('/api/admin_dashboard/saveAdConfig', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config),
+      credentials: 'include',
+    });
+    const payload = await response.json();
+    if (payload.code === 1) return payload.data || payload;
+  } catch {
+    // fallback to localStorage
+  }
+  localStorage.setItem(AD_CONFIG_KEY, JSON.stringify(config));
+  return config;
+}
+
+// ==================== 支付配置 ====================
+
+export async function fetchPayConfig() {
+  try {
+    const response = await fetch('/api/admin_dashboard/getPayConfig', { credentials: 'include' });
+    const payload = await response.json();
+    if (payload.code === 1 && payload.data) {
+      return {
+        mch_id: '',
+        mch_key: '',
+        app_id: '',
+        app_secret: '',
+        notify_url: '',
+        pay_enabled: payload.data.pay_enabled ? 1 : 0,
+      };
+    }
+  } catch {
+    // fallback to localStorage
+  }
+  return readJson(PAY_CONFIG_KEY, {
+    mch_id: '', mch_key: '', app_id: '', app_secret: '', notify_url: '', pay_enabled: 0,
+  });
+}
+
+export async function savePayConfig(config) {
+  try {
+    const response = await fetch('/api/admin_dashboard/savePayConfig', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config),
+      credentials: 'include',
+    });
+    const payload = await response.json();
+    if (payload.code === 1) return payload.data || payload;
+  } catch {
+    // fallback to localStorage
+  }
+  localStorage.setItem(PAY_CONFIG_KEY, JSON.stringify(config));
+  return config;
 }

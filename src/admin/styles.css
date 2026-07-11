@@ -336,6 +336,11 @@ th {
   background: #f8fbff;
 }
 
+.plan-card.disabled {
+  opacity: 0.6;
+  background: #f1f5f9;
+}
+
 .plan-card strong {
   font-size: 20px;
 }
@@ -353,9 +358,247 @@ th {
   font-weight: 800;
 }
 
+.plan-editor-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 14px;
+}
+
+.plan-editor-table th,
+.plan-editor-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #edf1f6;
+  text-align: left;
+}
+
+.plan-editor-table th {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.plan-input {
+  width: 100%;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid #d8dee9;
+  border-radius: 6px;
+  background: #fff;
+  color: #172033;
+}
+
+.plan-input:focus {
+  outline: 2px solid rgba(24, 141, 240, 0.18);
+  border-color: #188df0;
+}
+
+.plan-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.add-btn {
+  height: 40px;
+  padding: 0 18px;
+  border: 1px dashed #188df0;
+  border-radius: 6px;
+  background: #fff;
+  color: #188df0;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.add-btn:hover {
+  background: #f0f7ff;
+}
+
+.status-msg {
+  color: #087443;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.icon-btn {
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: #eaf4ff;
+  color: #1677c9;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.icon-btn.danger {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.redeem-form {
+  display: grid;
+  grid-template-columns: 1fr 120px auto;
+  gap: 12px;
+  align-items: end;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fbff;
+}
+
+.redeem-form label {
+  display: grid;
+  gap: 8px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.redeem-form label span {
+  color: #475569;
+}
+
+.redeem-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.redeem-table th,
+.redeem-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #edf1f6;
+  text-align: left;
+}
+
+.redeem-table th {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.redeem-code {
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #eef2f7;
+  font-family: ui-monospace, monospace;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.badge.used {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
 .plan-row span,
 .order-row span {
   color: #64748b;
+}
+
+/* 广告配置表单 */
+.ad-settings-form {
+  display: grid;
+  gap: 14px;
+}
+
+.ad-settings-form label {
+  display: grid;
+  gap: 8px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ad-settings-form label span {
+  color: #475569;
+}
+
+/* 支付配置表单 */
+.pay-settings-form {
+  display: grid;
+  gap: 14px;
+}
+
+.pay-settings-form label {
+  display: grid;
+  gap: 8px;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.pay-settings-form label span {
+  color: #475569;
+}
+
+.save-btn {
+  height: 42px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 6px;
+  background: #188df0;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background: #1478d0;
+}
+
+/* 支付开关 */
+.pay-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid #edf1f6;
+  border-bottom: 1px solid #edf1f6;
+}
+
+.pay-toggle-label {
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.pay-toggle {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.24s;
+}
+
+.pay-toggle.on {
+  background: #16a34a;
+}
+
+.pay-toggle.off {
+  background: #cbd5e1;
+}
+
+.pay-toggle-dot {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+  transition: transform 0.24s;
+}
+
+.pay-toggle.on .pay-toggle-dot {
+  transform: translateX(24px);
+}
+
+.pay-toggle-status {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 @media (max-width: 860px) {
@@ -368,7 +611,7 @@ th {
     top: 0;
     z-index: 2;
     display: grid;
-    grid-template-columns: repeat(5, auto);
+    grid-template-columns: repeat(7, auto);
     overflow-x: auto;
   }
 

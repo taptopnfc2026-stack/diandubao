@@ -1,24 +1,31 @@
-@import "../reader/reader.wxss";
-
-.compact-nav {
-  height: 116rpx;
-  padding-top: 0;
+/* 字母点读页样式 */
+.alphabet-page {
+  min-height: 100vh;
+  background: #fff;
+  box-sizing: border-box;
 }
 
 .alphabet-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 24rpx 20rpx;
-  padding: 28rpx 24rpx 52rpx;
+  padding: 28rpx 24rpx calc(52rpx + env(safe-area-inset-bottom));
   background: #fff;
+  box-sizing: border-box;
 }
 
 .alphabet-grid button {
+  width: calc((100% - 40rpx) / 3);
   min-width: 0;
   padding: 0;
   border-radius: 20rpx;
   overflow: hidden;
   background: #f3f4f6;
+  box-sizing: border-box;
+}
+
+.alphabet-grid button::after {
+  display: none;
 }
 
 .alphabet-grid image,
@@ -32,4 +39,6 @@
   line-height: 238rpx;
   font-size: 72rpx;
   font-weight: 800;
+  color: #172033;
+  text-align: center;
 }

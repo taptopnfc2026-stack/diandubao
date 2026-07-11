@@ -1,69 +1,93 @@
+<!-- 我的页面 -->
 <view class="my-page">
-  <view class="my-header">
-    <text>我的</text>
-    <view class="mini-capsule" aria-label="小程序菜单">
-      <text>•••</text>
-      <view class="capsule-line"></view>
-      <view class="capsule-dot"></view>
-      <view class="capsule-ring"></view>
-    </view>
-  </view>
+  <nav-bar title="我的" showBack="{{false}}" background="transparent"></nav-bar>
 
-  <view class="profile-card">
-    <view class="avatar-face"><view></view></view>
-    <view class="profile-copy">
-      <text>{{profile.user.title}}</text>
-      <text>{{profile.user.subtitle}}</text>
+  <view class="my-content">
+    <!-- 用户信息卡片 -->
+    <view class="profile-card">
+      <image class="avatar-img" src="{{profile.user.avatar || '/images/avatar-boy.png'}}" mode="aspectFill" />
+      <view class="profile-copy">
+        <text class="profile-title">{{profile.user.title}}</text>
+        <text class="profile-subtitle">{{profile.user.subtitle}}</text>
+      </view>
+      <button class="login-btn" bindtap="loginPreview">{{profile.user.registered ? '已登录' : '立即登录'}}</button>
+      <image class="profile-deco" src="/images/icon-books.svg" mode="aspectFit" />
     </view>
-    <button bindtap="loginPreview">{{profile.user.registered ? '已登录' : '立即登录'}}</button>
-  </view>
 
-  <view class="usage-card">
-    <view class="card-title">
-      <text>我的使用时长</text>
-      <text>明细 ›</text>
-    </view>
-    <view class="usage-content">
-      <view class="usage-ring" style="background: conic-gradient(#24a9ff {{ringDeg}}deg, #eaf4ff 0deg);">
-        <view>
-          <text>{{profile.usage.remainingMinutes}}</text>
-          <text>分钟</text>
+    <!-- 使用时长卡片 -->
+    <view class="usage-card">
+      <view class="card-title">
+        <text class="card-title-main">我的使用时长</text>
+        <view class="card-title-more" bindtap="noop">
+          <text>明细</text>
+          <text class="arrow">›</text>
         </view>
       </view>
-      <view class="usage-info">
-        <text>今日已用 {{profile.usage.usedMinutesToday}} 分钟</text>
-        <view class="usage-bar"><view style="width: {{usagePercent}}%;"></view></view>
-        <text>{{profile.usage.usedMinutesToday}}/{{profile.usage.totalMinutesToday}} 分钟</text>
-        <view class="usage-actions">
-          <button bindtap="openInviteTask"><text>＋</text><text>邀请好友</text><text class="action-reward">+{{profile.settings.inviteRewardMinutes}}分钟</text></button>
-          <button bindtap="openAdTask"><text>▶</text><text>观看广告</text><text class="action-reward">+{{profile.settings.adRewardMinutes}}分钟</text></button>
+      <view class="usage-content">
+        <view class="usage-ring-wrap">
+          <view class="usage-ring" style="background: conic-gradient(#24a9ff {{ringDeg}}deg, #eaf4ff 0deg);">
+            <view class="usage-ring-inner">
+              <text class="ring-minutes">{{profile.usage.remainingMinutes}}</text>
+              <text class="ring-unit">分钟</text>
+            </view>
+          </view>
+          <text class="ring-label">可用时长</text>
+        </view>
+        <view class="usage-info">
+          <text class="usage-today">今日已用 {{profile.usage.usedMinutesToday}} 分钟</text>
+          <view class="usage-bar"><view style="width: {{usagePercent}}%;"></view></view>
+          <text class="usage-total">{{profile.usage.usedMinutesToday}}/{{profile.usage.totalMinutesToday}} 分钟</text>
+          <view class="usage-actions">
+            <button class="action-btn invite" bindtap="openInviteTask">
+              <image src="/images/icon-invite.svg" mode="aspectFit" />
+              <view>
+                <text>邀请好友</text>
+                <text class="reward">+{{profile.settings.inviteRewardMinutes}}分钟</text>
+              </view>
+            </button>
+            <button class="action-btn ad" bindtap="openAdTask">
+              <image src="/images/icon-ad.svg" mode="aspectFit" />
+              <view>
+                <text>观看广告</text>
+                <text class="reward">+{{profile.settings.adRewardMinutes}}分钟</text>
+              </view>
+            </button>
+          </view>
         </view>
       </view>
     </view>
-  </view>
 
-  <button class="member-card" bindtap="openMemberTask">
-    <text>♕</text>
-    <view>
-      <text>兑换会员</text>
-      <text>开通会员，畅享更多权益</text>
+    <!-- 兑换会员 -->
+    <view class="member-card" bindtap="openMemberTask">
+      <image class="member-icon" src="/images/icon-crown.svg" mode="aspectFit" />
+      <view class="member-copy">
+        <text>兑换会员</text>
+        <text>开通会员，畅享更多权益</text>
+      </view>
+      <view class="member-more">
+        <text>立即兑换</text>
+        <text class="arrow">›</text>
+      </view>
     </view>
-    <text>立即兑换 ›</text>
-  </button>
 
-  <view class="my-menu">
-    <button wx:for="{{menuItems}}" wx:key="title" bindtap="noop">
-      <text class="menu-icon {{item.icon}}"></text>
-      <text>{{item.title}}</text>
-      <text>{{item.aside}}</text>
-      <text>›</text>
-    </button>
+    <!-- 菜单列表 -->
+    <view class="my-menu">
+      <view wx:for="{{menuItems}}" wx:key="title" class="menu-item" data-key="{{item.key}}" bindtap="onMenuTap">
+        <view class="menu-icon-wrap {{item.icon}}">
+          <image class="menu-icon" src="/images/icon-{{item.icon}}.svg" mode="aspectFit" />
+        </view>
+        <text class="menu-title">{{item.title}}</text>
+        <text wx:if="{{item.aside}}" class="menu-aside">{{item.aside}}</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
   </view>
 </view>
 
-<view wx:if="{{showTimeLimitPrompt}}" class="time-limit-mask">
+<!-- 免费时长弹窗 -->
+<view wx:if="{{showTimeLimitPrompt}}" class="time-limit-mask" catchtouchmove="noop">
   <view class="time-limit-card">
-    <button class="time-limit-close" bindtap="closeTimeLimitPrompt">×</button>
+    <view class="time-limit-close" bindtap="closeTimeLimitPrompt">×</view>
     <view class="time-limit-hero">
       <view class="time-limit-avatar"><view></view></view>
       <view class="time-limit-copy">
@@ -118,9 +142,12 @@
   </view>
 </view>
 
-<view wx:if="{{taskView}}" class="task-mask">
+<!-- 任务弹窗 -->
+<view wx:if="{{taskView}}" class="task-mask" catchtouchmove="noop">
   <view class="task-sheet">
-    <button class="task-close" bindtap="closeTaskView">×</button>
+    <view class="task-close" bindtap="closeTaskView">×</view>
+
+    <!-- 邀请任务 -->
     <block wx:if="{{taskView == 'invite'}}">
       <view class="task-hero">
         <text class="task-icon invite">＋</text>
@@ -135,8 +162,10 @@
         <text>2. 好友完成登录 / 注册</text>
         <text>3. 系统发放免费时长</text>
       </view>
-      <button class="task-primary" bindtap="completeInviteTask">模拟邀请成功</button>
+      <button class="task-primary share" open-type="share">立即邀请好友</button>
     </block>
+
+    <!-- 广告任务 -->
     <block wx:elif="{{taskView == 'ad'}}">
       <view class="task-hero">
         <text class="task-icon ad">▶</text>
@@ -146,9 +175,11 @@
         </view>
       </view>
       <view class="task-copy">观看完整激励视频广告后，可继续使用点读和练习功能。</view>
-      <view class="task-video">广告视频预览位</view>
-      <button class="task-primary purple" bindtap="completeAdTask">完成观看并领取</button>
+      <view class="task-video">📺 激励视频广告</view>
+      <button class="task-primary purple" bindtap="watchAd">观看广告领取奖励</button>
     </block>
+
+    <!-- 会员任务（根据支付是否开启展示不同内容） -->
     <block wx:else>
       <view class="task-hero">
         <text class="task-icon crown">♕</text>
@@ -157,27 +188,62 @@
           <text>学习不受限</text>
         </view>
       </view>
-      <view class="task-copy">开通会员后可不受免费时长限制，后续可扩展教材包和学习报告权益。</view>
-      <view class="task-member-card">
-        <text>会员无限使用</text>
-        <text>适合长期学习英语点读</text>
-      </view>
-      <button class="task-primary gold" bindtap="completeMemberTask">模拟开通会员</button>
+      <view class="task-copy">开通会员后可不受免费时长限制，畅享所有学习功能。</view>
+
+      <!-- 微信支付开启时展示套餐和支付按钮 -->
+      <block wx:if="{{payEnabled && payPlans.length > 0}}">
+        <view class="task-member-card">
+          <text>选择会员套餐</text>
+          <view class="plan-select-list">
+            <view
+              wx:for="{{payPlans}}"
+              wx:key="id"
+              class="plan-select-item {{selectedPlanId == item.id ? 'active' : ''}}"
+              data-plan-id="{{item.id}}"
+              bindtap="selectPlan"
+            >
+              <view class="plan-select-radio {{selectedPlanId == item.id ? 'checked' : ''}}"></view>
+              <view class="plan-select-info">
+                <text class="plan-select-name">{{item.name}}</text>
+                <text class="plan-select-price">¥{{item.price_cents / 100}} / {{item.duration_days}}天</text>
+              </view>
+            </view>
+          </view>
+        </view>
+        <button class="task-primary gold" bindtap="doPay">微信支付开通</button>
+      </block>
+
+      <!-- 支付未开启时展示兑换码开通 -->
+      <block wx:else>
+        <view class="task-member-card">
+          <text>输入兑换码开通会员</text>
+          <text>请在后台生成兑换码后发给用户使用</text>
+        </view>
+        <view class="redeem-code-box">
+          <input
+            value="{{redeemCode}}"
+            maxlength="32"
+            placeholder="请输入会员兑换码"
+            confirm-type="done"
+            bindinput="inputRedeemCode"
+          />
+        </view>
+        <button class="task-primary gold" loading="{{redeeming}}" bindtap="completeMemberTask">
+          {{redeeming ? '兑换中...' : '立即兑换'}}
+        </button>
+      </block>
     </block>
   </view>
 </view>
 
+<!-- 底部导航 -->
 <view class="bottom-tabbar">
-  <button bindtap="goHome">
-    <text class="tab-icon">⌂</text>
+  <view class="tab-item" bindtap="goHome">
+    <image class="tab-icon" src="/images/tab-home.svg" mode="aspectFit" />
     <text>首页</text>
-  </button>
-  <button bindtap="startReader">
-    <text class="tab-icon">▣</text>
-    <text>点读</text>
-  </button>
-  <button class="active">
-    <text class="tab-icon">○</text>
+  </view>
+  <view class="tab-item active">
+    <image class="tab-icon" src="/images/tab-my-active.svg" mode="aspectFit" />
     <text>我的</text>
-  </button>
+  </view>
 </view>

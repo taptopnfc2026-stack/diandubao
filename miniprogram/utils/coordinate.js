@@ -37,7 +37,19 @@ function normalizeOtherInfo(otherInfo) {
 
 function pickAudioUrl(item) {
   if (typeof item === 'string') return item;
-  return item && (item.url || item.originSoundUrl || item.encryptSoundUrl || item.audio || item.mp3 || '');
+  if (!item || typeof item !== 'object') return '';
+  return item.url
+    || item.originSoundUrl
+    || item.encryptSoundUrl
+    || item.originSound
+    || item.encryptSound
+    || item.sound
+    || item.soundUrl
+    || item.audio_url
+    || item.audioUrl
+    || item.audio
+    || item.mp3
+    || '';
 }
 
 function toOverlayRect(coordinate, imageBox) {
@@ -49,8 +61,8 @@ function toOverlayRect(coordinate, imageBox) {
   if (![x, y, width, height].every(Number.isFinite)) return null;
   if (width <= 0 || height <= 0) return null;
   return {
-    left: imageBox.width * x,
-    top: imageBox.height * y,
+    left: (imageBox.left || 0) + imageBox.width * x,
+    top: (imageBox.top || 0) + imageBox.height * y,
     width: imageBox.width * width,
     height: imageBox.height * height,
   };
@@ -61,12 +73,15 @@ function buildTapRegions(page, imageBox) {
   const audioMap = normalizeAudioMap(page && page.word_mp3);
   const items = Array.isArray(otherInfo.pieces) ? otherInfo.pieces : normalizeAudioItems(page && page.word_mp3);
   return items
-    .map((item, index) => ({
-      id: item.pieceId || item.id || `${page && page.id ? page.id : 'page'}-${index}`,
-      text: item.original || item.richOriginal || item.translation || '',
-      audioUrl: audioMap[`a${item.pieceId}`] || audioMap[item.pieceId] || pickAudioUrl(item),
-      rect: toOverlayRect(item.coordinate, imageBox),
-    }))
+    .map((item, index) => {
+      const mappedAudio = audioMap[`a${item.pieceId}`] || audioMap[item.pieceId] || audioMap[item.id];
+      return {
+        id: item.pieceId || item.id || `${page && page.id ? page.id : 'page'}-${index}`,
+        text: item.original || item.richOriginal || item.translation || '',
+        audioUrl: pickAudioUrl(mappedAudio) || pickAudioUrl(item),
+        rect: toOverlayRect(item.coordinate, imageBox),
+      };
+    })
     .filter((item) => item.audioUrl && item.rect);
 }
 

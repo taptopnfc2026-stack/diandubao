@@ -1,5 +1,5 @@
 import { formatDateTime, normalizeDashboard } from './adminData.js';
-import { fetchDashboard, saveOperationSettings, saveUserProfile } from './adminApi.js';
+import { fetchDashboard, saveOperationSettings, saveUserProfile, saveAdConfig, savePayConfig, fetchAdConfig, fetchPayConfig } from './adminApi.js';
 import './styles.css';
 
 const app = document.querySelector('#admin-app');
@@ -8,6 +8,10 @@ const state = {
   loading: false,
   section: 'dashboard',
   dashboard: normalizeDashboard(),
+  adConfig: { ad_unit_id: '', ad_name: '激励视频广告', status: 1 },
+  payConfig: { mch_id: '', mch_key: '', app_id: '', app_secret: '', notify_url: '', pay_enabled: 0 },
+  saveAdMsg: '',
+  savePayMsg: '',
 };
 
 function money(cents) {
@@ -49,9 +53,21 @@ async function loadDashboard() {
   setState({ dashboard: normalizeDashboard(payload), loading: false });
 }
 
+async function loadAdConfig() {
+  const config = await fetchAdConfig();
+  setState({ adConfig: config });
+}
+
+async function loadPayConfig() {
+  const config = await fetchPayConfig();
+  setState({ payConfig: config });
+}
+
 window.adminApp = {
   openSection(section) {
-    setState({ section });
+    setState({ section, saveAdMsg: '', savePayMsg: '' });
+    if (section === 'ads') loadAdConfig();
+    if (section === 'payment') loadPayConfig();
   },
   login(event) {
     event.preventDefault();
@@ -93,6 +109,39 @@ window.adminApp = {
     });
     setState({ dashboard: normalizeDashboard(payload), loading: false });
   },
+  async saveAdSettings(event) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    setState({ loading: true, saveAdMsg: '保存中...' });
+    await saveAdConfig({
+      ad_unit_id: form.get('ad_unit_id'),
+      ad_name: form.get('ad_name') || '激励视频广告',
+      status: form.get('status') === '1' ? 1 : 0,
+    });
+    await loadAdConfig();
+    setState({ loading: false, saveAdMsg: '广告配置已保存 ✓' });
+    setTimeout(() => setState({ saveAdMsg: '' }), 2500);
+  },
+  async savePaySettings(event) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    setState({ loading: true, savePayMsg: '保存中...' });
+    await savePayConfig({
+      mch_id: form.get('mch_id'),
+      mch_key: form.get('mch_key'),
+      app_id: form.get('app_id'),
+      app_secret: form.get('app_secret'),
+      notify_url: form.get('notify_url'),
+      pay_enabled: form.get('pay_enabled') === '1' ? 1 : 0,
+    });
+    await loadPayConfig();
+    setState({ loading: false, savePayMsg: '支付配置已保存 ✓' });
+    setTimeout(() => setState({ savePayMsg: '' }), 2500);
+  },
+  togglePayEnabled() {
+    const newVal = state.payConfig.pay_enabled ? 0 : 1;
+    setState({ payConfig: { ...state.payConfig, pay_enabled: newVal } });
+  },
 };
 
 function renderLogin() {
@@ -100,7 +149,7 @@ function renderLogin() {
     <main class="login-page">
       <form class="login-card" onsubmit="adminApp.login(event)">
         <h1>点读后台</h1>
-        <p>用户统计与收费准备</p>
+        <p>用户统计与收费管理</p>
         <label>账号<input value="admin" autocomplete="username" /></label>
         <label>密码<input value="admin123" type="password" autocomplete="current-password" /></label>
         <button>登录后台</button>
@@ -115,6 +164,8 @@ const sectionTitles = {
   plans: ['会员套餐', '管理会员兑换入口与套餐展示'],
   settings: ['运营设置', '配置免费时长与奖励规则'],
   orders: ['订单管理', '查看订单、会员兑换与奖励流水'],
+  ads: ['广告配置', '配置微信激励视频广告单元ID'],
+  payment: ['支付配置', '配置微信支付商户号和开关'],
 };
 
 function renderSidebar() {
@@ -124,6 +175,8 @@ function renderSidebar() {
     ['plans', '会员套餐'],
     ['settings', '运营设置'],
     ['orders', '订单管理'],
+    ['ads', '广告配置'],
+    ['payment', '支付配置'],
   ];
   return `
     <aside>
@@ -163,6 +216,92 @@ function renderSettingsForm(settings) {
         <label><span>观看广告奖励时长</span><div><input name="adRewardMinutes" type="number" min="0" value="${settings.adRewardMinutes}" /><small>分钟</small></div></label>
         <button>${state.loading ? '保存中...' : '保存设置'}</button>
       </form>
+    </section>
+  `;
+}
+
+function renderAdSettingsForm() {
+  const { adConfig, saveAdMsg, loading } = state;
+  return `
+    <section class="panel wide">
+      <h2>微信激励视频广告配置</h2>
+      <p style="color:#64748b;margin:0 0 18px;font-size:14px;">
+        在微信公众平台 → 流量主 → 广告管理 中创建激励视频广告，获取广告单元ID填入下方。
+      </p>
+      <form class="ad-settings-form" onsubmit="adminApp.saveAdSettings(event)">
+        <label>
+          <span>广告单元ID (adUnitId)</span>
+          <input name="ad_unit_id" value="${escapeHtml(adConfig.ad_unit_id)}" placeholder="例如: adunit-xxxxxxxxxxxxxxxx" style="width:100%;height:40px;padding:0 10px;border:1px solid #d8dee9;border-radius:6px;" />
+        </label>
+        <label>
+          <span>广告名称</span>
+          <input name="ad_name" value="${escapeHtml(adConfig.ad_name)}" style="width:100%;height:40px;padding:0 10px;border:1px solid #d8dee9;border-radius:6px;" />
+        </label>
+        <label>
+          <span>启用状态</span>
+          <select name="status" style="width:100%;height:40px;padding:0 10px;border:1px solid #d8dee9;border-radius:6px;">
+            <option value="1" ${adConfig.status === 1 ? 'selected' : ''}>已启用</option>
+            <option value="0" ${adConfig.status === 0 ? 'selected' : ''}>已停用</option>
+          </select>
+        </label>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button type="submit" class="save-btn">${loading ? '保存中...' : '保存广告配置'}</button>
+          ${saveAdMsg ? `<span style="color:#087443;font-weight:700;">${saveAdMsg}</span>` : ''}
+        </div>
+      </form>
+      <div style="margin-top:14px;padding:12px 16px;background:#f0f7ff;border-radius:8px;color:#475569;font-size:13px;">
+        <strong>💡 提示：</strong>填写广告单元ID并启用后，小程序端将自动读取此配置展示真实激励视频广告。
+        留空则小程序端不展示广告。
+      </div>
+    </section>
+  `;
+}
+
+function renderPaySettingsForm() {
+  const { payConfig, savePayMsg, loading } = state;
+  return `
+    <section class="panel wide">
+      <h2>微信支付配置</h2>
+      <p style="color:#64748b;margin:0 0 18px;font-size:14px;">
+        在微信支付商户平台获取商户号和API密钥，填入下方完成支付配置。
+      </p>
+      <form class="pay-settings-form" onsubmit="adminApp.savePaySettings(event)">
+        <label>
+          <span>小程序 AppID</span>
+          <input name="app_id" value="${escapeHtml(payConfig.app_id)}" placeholder="wx..." style="width:100%;height:40px;padding:0 10px;border:1px solid #d8dee9;border-radius:6px;" />
+        </label>
+        <label>
+          <span>商户号 (MchID)</span>
+          <input name="mch_id" value="${escapeHtml(payConfig.mch_id)}" placeholder="微信支付商户号" style="width:100%;height:40px;padding:0 10px;border:1px solid #d8dee9;border-radius:6px;" />
+        </label>
+        <label>
+          <span>API 密钥 (Key)</span>
+          <input name="mch_key" type="password" value="${escapeHtml(payConfig.mch_key)}" placeholder="APIv2密钥或APIv3密钥" style="width:100%;height:40px;padding:0 10px;border:1px solid #d8dee9;border-radius:6px;" />
+        </label>
+        <label>
+          <span>AppSecret</span>
+          <input name="app_secret" type="password" value="${escapeHtml(payConfig.app_secret)}" placeholder="小程序AppSecret" style="width:100%;height:40px;padding:0 10px;border:1px solid #d8dee9;border-radius:6px;" />
+        </label>
+        <label>
+          <span>支付回调地址</span>
+          <input name="notify_url" value="${escapeHtml(payConfig.notify_url)}" placeholder="https://你的域名/api/callback/wechat_notify" style="width:100%;height:40px;padding:0 10px;border:1px solid #d8dee9;border-radius:6px;" />
+        </label>
+        <div class="pay-toggle-row">
+          <span class="pay-toggle-label">微信支付开关</span>
+          <button type="button" class="pay-toggle ${payConfig.pay_enabled ? 'on' : 'off'}" onclick="adminApp.togglePayEnabled()">
+            <span class="pay-toggle-dot"></span>
+          </button>
+          <input type="hidden" name="pay_enabled" value="${payConfig.pay_enabled ? '1' : '0'}" />
+          <span class="pay-toggle-status">${payConfig.pay_enabled ? '已开启 - 小程序端显示支付入口' : '已关闭 - 小程序端不显示支付入口'}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:12px;">
+          <button type="submit" class="save-btn">${loading ? '保存中...' : '保存支付配置'}</button>
+          ${savePayMsg ? `<span style="color:#087443;font-weight:700;">${savePayMsg}</span>` : ''}
+        </div>
+      </form>
+      <div style="margin-top:14px;padding:12px 16px;background:#fffbe6;border-radius:8px;color:#92400e;font-size:13px;">
+        <strong>⚠️ 安全提示：</strong>密钥信息仅保存在你的服务器数据库中。关闭支付开关后，小程序端「兑换会员」界面将不显示微信支付按钮，仅显示模拟开通入口。
+      </div>
     </section>
   `;
 }
@@ -276,6 +415,12 @@ function renderCurrentSection() {
   if (state.section === 'orders') {
     return `<div class="section-grid">${renderOrdersList(orders)}${renderExchangesList(exchanges)}${renderRewardsList(rewards)}</div>`;
   }
+  if (state.section === 'ads') {
+    return `<div class="section-grid">${renderAdSettingsForm()}</div>`;
+  }
+  if (state.section === 'payment') {
+    return `<div class="section-grid">${renderPaySettingsForm()}</div>`;
+  }
   return `
     ${renderMetrics(counters)}
     <div class="section-grid">
@@ -297,7 +442,7 @@ function renderDashboard() {
             <h1>${escapeHtml(title)}</h1>
             <p>${state.loading ? '加载中...' : escapeHtml(subtitle)}</p>
           </div>
-          <span>收费模块预备版</span>
+          <span>V2 完整版</span>
         </header>
         ${renderCurrentSection()}
       </section>
@@ -311,4 +456,8 @@ function render() {
 }
 
 render();
-if (state.authed) loadDashboard();
+if (state.authed) {
+  loadDashboard();
+  loadAdConfig();
+  loadPayConfig();
+}

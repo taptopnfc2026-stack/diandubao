@@ -1,19 +1,37 @@
-<view class="nav">
-  <button bindtap="goBack">‹</button>
-  <text>{{bookName || '目录'}}</text>
-  <view class="nav-spacer"></view>
-</view>
-<view class="chapter-list">
-  <button
-    wx:for="{{chapters}}"
-    wx:key="id"
-    data-index="{{index}}"
-    bindtap="openChapter"
-  >
-    <view>
-      <text>{{item.chapter_name || ('第 ' + (index + 1) + ' 课')}}</text>
-      <text class="sub">第 {{item.start_page || '-'}}-{{item.end_page || '-'}} 页</text>
+<!-- 目录页 -->
+<view class="chapters-page" bindtap="onMaskTap">
+  <view class="chapter-sheet" catchtap="onSheetTap">
+    <view class="sheet-header">
+      <text class="sheet-title">选择章节</text>
+      <view class="sheet-close" bindtap="goBack">×</view>
     </view>
-    <text class="arrow">›</text>
-  </button>
+
+    <scroll-view class="chapter-list" scroll-y enhanced show-scrollbar>
+      <view class="chapter-group" wx:for="{{groupedChapters}}" wx:for-item="group" wx:for-index="groupIndex" wx:key="title">
+        <text class="group-title">{{group.title}}</text>
+        <view class="group-card">
+          <view
+            wx:for="{{group.items}}"
+            wx:for-item="item"
+            wx:for-index="itemIndex"
+            wx:key="id"
+            data-group="{{groupIndex}}"
+            data-index="{{itemIndex}}"
+            bindtap="openChapter"
+            class="chapter-row {{isActive(item) ? 'active' : ''}}"
+          >
+            <view class="chapter-info">
+              <text class="chapter-name">{{item.chapter_name || ('第 ' + (itemIndex + 1) + ' 课')}}</text>
+              <text class="chapter-sub" wx:if="{{item.start_page}}">第 {{item.start_page}}-{{item.end_page || item.start_page}} 页</text>
+            </view>
+            <view class="chapter-page">
+              <text>第{{item.start_page || '-'}}页</text>
+              <text class="arrow">›</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="list-bottom"></view>
+    </scroll-view>
+  </view>
 </view>

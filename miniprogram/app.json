@@ -9,6 +9,8 @@
     "pages/alphabet/alphabet",
     "pages/phonics/phonics",
     "pages/phonics-detail/phonics-detail",
+    "pages/member-pay/member-pay",
+    "pages/report/report",
     "pages/my/my"
   ],
   "window": {
@@ -17,5 +19,8 @@
     "backgroundTextStyle": "dark"
   },
   "style": "v2",
-  "sitemapLocation": "sitemap.json"
+  "sitemapLocation": "sitemap.json",
+  "usingComponents": {
+    "nav-bar": "/components/nav-bar/nav-bar"
+  }
 }

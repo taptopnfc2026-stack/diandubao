@@ -1,45 +1,75 @@
-<view class="reader-nav">
-  <button class="back-button" bindtap="goBack">‹</button>
-  <text>点读学习</text>
-  <view class="mini-capsule">
-    <text>•••</text>
-    <view></view>
-    <text>—</text>
-    <text>○</text>
-  </view>
-</view>
-<view class="reader-meta">
-  <text>{{bookName}}</text>
-  <button bindtap="openChapters">目录 ›</button>
-</view>
-<view class="reader">
-  <view
-    wx:if="{{page && page.bg_img}}"
-    class="page-wrap"
-    bindtouchstart="onTouchStart"
-    bindtouchend="onTouchEnd"
-  >
-    <image class="page-image" src="{{page.bg_img}}" mode="widthFix" bindload="onImageLoad" />
-    <view class="tap-layer">
-      <button
-        wx:for="{{regions}}"
-        wx:key="id"
-        class="tap-region"
-        data-index="{{index}}"
-        bindtap="playRegion"
-        style="left:{{item.rect.left}}px;top:{{item.rect.top}}px;width:{{item.rect.width}}px;height:{{item.rect.height}}px"
-      ></button>
+<!-- 点读学习页 -->
+<view class="reader-page">
+  <nav-bar title="点读学习" showBack="{{true}}" background="#fff"></nav-bar>
+
+  <view class="reader-meta">
+    <text class="book-name">{{bookName}}</text>
+    <view class="meta-right">
+      <text class="page-indicator">{{pageNo}} / {{endPage}}</text>
+      <view class="catalog-btn" bindtap="openChapters">
+        <text>目录</text>
+        <text class="catalog-arrow">›</text>
+      </view>
     </view>
   </view>
-  <view wx:else class="missing-page">暂无页面图片</view>
-</view>
-<view class="reader-controls">
-  <button class="tool-button" bindtap="replay">
-    <text class="tool-icon">↻</text>
-    <text>复读</text>
-  </button>
-  <button class="tool-button" bindtap="playAll">
-    <text class="tool-icon">☵</text>
-    <text>连读</text>
-  </button>
+
+  <swiper
+    class="reader-swiper"
+    current="{{swiperIndex}}"
+    bindchange="onSwiperChange"
+    bindanimationfinish="onSwiperFinish"
+    duration="350"
+    easing-function="easeInOutCubic"
+  >
+    <swiper-item class="page-item" wx:for="{{pageList}}" wx:for-index="pageIdx" wx:key="pageNo">
+      <scroll-view scroll-y class="page-scroll" enhanced show-scrollbar="{{false}}">
+        <view wx:if="{{item.loading}}" class="page-loading">加载中…</view>
+        <view wx:elif="{{item.page && item.page.bg_img}}" class="page-wrap">
+          <view
+            id="page-stage-{{pageIdx}}"
+            class="page-stage"
+            style="{{item.stageStyle}}"
+          >
+          <image
+            id="page-image-{{pageIdx}}"
+            class="page-image"
+            src="{{item.page.bg_img}}"
+            mode="widthFix"
+            bindload="onImageLoad"
+            binderror="onImageError"
+            data-index="{{pageIdx}}"
+          />
+          <view
+            wx:if="{{item.imageBox}}"
+            class="tap-layer"
+            style="{{item.layerStyle}}"
+          >
+            <view
+              wx:for="{{item.regions}}"
+              wx:for-index="regionIdx"
+              wx:key="id"
+              class="tap-region"
+              data-page-index="{{pageIdx}}"
+              data-region-index="{{regionIdx}}"
+              catchtap="playRegion"
+              style="left:{{item.rect.left}}px;top:{{item.rect.top}}px;width:{{item.rect.width}}px;height:{{item.rect.height}}px"
+            ></view>
+          </view>
+          </view>
+        </view>
+        <view wx:else class="missing-page">暂无页面图片</view>
+      </scroll-view>
+    </swiper-item>
+  </swiper>
+
+  <view class="reader-controls">
+    <button class="tool-button" bindtap="replay">
+      <text class="tool-icon">↻</text>
+      <text>复读</text>
+    </button>
+    <button class="tool-button" bindtap="playAll">
+      <text class="tool-icon">☰</text>
+      <text>连读</text>
+    </button>
+  </view>
 </view>

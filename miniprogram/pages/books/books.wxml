@@ -1,34 +1,41 @@
-<view class="nav">
-  <button bindtap="goBack">‹</button>
-  <text>选择教材</text>
-  <view class="nav-spacer"></view>
-</view>
-<view class="book-picker">
-  <scroll-view class="category-list" scroll-y>
-    <button
-      wx:for="{{cates}}"
-      wx:key="id"
-      class="{{item.isActive ? 'active' : ''}}"
-      data-id="{{item.id}}"
-      bindtap="selectCate"
-    >{{item.name}}</button>
-  </scroll-view>
-  <scroll-view class="book-panel" scroll-y>
-    <view class="book-grid">
+<!-- 选择教材页 -->
+<view class="books-page">
+  <nav-bar title="选择教材" showBack="{{true}}" background="#fff"></nav-bar>
+
+  <view class="book-picker">
+    <scroll-view class="category-list" scroll-y>
       <button
-        wx:for="{{books}}"
+        wx:for="{{cates}}"
         wx:key="id"
-        class="book-option {{item.isSelected ? 'selected' : ''}}"
-        data-index="{{index}}"
-        bindtap="selectBook"
-      >
-        <view class="cover-frame">
-          <image wx:if="{{item.book_img}}" src="{{item.book_img}}" mode="aspectFill" />
-          <view wx:else class="cover-empty">暂无封面</view>
-          <text wx:if="{{item.isSelected}}" class="checkmark">✓</text>
+        class="{{item.isActive ? 'active' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="selectCate"
+      >{{item.name}}</button>
+    </scroll-view>
+
+    <scroll-view class="book-panel" scroll-y>
+      <text class="panel-title">{{activeCatName}}</text>
+      <view class="book-grid">
+        <view
+          wx:for="{{books}}"
+          wx:key="id"
+          class="book-option {{item.isSelected ? 'selected' : ''}}"
+          data-index="{{index}}"
+          bindtap="selectBook"
+        >
+          <view class="cover-frame">
+            <view class="cover-ratio">
+              <image wx:if="{{item.book_img}}" src="{{item.book_img}}" mode="aspectFill" />
+              <view wx:else class="cover-empty">暂无封面</view>
+            </view>
+            <view wx:if="{{item.isSelected}}" class="checkmark">
+              <text>✓</text>
+            </view>
+          </view>
+          <text class="book-name">{{item.book_name}}</text>
         </view>
-        <text>{{item.book_name}}</text>
-      </button>
-    </view>
-  </scroll-view>
+      </view>
+      <view class="panel-bottom"></view>
+    </scroll-view>
+  </view>
 </view>

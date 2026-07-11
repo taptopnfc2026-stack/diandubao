@@ -1,36 +1,67 @@
-<view class="hero">
-  <view class="topbar">
-    <text class="title">英语点读助手</text>
-    <button bindtap="openBooks">切换教材</button>
-  </view>
-  <view class="book-card">
-    <image wx:if="{{book && book.book_img}}" src="{{book.book_img}}" mode="aspectFill" />
-    <view wx:else class="cover-empty">请选择教材</view>
-    <text>{{book ? book.book_name : '暂无教材'}}</text>
-    <text class="progress">已学 {{page}} 页</text>
-  </view>
-  <button class="primary" bindtap="startReader">开始点读</button>
-</view>
-<view class="panel">
-  <text class="panel-title">音标学习</text>
-  <view class="quick-grid">
-    <button bindtap="openPhonetics">音标点读</button>
-    <button bindtap="openAlphabet">字母点读</button>
-    <button bindtap="openPhonics">自然拼读</button>
-  </view>
-</view>
+<!-- 首页 -->
+<view class="home-page">
+  <view class="home-hero">
+    <nav-bar title="" background="transparent">
+      <view slot="left" class="home-logo">
+        <text class="logo-text">英语点读助手</text>
+        <text class="logo-plus">+</text>
+      </view>
+      <view slot="right"></view>
+    </nav-bar>
 
-<view class="bottom-tabbar">
-  <button class="active">
-    <text class="tab-icon">⌂</text>
-    <text>首页</text>
-  </button>
-  <button bindtap="startReader">
-    <text class="tab-icon">▣</text>
-    <text>点读</text>
-  </button>
-  <button bindtap="openMy">
-    <text class="tab-icon">○</text>
-    <text>我的</text>
-  </button>
+    <view class="hero-content">
+      <view class="book-card">
+        <image wx:if="{{book && book.book_img}}" src="{{book.book_img}}" mode="aspectFill" />
+        <view wx:else class="cover-empty">请选择教材</view>
+        <button class="book-switch" bindtap="openBooks">
+          <text>切换教材</text>
+          <text class="arrow">›</text>
+        </button>
+      </view>
+
+      <view class="reader-action">
+        <button class="primary" bindtap="startReader">
+          <text>开始点读</text>
+        </button>
+        <view class="progress-badge" wx:if="{{book}}">
+          <text>已学{{progressCurrent}}/{{progressTotal}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="panel">
+    <text class="panel-title">音标学习</text>
+    <view class="quick-grid">
+      <button class="quick-item phonetics" bindtap="openPhonetics">
+        <view class="quick-icon">
+          <text class="icon-phonetics">音</text>
+        </view>
+        <text>音标点读</text>
+      </button>
+      <button class="quick-item alphabet" bindtap="openAlphabet">
+        <view class="quick-icon">
+          <text class="icon-alphabet">A</text>
+        </view>
+        <text>字母点读</text>
+      </button>
+      <button class="quick-item phonics" bindtap="openPhonics">
+        <view class="quick-icon">
+          <text class="icon-phonics">hi</text>
+        </view>
+        <text>自然拼读</text>
+      </button>
+    </view>
+  </view>
+
+  <view class="bottom-tabbar">
+    <view class="tab-item active">
+      <image class="tab-icon" src="/images/tab-home-active.svg" mode="aspectFit" />
+      <text>首页</text>
+    </view>
+    <view class="tab-item" bindtap="openMy">
+      <image class="tab-icon" src="/images/tab-my.svg" mode="aspectFit" />
+      <text>我的</text>
+    </view>
+  </view>
 </view>

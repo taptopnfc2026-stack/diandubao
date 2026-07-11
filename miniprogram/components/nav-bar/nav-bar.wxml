@@ -1,0 +1,19 @@
+<view class="nav-bar" style="padding-top: {{statusBarHeight}}px; background: {{background}};">
+  <view class="nav-bar__inner" style="height: {{capsuleHeight}}px;">
+    <button wx:if="{{showBack}}" class="nav-bar__back" bindtap="onBack">
+      <view class="nav-bar__back-icon"></view>
+    </button>
+    <view class="nav-bar__left" style="min-width: {{capsuleWidth}}px;">
+      <slot name="left"></slot>
+    </view>
+    <view class="nav-bar__center">
+      <text wx:if="{{title}}" class="nav-bar__title">{{title}}</text>
+      <slot name="center"></slot>
+    </view>
+    <view class="nav-bar__right" style="min-width: {{capsuleWidth}}px;">
+      <slot name="right"></slot>
+    </view>
+  </view>
+</view>
+<!-- 占位高度，防止内容被导航栏遮挡 -->
+<view style="height: {{navBarHeight}}px;"></view>

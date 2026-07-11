@@ -1,9 +1,6 @@
-<view class="reader-nav compact-nav">
-  <button class="back-button" bindtap="goBack">‹</button>
-  <text>同步背单词</text>
-  <view class="mini-capsule"><text>•••</text><view></view><text>—</text><text>○</text></view>
-</view>
 <view class="vocabulary-page">
+  <nav-bar title="同步背单词" showBack="{{true}}" background="#fff"></nav-bar>
+
   <scroll-view class="unit-tabs" scroll-x>
     <button
       wx:for="{{units}}"

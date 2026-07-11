@@ -1,0 +1,78 @@
+<!-- 学习报告页面 -->
+<view class="report-page">
+  <nav-bar title="学习报告" showBack="{{true}}" background="#f7f8fa"></nav-bar>
+
+  <view class="report-content" wx:if="{{!loading && report}}">
+    <!-- 概览卡片 -->
+    <view class="overview-card">
+      <view class="overview-title">学习概览</view>
+      <view class="overview-grid">
+        <view class="overview-item">
+          <text class="overview-value">{{report.summary.total_minutes}}</text>
+          <text class="overview-label">学习时长(min)</text>
+        </view>
+        <view class="overview-item">
+          <text class="overview-value">{{report.summary.total_sessions}}</text>
+          <text class="overview-label">学习次数</text>
+        </view>
+        <view class="overview-item">
+          <text class="overview-value">{{report.summary.avg_daily_minutes}}</text>
+          <text class="overview-label">日均时长(min)</text>
+        </view>
+        <view class="overview-item">
+          <text class="overview-value">{{report.summary.streak_days}}</text>
+          <text class="overview-label">连续天数</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 学习趋势 -->
+    <view class="chart-card">
+      <view class="chart-header">
+        <text class="chart-title">学习趋势</text>
+        <view class="chart-tabs">
+          <text
+            class="chart-tab {{trendType === 'minutes' ? 'active' : ''}}"
+            data-type="minutes"
+            bindtap="switchTrendType"
+          >分钟</text>
+          <text
+            class="chart-tab {{trendType === 'sessions' ? 'active' : ''}}"
+            data-type="sessions"
+            bindtap="switchTrendType"
+          >课次</text>
+        </view>
+      </view>
+      <canvas type="2d" id="lineChart" class="chart-canvas"></canvas>
+    </view>
+
+    <!-- 学习分布 -->
+    <view class="chart-card">
+      <view class="chart-header">
+        <text class="chart-title">学习分布</text>
+      </view>
+      <canvas type="2d" id="pieChart" class="chart-canvas"></canvas>
+    </view>
+
+    <!-- 学习成就 -->
+    <view class="achievement-card" wx:if="{{report.achievements.length > 0}}">
+      <view class="chart-title" style="margin-bottom: 20rpx;">学习成就</view>
+      <view class="achievement-list">
+        <view class="achievement-item" wx:for="{{report.achievements}}" wx:key="title">
+          <text class="achievement-icon">{{item.icon}}</text>
+          <view class="achievement-info">
+            <text class="achievement-title">{{item.title}}</text>
+            <text class="achievement-desc">{{item.desc}}</text>
+          </view>
+          <text class="achievement-check">✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+</view>

@@ -1,22 +1,34 @@
-@import "../reader/reader.wxss";
-
-.compact-nav {
-  height: 116rpx;
-  padding-top: 0;
+/* 音标练习页样式 */
+.phonetics-page {
+  min-height: 100vh;
+  background: #f7f8fa;
+  box-sizing: border-box;
 }
 
 .learning-tabs {
   height: 100rpx;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  justify-content: center;
+  gap: 80rpx;
   background: #fff;
   border-bottom: 1rpx solid #eceff4;
+  box-sizing: border-box;
 }
 
 .learning-tabs button {
   position: relative;
   color: #6c7481;
   font-weight: 700;
+  font-size: 30rpx;
+  background: transparent;
+  min-width: 0;
+  padding: 0 8rpx;
+  line-height: 100rpx;
+  height: 100rpx;
+}
+
+.learning-tabs button::after {
+  display: none;
 }
 
 .learning-tabs button.active {
@@ -26,31 +38,41 @@
 .learning-tabs button.active::after {
   content: "";
   position: absolute;
-  left: 26%;
-  right: 26%;
+  left: 50%;
   bottom: 0;
+  transform: translateX(-50%);
+  width: 64rpx;
   height: 6rpx;
   border-radius: 999rpx;
   background: #20a8ff;
 }
 
 .phonetic-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20rpx;
-  padding: 20rpx 24rpx 48rpx;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  row-gap: 20rpx;
+  padding: 24rpx 24rpx calc(64rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
 }
 
 .phonetic-card {
-  min-height: 196rpx;
+  width: calc((100% - 40rpx) / 3);
+  height: 196rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 16rpx;
   border: 1rpx solid #e6eaf0;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   background: #fff;
+  box-shadow: 0 4rpx 14rpx rgba(38, 80, 120, 0.035);
+  box-sizing: border-box;
+  padding: 24rpx 8rpx;
+  margin: 0;
+  line-height: 1.2;
+  overflow: hidden;
 }
 
 .symbol {
@@ -60,9 +82,12 @@
 }
 
 .subtitle {
-  max-width: 180rpx;
+  max-width: 100%;
+  padding: 0 10rpx;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 26rpx;
+  color: #172033;
+  box-sizing: border-box;
 }

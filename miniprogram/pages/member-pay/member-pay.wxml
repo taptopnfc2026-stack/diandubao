@@ -1,0 +1,72 @@
+<view class="member-pay-page">
+  <nav-bar title="开通会员" showBack="{{true}}" background="#fff"></nav-bar>
+
+  <view class="member-pay-content">
+    <view class="pay-hero">
+      <view class="hero-copy">
+        <text class="hero-title">开通会员</text>
+        <text class="hero-subtitle">畅享更多权益，学习更高效</text>
+        <view class="benefit-list">
+          <view><text>⏱</text><text>无限时长</text></view>
+          <view><text>🔊</text><text>智能纠音</text></view>
+          <view><text>📖</text><text>专属教材</text></view>
+          <view><text>📈</text><text>学习报告</text></view>
+        </view>
+      </view>
+      <view class="hero-crown">♛</view>
+    </view>
+
+    <view class="section-title">
+      <text>选择套餐</text>
+      <text>所有套餐自动续费，可随时取消 ?</text>
+    </view>
+
+    <view class="plans-grid">
+      <view
+        wx:for="{{plans}}"
+        wx:key="id"
+        class="plan-card {{selectedPlanId == item.id ? 'active' : ''}}"
+        data-plan-id="{{item.id}}"
+        bindtap="selectPlan"
+      >
+        <view wx:if="{{item.tag}}" class="plan-tag">{{item.tag}}</view>
+        <view wx:if="{{selectedPlanId == item.id}}" class="plan-check">✓</view>
+        <text class="plan-name">{{item.name}}</text>
+        <text class="plan-price">¥{{item.amountText}}</text>
+        <text class="plan-sub">约 ¥{{item.monthlyText}}/月</text>
+        <text class="plan-extra">省心开通</text>
+      </view>
+    </view>
+
+    <view class="section-title single">支付方式</view>
+    <view class="pay-method">
+      <text class="wechat-icon">✓</text>
+      <text>微信支付</text>
+      <text class="method-check">✓</text>
+    </view>
+
+    <button class="pay-btn" loading="{{paying}}" bindtap="pay">
+      {{paying ? '支付中...' : payButtonText}}
+    </button>
+
+    <view class="other-divider"><text>其他方式</text></view>
+
+    <view class="redeem-entry" bindtap="toggleRedeem">
+      <text class="redeem-icon">▣</text>
+      <text>兑换码兑换会员</text>
+      <text class="redeem-arrow">›</text>
+    </view>
+    <view wx:if="{{redeemOpen}}" class="redeem-panel">
+      <input
+        value="{{redeemCode}}"
+        maxlength="32"
+        placeholder="请输入会员兑换码"
+        confirm-type="done"
+        bindinput="inputRedeemCode"
+      />
+      <button loading="{{redeeming}}" bindtap="redeemMemberCode">{{redeeming ? '兑换中...' : '立即兑换'}}</button>
+    </view>
+
+    <view class="safe-tip">🔒 安全支付，个人信息严格保密</view>
+  </view>
+</view>

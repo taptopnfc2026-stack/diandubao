@@ -14,6 +14,7 @@ function normalizeOperationSettings(settings = {}) {
     newUserFreeMinutes: toNumber(settings.new_user_free_minutes || settings.newUserFreeMinutes || defaultOperationSettings.newUserFreeMinutes),
     inviteRewardMinutes: toNumber(settings.invite_reward_minutes || settings.inviteRewardMinutes || defaultOperationSettings.inviteRewardMinutes),
     adRewardMinutes: toNumber(settings.ad_reward_minutes || settings.adRewardMinutes || defaultOperationSettings.adRewardMinutes),
+    shareCoverUrl: settings.share_cover_url || settings.shareCoverUrl || '',
   };
 }
 

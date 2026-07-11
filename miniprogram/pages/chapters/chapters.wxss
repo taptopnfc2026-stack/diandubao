@@ -1,47 +1,155 @@
-.nav {
-  height: 116rpx;
-  padding: 44rpx 28rpx 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #fff;
-  font-weight: 800;
+:root {
+  --safe-bottom: env(safe-area-inset-bottom);
 }
 
-.nav button,
-.nav-spacer {
-  width: 72rpx;
-  height: 72rpx;
+/* 目录页样式 */
+.chapters-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: rgba(30, 40, 55, 0.52);
+  box-sizing: border-box;
+}
+
+.chapter-sheet {
+  display: flex;
+  flex-direction: column;
+  height: 78vh;
+  padding-bottom: calc(28rpx + env(safe-area-inset-bottom));
+  border-radius: 36rpx 36rpx 0 0;
+  background: #f7f8fa;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.sheet-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 108rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #eef1f5;
+  flex-shrink: 0;
+}
+
+.sheet-title {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #111827;
+}
+
+.sheet-close {
+  position: absolute;
+  right: 24rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64rpx;
+  height: 64rpx;
+  color: #9aa4b2;
+  font-size: 48rpx;
+  font-weight: 300;
+  line-height: 1;
 }
 
 .chapter-list {
-  display: grid;
-  gap: 2rpx;
-  background: #edf0f5;
+  flex: 1;
+  min-height: 0;
+  padding: 28rpx 24rpx 0;
+  box-sizing: border-box;
 }
 
-.chapter-list button {
+.chapter-group {
+  margin-bottom: 36rpx;
+}
+
+.group-title {
+  display: block;
+  margin-bottom: 18rpx;
+  padding-left: 8rpx;
+  font-size: 30rpx;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.3;
+}
+
+.group-card {
+  background: #fff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.03);
+}
+
+.chapter-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 30rpx 32rpx;
+  width: 100%;
+  padding: 28rpx 30rpx;
+  border-bottom: 1rpx solid #f1f3f5;
   background: #fff;
-  text-align: left;
+  box-sizing: border-box;
 }
 
-.chapter-list text {
-  display: block;
-  font-weight: 800;
+.chapter-row:last-child {
+  border-bottom: 0;
 }
 
-.chapter-list .sub {
-  margin-top: 8rpx;
-  color: #7c8797;
+.chapter-row.active {
+  background: #eef9ff;
+}
+
+.chapter-row.active .chapter-name {
+  color: #1688ff;
+}
+
+.chapter-row.active .chapter-page {
+  color: #1688ff;
+}
+
+.chapter-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  flex: 1;
+  min-width: 0;
+  padding-right: 20rpx;
+}
+
+.chapter-name {
+  font-weight: 700;
+  font-size: 29rpx;
+  color: #111827;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.chapter-sub {
+  color: #98a2b3;
+  font-size: 23rpx;
+  line-height: 1.3;
+}
+
+.chapter-page {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  flex-shrink: 0;
+  color: #98a2b3;
   font-size: 24rpx;
-  font-weight: 500;
+  white-space: nowrap;
 }
 
 .arrow {
-  color: #9aa4b2;
-  font-size: 42rpx;
+  color: #c8ced8;
+  font-size: 34rpx;
+  line-height: 1;
+}
+
+.list-bottom {
+  height: calc(28rpx + env(safe-area-inset-bottom));
 }

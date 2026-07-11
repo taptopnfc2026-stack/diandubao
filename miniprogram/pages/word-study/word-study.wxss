@@ -1,15 +1,16 @@
-@import "../reader/reader.wxss";
-
-.compact-nav {
-  height: 116rpx;
-  padding-top: 0;
+.word-study-page {
+  min-height: 100vh;
+  background: #f7f8fa;
+  box-sizing: border-box;
 }
 
 .study-page,
 .result-page {
-  min-height: calc(100vh - 116rpx);
+  min-height: 100vh;
   padding: 28rpx;
+  padding-bottom: calc(28rpx + env(safe-area-inset-bottom));
   background: #f7f8fa;
+  box-sizing: border-box;
 }
 
 .study-progress {
@@ -20,17 +21,21 @@
 }
 
 .study-card {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 32rpx;
   padding: 44rpx 36rpx;
-  border-radius: 20rpx;
+  border-radius: 24rpx;
   background: #fff;
+  box-shadow: 0 10rpx 30rpx rgba(38, 80, 120, 0.06);
+  box-sizing: border-box;
 }
 
 .study-word {
   font-size: 68rpx;
   font-weight: 900;
   text-align: center;
+  color: #111827;
 }
 
 .phonetic {
@@ -53,26 +58,40 @@
   background: #eef8ff;
   color: #168ed2;
   font-weight: 700;
+  box-sizing: border-box;
+}
+
+.audio-button::after {
+  display: none;
 }
 
 .example {
   padding: 24rpx;
   border-radius: 16rpx;
-  background: #eef8ff;
+  background: #f7f8fa;
   text-align: center;
+  box-sizing: border-box;
+  color: #4b5563;
 }
 
 .primary {
   width: 100%;
   padding: 30rpx;
-  border-radius: 16rpx;
-  background: #26a8f5;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #2db3ff, #1688ff);
   color: #fff;
   font-weight: 800;
+  box-sizing: border-box;
+  box-shadow: 0 16rpx 36rpx rgba(22, 136, 255, 0.3);
+}
+
+.primary::after {
+  display: none;
 }
 
 .choice-list {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 20rpx;
 }
 
@@ -83,6 +102,12 @@
   background: #fff;
   text-align: left;
   font-weight: 700;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.choice-list button::after {
+  display: none;
 }
 
 .choice-list button.correct {
@@ -99,6 +124,8 @@
 
 .label {
   color: #7c8797;
+  text-align: center;
+  font-size: 28rpx;
 }
 
 .spell-input {
@@ -107,6 +134,9 @@
   border-radius: 16rpx;
   background: #fff;
   text-align: center;
+  box-sizing: border-box;
+  width: 100%;
+  font-size: 32rpx;
 }
 
 .spelling-hint {
@@ -116,14 +146,16 @@
   color: #d46b08;
   text-align: center;
   font-weight: 800;
+  box-sizing: border-box;
 }
 
 .result-page {
-  display: grid;
-  align-content: start;
-  justify-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 36rpx;
-  padding-top: 104rpx;
+  padding: 104rpx 28rpx 28rpx;
+  padding-bottom: calc(28rpx + env(safe-area-inset-bottom));
 }
 
 .celebration {
@@ -133,14 +165,29 @@
 .result-title {
   font-size: 48rpx;
   font-weight: 900;
+  color: #111827;
 }
 
 .result-card {
   width: 100%;
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: flex;
+  flex-wrap: wrap;
   gap: 24rpx;
   padding: 36rpx;
-  border-radius: 20rpx;
+  border-radius: 24rpx;
   background: #fff;
+  box-shadow: 0 10rpx 30rpx rgba(38, 80, 120, 0.06);
+  box-sizing: border-box;
+}
+
+.result-card text {
+  width: calc(50% - 12rpx);
+  font-size: 28rpx;
+  color: #4b5563;
+}
+
+.result-card text:nth-child(even) {
+  text-align: right;
+  font-weight: 800;
+  color: #111827;
 }
